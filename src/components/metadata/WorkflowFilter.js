@@ -34,8 +34,8 @@ function WorkflowFilter() {
         <Typography>Filter by</Typography>
       </Grid>
       <Grid sx={{ width: "auto" }} item container spacing={0.2}>
-        {WORKFLOW_STATUS.map((status) => (
-          <Grid item>
+        {WORKFLOW_STATUS.map((status, index) => (
+          <Grid key={index} item>
             <WorkflowChip
               isClick={statusFilterArray.includes(status) ? true : false}
               status={status}
