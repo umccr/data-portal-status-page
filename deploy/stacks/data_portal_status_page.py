@@ -86,7 +86,7 @@ class DataPortalStatusPageFrontEndStack(cdk.Stack):
         )
 
         # create the web distribution
-        sscheck_cloudfront = cloudfront.CloudFrontWebDistribution(self, "cloud_front_name",
+        data_portal_status_page_cloudfront = cloudfront.CloudFrontWebDistribution(self, "cloud_front_name",
             origin_configs=[source_config],
             error_configurations = [error_page_configuration],
             viewer_protocol_policy = cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -114,7 +114,7 @@ class DataPortalStatusPageFrontEndStack(cdk.Stack):
             self,
             "StatusPageCustomDomainAlias",
             target=route53.RecordTarget(
-                alias_target=route53t.CloudFrontTarget(sscheck_cloudfront)
+                alias_target=route53t.CloudFrontTarget(data_portal_status_page_cloudfront)
             ),
             zone=hosted_zone,
             record_name="status.data"

@@ -18,12 +18,12 @@ app = cdk.App()
 
 CdkPipelineStack(
   app,
-  "DataPortalStatusPageFrontEndCdkPipeline",
-  stack_name = "cdkpipeline-data-portal-status-page-front-end",
+  "DataPortalStatusPageCdkPipeline",
+  stack_name = "cdkpipeline-data-portal-status-page",
   env=aws_env,
   tags={
     "environment":"dev",
-    "stack":"cdkpipeline-data-portal-status-page-front-end"
+    "stack":"cdkpipeline-data-portal-status-page"
   }
 )
 

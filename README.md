@@ -1,5 +1,5 @@
 
-# status-page-check-frontend
+# data-portal-status-page
 
 This is the front end code for UMCCR Status Page.
 

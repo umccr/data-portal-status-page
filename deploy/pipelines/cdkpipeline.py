@@ -9,7 +9,7 @@ from aws_cdk import (
     aws_iam as iam,
     aws_codebuild as codebuild
 )
-from stacks.data_portal_status_page import DataPortalStatusPageFrontEndStack
+from stacks.data_portal_status_page import DataPortalStatusPageStack
 
 
 class DataPortalStatusPageStage(cdk.Stage):
@@ -17,10 +17,10 @@ class DataPortalStatusPageStage(cdk.Stage):
         super().__init__(scope, construct_id, **kwargs)
 
         # Create stack defined on stacks folder
-        DataPortalStatusPageFrontEndStack(
+        DataPortalStatusPageStack(
             self,
-            "StatusPageFrontEnd",
-            stack_name="data-portal-status-page-front-end-stack"
+            "StatusPage",
+            stack_name="data-portal-status-page-stack"
         )
 
 # Class for the CDK pipeline stack
@@ -59,7 +59,7 @@ class CdkPipelineStack(cdk.Stack):
             self,
             "CDKPipeline",
             cloud_assembly_artifact=cloud_artifact,
-            pipeline_name="status-page-front-end",
+            pipeline_name="data-portal-status-page",
             source_action=code_star_action,
             cross_account_keys=False,
             synth_action=pipelines.SimpleSynthAction(
@@ -78,7 +78,7 @@ class CdkPipelineStack(cdk.Stack):
                     "cfn_nag_scan --input-path ./cfnnag_output"
                 ],
                 action_name="Synth",
-                project_name="data-portal-status-page-front-end-synth",
+                project_name="data-portal-status-page-synth",
                 subdirectory="deploy"
             )
 
@@ -88,7 +88,7 @@ class CdkPipelineStack(cdk.Stack):
         pipeline.add_application_stage(
             DataPortalStatusPageStage(
                 self,
-                "DataPortalStatusPageFrontEndStage",
+                "DataPortalStatusPageStage",
             )
         )
 
@@ -98,7 +98,7 @@ class CdkPipelineStack(cdk.Stack):
         front_end_bucket_name = ssm.StringParameter.from_string_parameter_attributes(
             self,
             "FrontEndBucketName",
-            parameter_name="/status_page/bucket_name"
+            parameter_name="/data_portal_status_page/bucket_name"
         ).string_value
 
         front_end_bucket_arn = s3.Bucket.from_bucket_name(
