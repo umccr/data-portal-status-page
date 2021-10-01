@@ -8,7 +8,7 @@ from aws_cdk import (
     aws_certificatemanager as acm
 )
 
-class DataPortalStatusPageFrontEndStack(cdk.Stack):
+class DataPortalStatusPageStack(cdk.Stack):
 
     def __init__(self, scope: cdk.Construct, construct_id: str,constants=None, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
