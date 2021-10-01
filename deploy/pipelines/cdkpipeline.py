@@ -120,7 +120,7 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal_status_page/lambda-api-domain",
+                        value="/data_portal/backend/api_domain_name",
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_STAGE": codebuild.BuildEnvironmentVariable(
