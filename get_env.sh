@@ -40,7 +40,6 @@ command -v jq >/dev/null 2>&1 || {
 
 if [ -n "$1" ] && [ "$1" = "unset" ]; then
   unset REACT_APP_BUCKET_NAME
-  unset REACT_APP_LAMBDA_API_DOMAIN
   unset REACT_APP_STAGE
   unset REACT_APP_REGION
   unset REACT_APP_COG_USER_POOL_ID
@@ -72,12 +71,11 @@ oauth_redirect_out_local=$(aws ssm get-parameter --name '/data_portal/client/oau
 oauth_redirect_in_stage=$(aws ssm get-parameter --name '/data_portal_status_page/oauth_redirect_in_stage' | jq -r .Parameter.Value)
 oauth_redirect_out_stage=$(aws ssm get-parameter --name '/data_portal_status_page/oauth_redirect_out_stage' | jq -r .Parameter.Value)
 
-data_portal_api_domain=$(aws ssm get-parameter --name '/data_portal/backend/api_domain_name' | jq -r .Parameter.Value)
 bucket_name=$(aws ssm get-parameter --name '/data_portal_status_page/bucket_name' | jq -r .Parameter.Value)
 stage=$(aws ssm get-parameter --name '/data_portal_status_page/stage' | jq -r .Parameter.Value)
 
 export REACT_APP_BUCKET_NAME=$bucket_name
-export REACT_APP_DATA_PORTAL_API_DOMAIN=$data_portal_api_domain
+export REACT_APP_DATA_PORTAL_API_DOMAIN=localhost:8000
 export REACT_APP_STAGE=localhost
 export REACT_APP_REGION=ap-southeast-2
 
