@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Auth } from "aws-amplify";
 import { Grid, Typography } from "@mui/material";
@@ -6,10 +6,15 @@ import Link from "@mui/material/Link";
 
 import SequenceRunTable from "../components/sequenceRun/SequenceRunTable";
 import WorkflowFilter from "../components/metadata/WorkflowFilter";
-import { useAppContext } from "../components/utils/contextLib";
+import {
+  useAppContext,
+  SearchQueryContext,
+} from "../components/utils/contextLib";
 
 function StatusPage() {
   const { user } = useAppContext();
+
+  const [searchQueryState, setSearchQueryState] = useState({});
 
   return (
     <Grid container sx={{ height: "100vh" }}>
@@ -21,8 +26,13 @@ function StatusPage() {
             </Typography>
           </Grid>
           <Grid item>
-            <WorkflowFilter />
-            <SequenceRunTable />
+            {/* Query Search useContext */}
+            <SearchQueryContext.Provider
+              value={{ searchQueryState, setSearchQueryState }}
+            >
+              <WorkflowFilter />
+              <SequenceRunTable />
+            </SearchQueryContext.Provider>
           </Grid>
         </>
       ) : (

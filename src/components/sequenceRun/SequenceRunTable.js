@@ -10,10 +10,13 @@ import Paper from "@mui/material/Paper";
 import ShowError from "../utils/ShowError";
 import SequenceRunRow from "./SequenceRunRow";
 import { mock_sequence_run } from "../utils/Constants";
+import { useSearchQueryContext } from "../utils/contextLib";
 
 export default function LibraryTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
+  const { searchQueryState, setSearchQueryState } = useSearchQueryContext()
 
+  console.log("searchQueryState", searchQueryState["hello"])
   // State for error
   const [isError, setIsError] = useState(false);
   function handleError(value) {
@@ -24,7 +27,6 @@ export default function LibraryTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // You can await here
         const responseListSequenceRunId = await API.get(
           "DataPortalApi",
           "/runs"
@@ -43,7 +45,7 @@ export default function LibraryTable() {
           // Grab the latest sequence event
           setSequenceRunList((prevState) => [
             ...prevState,
-            responseSequenceRun.results[3],
+            responseSequenceRun.results[0],
           ]);
         }
       } catch (err) {
@@ -53,7 +55,6 @@ export default function LibraryTable() {
     };
     fetchData();
   }, []);
-
 
   return (
     <TableContainer
