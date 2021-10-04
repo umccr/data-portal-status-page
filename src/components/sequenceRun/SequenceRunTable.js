@@ -16,7 +16,6 @@ export default function LibraryTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
   const { searchQueryState, setSearchQueryState } = useSearchQueryContext()
 
-  console.log("searchQueryState", searchQueryState["hello"])
   // State for error
   const [isError, setIsError] = useState(false);
   function handleError(value) {
@@ -71,7 +70,7 @@ export default function LibraryTable() {
           </TableRow> */}
         </TableHead>
         <TableBody aria-label="Sequence Run Table Body">
-          {mock_sequence_run.map((row, index) => (
+          {sequenceRunList.map((row, index) => (
             <SequenceRunRow key={index} row={row} />
           ))}
         </TableBody>
