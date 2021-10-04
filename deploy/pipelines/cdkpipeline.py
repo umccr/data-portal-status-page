@@ -98,7 +98,7 @@ class CdkPipelineStack(cdk.Stack):
         front_end_bucket_name = ssm.StringParameter.from_string_parameter_attributes(
             self,
             "FrontEndBucketName",
-            parameter_name="/data_portal_status_page/bucket_name"
+            parameter_name="/data_portal/status_page/bucket_name"
         ).string_value
 
         front_end_bucket_arn = s3.Bucket.from_bucket_name(
@@ -116,7 +116,7 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                     ),
                     "REACT_APP_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal_status_page/bucket_name",
+                        value="/data_portal/status_page/bucket_name",
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
@@ -124,7 +124,7 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_STAGE": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal_status_page/stage",
+                        value="/data_portal/status_page/stage",
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_COG_USER_POOL_ID": codebuild.BuildEnvironmentVariable(
@@ -132,7 +132,7 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_COG_APP_CLIENT_ID_STAGE": codebuild.BuildEnvironmentVariable(
-                        value="/sscheck/client/cog_app_client_id_stage",
+                        value="/data_portal/status_page/cog_app_client_id_stage",
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_OAUTH_DOMAIN": codebuild.BuildEnvironmentVariable(
@@ -140,11 +140,11 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_OAUTH_REDIRECT_IN_STAGE": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal_status_page/oauth_redirect_in_stage",
+                        value="/data_portal/status_page/oauth_redirect_in_stage",
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                     "REACT_APP_OAUTH_REDIRECT_OUT_STAGE": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal_status_page/oauth_redirect_out_stage",
+                        value="/data_portal/status_page/oauth_redirect_out_stage",
                         type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
                     ),
                 },
@@ -160,7 +160,7 @@ class CdkPipelineStack(cdk.Stack):
                         actions=["ssm:GetParameter"],
                         effect=iam.Effect.ALLOW,
                         resources=[
-                            "arn:aws:ssm:ap-southeast-2:843407916570:parameter/data_portal_status_page/*",
+                            "arn:aws:ssm:ap-southeast-2:843407916570:parameter/data_portal/status_page/*",
                             "arn:aws:ssm:ap-southeast-2:843407916570:parameter/data_portal/client/*"
                         ]
                     ),

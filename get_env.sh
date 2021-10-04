@@ -62,17 +62,17 @@ if [[ "$cog_user_pool_id" == "" ]]; then
   return 1
 fi
 cog_app_client_id_local=$(aws ssm get-parameter --name '/data_portal/client/cog_app_client_id_local' | jq -r .Parameter.Value)
-cog_app_client_id_stage=$(aws ssm get-parameter --name '/sscheck/client/cog_app_client_id_stage' | jq -r .Parameter.Value)
+cog_app_client_id_stage=$(aws ssm get-parameter --name '/data_portal/status_page/cog_app_client_id_stage' | jq -r .Parameter.Value)
 
 oauth_domain=$(aws ssm get-parameter --name '/data_portal/client/oauth_domain' | jq -r .Parameter.Value)
 oauth_redirect_in_local=$(aws ssm get-parameter --name '/data_portal/client/oauth_redirect_in_local' | jq -r .Parameter.Value)
 oauth_redirect_out_local=$(aws ssm get-parameter --name '/data_portal/client/oauth_redirect_out_local' | jq -r .Parameter.Value)
 
-oauth_redirect_in_stage=$(aws ssm get-parameter --name '/data_portal_status_page/oauth_redirect_in_stage' | jq -r .Parameter.Value)
-oauth_redirect_out_stage=$(aws ssm get-parameter --name '/data_portal_status_page/oauth_redirect_out_stage' | jq -r .Parameter.Value)
+oauth_redirect_in_stage=$(aws ssm get-parameter --name '/data_portal/status_page/oauth_redirect_in_stage' | jq -r .Parameter.Value)
+oauth_redirect_out_stage=$(aws ssm get-parameter --name '/data_portal/status_page/oauth_redirect_out_stage' | jq -r .Parameter.Value)
 
-bucket_name=$(aws ssm get-parameter --name '/data_portal_status_page/bucket_name' | jq -r .Parameter.Value)
-stage=$(aws ssm get-parameter --name '/data_portal_status_page/stage' | jq -r .Parameter.Value)
+bucket_name=$(aws ssm get-parameter --name '/data_portal/status_page/bucket_name' | jq -r .Parameter.Value)
+stage=$(aws ssm get-parameter --name '/data_portal/status_page/stage' | jq -r .Parameter.Value)
 
 export REACT_APP_BUCKET_NAME=$bucket_name
 export REACT_APP_DATA_PORTAL_API_DOMAIN=localhost:8000
