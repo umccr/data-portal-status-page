@@ -20,7 +20,11 @@ class DataPortalStatusPageStage(cdk.Stage):
         DataPortalStatusPageStack(
             self,
             "StatusPage",
-            stack_name="data-portal-status-page-stack"
+            stack_name="data-portal-status-page-stack",
+            tags={
+                "environment":"dev",
+                "stack":"cdkpipeline-data-portal-status-page"
+            }
         )
 
 # Class for the CDK pipeline stack
