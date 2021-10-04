@@ -15,14 +15,14 @@ class DataPortalStatusPageStack(cdk.Stack):
 
         # Load SSM parameter for bucket name ( Created via Console)
         bucket_name = ssm.StringParameter.from_string_parameter_attributes(self, "bucketValue",
-            parameter_name="/data_portal_status_page/bucket_name"
+            parameter_name="/data_portal/status_page/bucket_name"
         ).string_value
 
         # Query domain_name config from SSM Parameter Store (Created via Conosle)
         domain_name = ssm.StringParameter.from_string_parameter_name(
             self,
             "DomainName",
-            string_parameter_name="/data_portal_status_page/domain",
+            string_parameter_name="/data_portal/status_page/domain",
         ).string_value
 
         # --- Query deployment env specific config from SSM Parameter Store
