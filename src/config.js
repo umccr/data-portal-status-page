@@ -1,12 +1,14 @@
 const REGION = process.env.REACT_APP_REGION;
 const OAUTH_DOMAIN = `${process.env.REACT_APP_OAUTH_DOMAIN}.auth.${REGION}.amazoncognito.com`;
 
-const DATA_PORTAL_API = `https://${process.env.REACT_APP_DATA_PORTAL_API_DOMAIN}`;
+// Regex for isLocal configuration
+const isLocal = /localhost/.test(process.env.REACT_APP_DATA_PORTAL_API_DOMAIN);
 
 export const config = {
-  // endpoint for backend
   apiEndpoint: {
-    URL: DATA_PORTAL_API,
+    URL: isLocal
+      ? `http://${process.env.REACT_APP_DATA_PORTAL_API_DOMAIN}`
+      : `https://${process.env.REACT_APP_DATA_PORTAL_API_DOMAIN}`,
   },
   cognito: {
     REGION: REGION,
