@@ -10,6 +10,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
+import { grey } from "@mui/material/colors";
 
 function getDateTimeString(iso_string) {
   let dateTime = new Date(iso_string);
@@ -17,8 +18,8 @@ function getDateTimeString(iso_string) {
 }
 
 function SequenceRunRow(props) {
-  const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const { data } = props;
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -43,9 +44,9 @@ function SequenceRunRow(props) {
               <IconButton
                 aria-label="expand row"
                 size="small"
-                onClick={() => setOpen(!open)}
+                onClick={() => setIsOpen(!isOpen)}
               >
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             </Grid>
 
@@ -72,11 +73,11 @@ function SequenceRunRow(props) {
                     Sequence Run:{" "}
                   </Typography>
                   <Typography display="inline" sx={{ fontWeight: "medium" }}>
-                    {row.instrument_run_id}
+                    {data.instrument_run_id}
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <SequenceRunChip status={row.status} />
+                  <SequenceRunChip status={data.status} />
                 </Grid>
               </Grid>
 
@@ -111,7 +112,7 @@ function SequenceRunRow(props) {
                     display="inline"
                     sx={{ fontWeight: "light" }}
                   >
-                    {getDateTimeString(row.date_modified)}
+                    {getDateTimeString(data.date_modified)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -120,9 +121,9 @@ function SequenceRunRow(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <MetadataTable />
+        <TableCell style={{ backgroundColor:grey[50], paddingBottom: 0, paddingTop: 0, textAlign:"center" }} >
+          <Collapse in={isOpen} timeout="auto" unmountOnExit>
+            <MetadataTable instrument_run_id={data.instrument_run_id} />
           </Collapse>
         </TableCell>
       </TableRow>

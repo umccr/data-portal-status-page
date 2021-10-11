@@ -5,16 +5,21 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import ShowError from "../utils/ShowError";
 import SequenceRunRow from "./SequenceRunRow";
 import { mock_sequence_run } from "../utils/Constants";
-import { useSearchQueryContext } from "../utils/contextLib";
+import { useSearchQueryContext } from "../utils/ContextLib";
 
 export default function LibraryTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
-  const { searchQueryState, setSearchQueryState } = useSearchQueryContext()
+  const { searchQueryState, setSearchQueryState } = useSearchQueryContext();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // State for error
   const [isError, setIsError] = useState(false);
@@ -25,32 +30,16 @@ export default function LibraryTable() {
   // Fetch sequence run data from API
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       try {
-        const responseListSequenceRunId = await API.get(
-          "DataPortalApi",
-          "/runs"
-        );
-        for (const eachSequenceRunId of responseListSequenceRunId.results) {
-          const headers = {
-            queryStringParameters: {
-              search: eachSequenceRunId,
-            },
-          };
-          const responseSequenceRun = await API.get(
-            "DataPortalApi",
-            "/sequence",
-            headers
-          );
-          // Grab the latest sequence event
-          setSequenceRunList((prevState) => [
-            ...prevState,
-            responseSequenceRun.results[0],
-          ]);
-        }
+        const responseSequence = await API.get("DataPortalApi", "/sequence");
+        // Grab the latest sequence event
+        setSequenceRunList(responseSequence.results);
       } catch (err) {
         console.log(err);
         setIsError(true);
       }
+      setIsLoading(false)
     };
     fetchData();
   }, []);
@@ -70,9 +59,17 @@ export default function LibraryTable() {
           </TableRow> */}
         </TableHead>
         <TableBody aria-label="Sequence Run Table Body">
-          {sequenceRunList.map((row, index) => (
-            <SequenceRunRow key={index} row={row} />
-          ))}
+          {isLoading ? (
+            <TableRow>
+              <TableCell sx={{textAlign:"center"}}>
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
+          ) : (
+            mock_sequence_run.map((row, index) => (
+              <SequenceRunRow key={index} data={row} />
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>

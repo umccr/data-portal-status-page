@@ -15,7 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { grey } from "@mui/material/colors";
 
 import Routes from "./Routes";
-import { AppContext } from "./components/utils/contextLib";
+import { AppContext } from "./components/utils/ContextLib";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -107,7 +107,7 @@ function App() {
   }, []);
 
   return (
-    <Box aria-label="Base Box" sx={{ flexGrow: 1, backgroundColor: grey[50] }}>
+    <Box aria-label="Base Box" sx={{ flexGrow: 1, backgroundColor: grey[50], height:'100vh' }}>
       <AppBar position="static" color="transparent">
         <Toolbar>
           <div

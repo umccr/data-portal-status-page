@@ -9,7 +9,7 @@ import WorkflowFilter from "../components/metadata/WorkflowFilter";
 import {
   useAppContext,
   SearchQueryContext,
-} from "../components/utils/contextLib";
+} from "../components/utils/ContextLib";
 
 function StatusPage() {
   const { user } = useAppContext();
@@ -17,7 +17,7 @@ function StatusPage() {
   const [searchQueryState, setSearchQueryState] = useState({});
 
   return (
-    <Grid container sx={{ height: "100vh" }}>
+    <Grid container>
       {user ? (
         <>
           <Grid item container justifyContent="center">
