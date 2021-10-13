@@ -50,7 +50,7 @@ export default function LibraryTable() {
       elevation={2}
       sx={{ borderRadius: "10px" }}
     >
-      <ShowError handleError={handleError} isError={isError} />
+      <ShowError handleError={handleError} isError={isError} />      
       <Table aria-label="Sequence Run Table" sx={{ tableLayout: "fixed" }}>
         <TableHead>
           {/* Heading for table */}
@@ -71,6 +71,14 @@ export default function LibraryTable() {
             ))
           )}
         </TableBody>
+        {/* <TablePagination
+          component="div"
+          count={100}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        /> */}
       </Table>
     </TableContainer>
   );
