@@ -10,6 +10,8 @@ import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 import ShowError from "../utils/ShowError";
 
+import { useSearchQueryContext } from "../utils/ContextLib";
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
@@ -49,7 +51,12 @@ async function getWorkflow(metadata, workflow_list) {
 }
 
 function MetadataRow(props) {
+
   const { metadata, workflow_list } = props;
+  const { searchQueryState } = useSearchQueryContext();
+
+  // Set an empty placeholder for workflow status
+  const [workflowStatus, setWorkflowStatus] = useState({});
 
   // State for error
   const [isError, setIsError] = useState(false);
@@ -57,22 +64,24 @@ function MetadataRow(props) {
     setIsError(value);
   }
 
-  // Set an empty placeholder for workflow status
-  const [workflowStatus, setWorkflowStatus] = useState({});
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Construct on API config including params
-        const groupedWorkflow = await getWorkflow(metadata, workflow_list);
-        setWorkflowStatus(groupedWorkflow);
+        if (searchQueryState.metadata) {
+          setWorkflowStatus(searchQueryState.metadata);
+        } else {
+          // Construct on API config including params
+          const groupedWorkflow = await getWorkflow(metadata, workflow_list);
+          setWorkflowStatus(groupedWorkflow);
+        }
+
       } catch (err) {
         console.log(err);
         setIsError(true);
       }
     };
     fetchData();
-  }, [metadata, workflow_list]);
+  }, [metadata, workflow_list, searchQueryState]);
 
   return (
     <StyledTableRow>
