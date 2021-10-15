@@ -14,7 +14,7 @@ import Container from "@mui/material/Container";
 
 // Custom Component
 import MetadataRow from "./MetadataRow";
-import { useSearchQueryContext } from "../utils/ContextLib";
+import { useSearchContext } from "../higherOrderComponent/SearchQuery";
 import ShowError from "../utils/ShowError";
 
 import {
@@ -68,7 +68,7 @@ async function getMetadataFromInstrumentRunId(instrument_run_id) {
 
 function MetadataTable(props) {
   // Load data from context
-  const { searchQueryState } = useSearchQueryContext();
+  const { queryResult } = useSearchContext();
 
   // Props for data ID
   const { instrument_run_id } = props;
@@ -90,8 +90,8 @@ function MetadataTable(props) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        if (searchQueryState.metadata) {
-          setMetadataGrouped(searchQueryState.metadata);
+        if (queryResult) {
+          setMetadataGrouped(queryResult);
         } else {
           // Api Calls to get metadata List
           const metadataResponseList = await getMetadataFromInstrumentRunId(
@@ -107,7 +107,7 @@ function MetadataTable(props) {
       setIsLoading(false);
     };
     fetchData();
-  }, [instrument_run_id, searchQueryState]);
+  }, [instrument_run_id, queryResult]);
 
   useEffect(() => {
     if (Object.keys(metadataGrouped).length !== 0) {

@@ -7,9 +7,3 @@ export function useUserContext() {
   return useContext(UserContext);
 }
 
-// Context for data query
-export const SearchQueryContext = createContext(null);
-
-export function useSearchQueryContext() {
-  return useContext(SearchQueryContext);
-}

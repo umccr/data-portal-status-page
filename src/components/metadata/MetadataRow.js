@@ -10,7 +10,7 @@ import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 import ShowError from "../utils/ShowError";
 
-import { useSearchQueryContext } from "../utils/ContextLib";
+import { useSearchContext } from "../higherOrderComponent/SearchQuery";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -53,7 +53,7 @@ async function getWorkflow(metadata, workflow_list) {
 function MetadataRow(props) {
 
   const { metadata, workflow_list } = props;
-  const { searchQueryState } = useSearchQueryContext();
+  const { queryResult } = useSearchContext();
 
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
@@ -65,10 +65,11 @@ function MetadataRow(props) {
   }
 
   useEffect(() => {
+    console.log("how many times printed?")
     const fetchData = async () => {
       try {
-        if (searchQueryState.metadata) {
-          setWorkflowStatus(searchQueryState.metadata);
+        if (queryResult) {
+          setWorkflowStatus(queryResult);
         } else {
           // Construct on API config including params
           const groupedWorkflow = await getWorkflow(metadata, workflow_list);
@@ -81,7 +82,7 @@ function MetadataRow(props) {
       }
     };
     fetchData();
-  }, [metadata, workflow_list, searchQueryState]);
+  }, [metadata, workflow_list, queryResult]);
 
   return (
     <StyledTableRow>

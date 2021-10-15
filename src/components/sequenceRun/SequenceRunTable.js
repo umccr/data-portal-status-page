@@ -16,7 +16,7 @@ import { Typography } from "@mui/material";
 // Custom Components
 import ShowError from "../utils/ShowError";
 import SequenceRunRow from "./SequenceRunRow";
-import { useSearchQueryContext } from "../utils/ContextLib";
+import { useSearchContext } from "../higherOrderComponent/SearchQuery";
 import { mock_sequence_run } from "../utils/Constants";
 
 function displaySequenceRow(sequenceList) {
@@ -43,7 +43,7 @@ function displaySequenceRow(sequenceList) {
 export default function LibraryTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
 
-  const { searchQueryState } = useSearchQueryContext();
+  const { queryResult } = useSearchContext();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,8 +58,9 @@ export default function LibraryTable() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        if (searchQueryState.sequence) {
-          setSequenceRunList(searchQueryState.sequence);
+        console.log("bebek", queryResult)
+        if (queryResult) {
+          setSequenceRunList(queryResult);
         } else {
           const responseSequence = await API.get("DataPortalApi", "/sequence");
           setSequenceRunList(responseSequence.results);
@@ -73,7 +74,7 @@ export default function LibraryTable() {
       setIsLoading(false);
     };
     fetchData();
-  }, [searchQueryState]);
+  }, [queryResult]);
 
   return (
     <TableContainer
