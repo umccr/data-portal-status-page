@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // AWS-amplify
 import { Auth, Hub } from "aws-amplify";
@@ -14,6 +14,7 @@ import { grey } from "@mui/material/colors";
 
 // Custom Components
 import { useUserContext } from "../higherOrderComponent/UserContextProvider";
+import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
 
 // Styling Componentss
 const Search = styled("div")(({ theme }) => ({
@@ -60,7 +61,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function NavigationBar(props) {
+  const [searchInput, setSearchInput] = useState("");
   const { user, setUser } = useUserContext();
+  const { searchHandler } = useSearchContext();
 
   useEffect(() => {
     Hub.listen("auth", ({ payload: { event, data } }) => {
@@ -80,7 +83,7 @@ function NavigationBar(props) {
     getUser().then((userData) => {
       setUser(userData);
     });
-  }, []);
+  }, [setUser]);
 
   function getUser() {
     return Auth.currentAuthenticatedUser()
@@ -104,7 +107,11 @@ function NavigationBar(props) {
       }
     }
     onLoad();
-  }, []);
+  }, [setUser]);
+
+  const onSearchClick = () => {
+    searchHandler(searchInput);
+  };
 
   return (
     <AppBar position="static" color="transparent">
@@ -134,7 +141,11 @@ function NavigationBar(props) {
           <StyledInputBase
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
+            onChange={(e) => setSearchInput(e.target.value)}
+            value={searchInput}
+            onKeyPress={(e) => e.key === "Enter" && onSearchClick()}
           />
+          
         </Search>
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>

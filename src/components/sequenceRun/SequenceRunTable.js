@@ -16,7 +16,7 @@ import { Typography } from "@mui/material";
 // Custom Components
 import SequenceRunRow from "./SequenceRunRow";
 import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
-import { useErrorContext } from "../higherOrderComponent/ErrorContextProvider";
+import { useDialogContext } from "../higherOrderComponent/DialogComponent";
 
 import { mock_sequence_run } from "../utils/Constants";
 
@@ -45,7 +45,7 @@ export default function LibraryTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
 
   const { queryResult } = useSearchContext();
-  const { setIsError } = useErrorContext();
+  const { setDialogInfo } = useDialogContext();
   const [isLoading, setIsLoading] = useState(false);
 
   // Fetch sequence run data from API
@@ -53,7 +53,6 @@ export default function LibraryTable() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        console.log("bebek", queryResult);
         if (queryResult) {
           setSequenceRunList(queryResult);
         } else {
@@ -64,12 +63,16 @@ export default function LibraryTable() {
         // TODO: Remove the following line
         setSequenceRunList(mock_sequence_run);
       } catch (err) {
-        setIsError(true);
+        setDialogInfo({
+          isOpen:true,
+          dialogTitle: "Error",
+          dialogContent: "Sorry, An error has occured. Please try again!",
+        });
       }
       setIsLoading(false);
     };
     fetchData();
-  }, [queryResult, setIsError]);
+  }, [queryResult, setDialogInfo]);
 
   return (
     <TableContainer

@@ -9,24 +9,34 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 // Context to store logged in user information
-export const ErrorContext = createContext(false);
+export const DialogContext = createContext(false);
 
-export function useErrorContext() {
-  return useContext(ErrorContext);
+export function useDialogContext() {
+  return useContext(DialogContext);
 }
 
-export default function ErrorContextProvider(props) {
-  const [isError, setIsError] = useState(false);
+export default function DialogComponent(props) {
+  const [dialogInfo, setDialogInfo] = useState({
+    isOpen: false,
+    dialogTitle: "",
+    dialogContent: "",
+  });
 
-  const handleClose = () => setIsError(false);
+  // Reset Dialog when Close
+  const handleClose = () =>
+    setDialogInfo({
+      isOpen: false,
+      dialogTitle: "",
+      dialogContent: "",
+    });
 
   return (
     <>
-      <Dialog open={isError} onClose={handleClose}>
-        <DialogTitle>Error</DialogTitle>
+      <Dialog open={dialogInfo.isOpen} onClose={handleClose}>
+        <DialogTitle>{dialogInfo.dialogTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Sorry, An error has occured. Please try again!
+            {dialogInfo.dialogContent}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -37,9 +47,9 @@ export default function ErrorContextProvider(props) {
       </Dialog>
 
       {/* Render The rest of the Component */}
-      <ErrorContext.Provider value={{ setIsError }}>
+      <DialogContext.Provider value={{ setDialogInfo }}>
         {props.children}
-      </ErrorContext.Provider>
+      </DialogContext.Provider>
     </>
   );
 }

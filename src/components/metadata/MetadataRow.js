@@ -10,7 +10,7 @@ import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 
 import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
-import { useErrorContext } from "../higherOrderComponent/ErrorContextProvider";
+import { useDialogContext } from "../higherOrderComponent/DialogComponent";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -53,7 +53,7 @@ async function getWorkflow(metadata, workflow_list) {
 function MetadataRow(props) {
   const { metadata, workflow_list } = props;
   const { queryResult } = useSearchContext();
-  const { setIsError } = useErrorContext();
+  const { setDialogInfo } = useDialogContext();
 
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
@@ -70,12 +70,15 @@ function MetadataRow(props) {
           setWorkflowStatus(groupedWorkflow);
         }
       } catch (err) {
-        console.log(err);
-        setIsError(true);
+        setDialogInfo({
+          isOpen:true,
+          dialogTitle: "Error",
+          dialogContent: "Sorry, An error has occured. Please try again!",
+        });
       }
     };
     fetchData();
-  }, [metadata, workflow_list, queryResult, setIsError]);
+  }, [metadata, workflow_list, queryResult, setDialogInfo]);
 
   return (
     <StyledTableRow>

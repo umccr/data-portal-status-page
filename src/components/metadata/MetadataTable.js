@@ -15,7 +15,7 @@ import Container from "@mui/material/Container";
 // Custom Component
 import MetadataRow from "./MetadataRow";
 import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
-import { useErrorContext } from "../higherOrderComponent/ErrorContextProvider";
+import { useDialogContext } from "../higherOrderComponent/DialogComponent";
 
 import {
   WORKFLOW_PIPELINE,
@@ -69,7 +69,7 @@ async function getMetadataFromInstrumentRunId(instrument_run_id) {
 function MetadataTable(props) {
   // Load data from context
   const { queryResult } = useSearchContext();
-  const { setIsError } = useErrorContext();
+  const { setDialogInfo } = useDialogContext();
   // Props for data ID
   const { instrument_run_id } = props;
 
@@ -95,13 +95,16 @@ function MetadataTable(props) {
         }
         setMetadataGrouped(mock_metadata);
       } catch (err) {
-        console.log(err);
-        setIsError(true);
+        setDialogInfo({
+          isOpen:true,
+          dialogTitle: "Error",
+          dialogContent: "Sorry, An error has occured. Please try again!",
+        });
       }
       setIsLoading(false);
     };
     fetchData();
-  }, [instrument_run_id, queryResult, setIsError]);
+  }, [instrument_run_id, queryResult, setDialogInfo]);
 
   useEffect(() => {
     if (Object.keys(metadataGrouped).length !== 0) {

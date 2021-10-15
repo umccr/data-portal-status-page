@@ -10,7 +10,7 @@ import Routes from "./Routes";
 import NavigationBar from "./components/app/NavigationBar";
 import SearchContextProvider from "./components/higherOrderComponent/SearchContextProvider";
 import UserContextProvider from "./components/higherOrderComponent/UserContextProvider";
-import ErrorContextProvider from "./components/higherOrderComponent/ErrorContextProvider";
+import DialogComponent from "./components/higherOrderComponent/DialogComponent";
 
 function App() {
   return (
@@ -18,16 +18,16 @@ function App() {
       aria-label="Base Box"
       sx={{ flexGrow: 1, backgroundColor: grey[50], height: "100vh" }}
     >
-      <UserContextProvider>
-        <SearchContextProvider>
-          <ErrorContextProvider>
+      <DialogComponent>
+        <UserContextProvider>
+          <SearchContextProvider>
             <NavigationBar />
             <Container maxWidth="lg" sx={{ paddingTop: "2rem" }}>
               <Routes />
             </Container>
-          </ErrorContextProvider>
-        </SearchContextProvider>
-      </UserContextProvider>
+          </SearchContextProvider>
+        </UserContextProvider>
+      </DialogComponent>
     </Box>
   );
 }
