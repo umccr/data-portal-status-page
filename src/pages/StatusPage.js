@@ -6,13 +6,11 @@ import Link from "@mui/material/Link";
 
 import SequenceRunTable from "../components/sequenceRun/SequenceRunTable";
 import WorkflowFilter from "../components/metadata/WorkflowFilter";
-import {
-  useUserContext,
-} from "../components/utils/ContextLib";
+import { useUserContext } from "../components/higherOrderComponent/UserContextProvider";
 
 function StatusPage() {
   const { user } = useUserContext();
-  
+
   return (
     <Grid container>
       {user ? (
@@ -25,8 +23,8 @@ function StatusPage() {
           <Grid item>
             {/* Query Search useContext */}
 
-              <WorkflowFilter />
-              <SequenceRunTable />
+            <WorkflowFilter />
+            <SequenceRunTable />
           </Grid>
         </>
       ) : (

@@ -14,8 +14,8 @@ import Container from "@mui/material/Container";
 
 // Custom Component
 import MetadataRow from "./MetadataRow";
-import { useSearchContext } from "../higherOrderComponent/SearchQuery";
-import ShowError from "../utils/ShowError";
+import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
+import { useErrorContext } from "../higherOrderComponent/ErrorContextProvider";
 
 import {
   WORKFLOW_PIPELINE,
@@ -69,18 +69,12 @@ async function getMetadataFromInstrumentRunId(instrument_run_id) {
 function MetadataTable(props) {
   // Load data from context
   const { queryResult } = useSearchContext();
-
+  const { setIsError } = useErrorContext();
   // Props for data ID
   const { instrument_run_id } = props;
 
   // Loading and error usecase
   const [isLoading, setIsLoading] = useState(false);
-
-  // State for error
-  const [isError, setIsError] = useState(false);
-  function handleError(value) {
-    setIsError(value);
-  }
 
   // Data
   const [metadataGrouped, setMetadataGrouped] = useState({});
@@ -107,7 +101,7 @@ function MetadataTable(props) {
       setIsLoading(false);
     };
     fetchData();
-  }, [instrument_run_id, queryResult]);
+  }, [instrument_run_id, queryResult, setIsError]);
 
   useEffect(() => {
     if (Object.keys(metadataGrouped).length !== 0) {
@@ -125,7 +119,6 @@ function MetadataTable(props) {
         <CircularProgress sx={{ padding: "20px" }} />
       ) : (
         <Container sx={{ padding: "20px 20px" }}>
-          <ShowError handleError={handleError} isError={isError} />
           {pipelineToDisplay.map((pipeline_type, index) => (
             <TableContainer key={index} sx={{ textAlign: "left" }}>
               <Typography variant="h6" gutterBottom component="div">

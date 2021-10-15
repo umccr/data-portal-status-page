@@ -8,9 +8,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
-import ShowError from "../utils/ShowError";
 
-import { useSearchContext } from "../higherOrderComponent/SearchQuery";
+import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
+import { useErrorContext } from "../higherOrderComponent/ErrorContextProvider";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -51,21 +51,14 @@ async function getWorkflow(metadata, workflow_list) {
 }
 
 function MetadataRow(props) {
-
   const { metadata, workflow_list } = props;
   const { queryResult } = useSearchContext();
+  const { setIsError } = useErrorContext();
 
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
 
-  // State for error
-  const [isError, setIsError] = useState(false);
-  function handleError(value) {
-    setIsError(value);
-  }
-
   useEffect(() => {
-    console.log("how many times printed?")
     const fetchData = async () => {
       try {
         if (queryResult) {
@@ -73,16 +66,16 @@ function MetadataRow(props) {
         } else {
           // Construct on API config including params
           const groupedWorkflow = await getWorkflow(metadata, workflow_list);
+
           setWorkflowStatus(groupedWorkflow);
         }
-
       } catch (err) {
         console.log(err);
         setIsError(true);
       }
     };
     fetchData();
-  }, [metadata, workflow_list, queryResult]);
+  }, [metadata, workflow_list, queryResult, setIsError]);
 
   return (
     <StyledTableRow>

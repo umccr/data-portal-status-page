@@ -13,8 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { grey } from "@mui/material/colors";
 
 // Custom Components
-import { useUserContext } from "../utils/ContextLib";
-
+import { useUserContext } from "../higherOrderComponent/UserContextProvider";
 
 // Styling Componentss
 const Search = styled("div")(({ theme }) => ({

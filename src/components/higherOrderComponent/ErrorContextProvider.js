@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useContext, createContext, useState } from "react";
 
-import Button from '@mui/material/Button';
+// mui- components
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function ShowError({ handleError, isError }) {
-  const handleClose = () => handleError(false);
+// Context to store logged in user information
+export const ErrorContext = createContext(false);
+
+export function useErrorContext() {
+  return useContext(ErrorContext);
+}
+
+export default function ErrorContextProvider(props) {
+  const [isError, setIsError] = useState(false);
+
+  const handleClose = () => setIsError(false);
 
   return (
     <>
@@ -25,6 +35,11 @@ export default function ShowError({ handleError, isError }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Render The rest of the Component */}
+      <ErrorContext.Provider value={{ setIsError }}>
+        {props.children}
+      </ErrorContext.Provider>
     </>
   );
 }

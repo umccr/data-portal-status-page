@@ -14,9 +14,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
 
 // Custom Components
-import ShowError from "../utils/ShowError";
 import SequenceRunRow from "./SequenceRunRow";
-import { useSearchContext } from "../higherOrderComponent/SearchQuery";
+import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
+import { useErrorContext } from "../higherOrderComponent/ErrorContextProvider";
+
 import { mock_sequence_run } from "../utils/Constants";
 
 function displaySequenceRow(sequenceList) {
@@ -44,21 +45,15 @@ export default function LibraryTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
 
   const { queryResult } = useSearchContext();
-
+  const { setIsError } = useErrorContext();
   const [isLoading, setIsLoading] = useState(false);
-
-  // State for error
-  const [isError, setIsError] = useState(false);
-  function handleError(value) {
-    setIsError(value);
-  }
 
   // Fetch sequence run data from API
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        console.log("bebek", queryResult)
+        console.log("bebek", queryResult);
         if (queryResult) {
           setSequenceRunList(queryResult);
         } else {
@@ -66,15 +61,15 @@ export default function LibraryTable() {
           setSequenceRunList(responseSequence.results);
         }
 
-        // TODO: Remove the following line 
-        setSequenceRunList(mock_sequence_run)
+        // TODO: Remove the following line
+        setSequenceRunList(mock_sequence_run);
       } catch (err) {
         setIsError(true);
       }
       setIsLoading(false);
     };
     fetchData();
-  }, [queryResult]);
+  }, [queryResult, setIsError]);
 
   return (
     <TableContainer
@@ -82,7 +77,6 @@ export default function LibraryTable() {
       elevation={2}
       sx={{ borderRadius: "10px" }}
     >
-      <ShowError handleError={handleError} isError={isError} />
       <Table aria-label="Sequence Run Table" sx={{ tableLayout: "fixed" }}>
         <TableHead>
           {/* Heading for table */}

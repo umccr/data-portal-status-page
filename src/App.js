@@ -7,26 +7,27 @@ import { grey } from "@mui/material/colors";
 
 // Custom components
 import Routes from "./Routes";
-import { UserContext, SearchQueryContext } from "./components/utils/ContextLib";
 import NavigationBar from "./components/app/NavigationBar";
-import SearchContextProvider from "./components/higherOrderComponent/SearchQuery";
+import SearchContextProvider from "./components/higherOrderComponent/SearchContextProvider";
+import UserContextProvider from "./components/higherOrderComponent/UserContextProvider";
+import ErrorContextProvider from "./components/higherOrderComponent/ErrorContextProvider";
 
 function App() {
-  const [user, setUser] = useState(null);
-
   return (
     <Box
       aria-label="Base Box"
       sx={{ flexGrow: 1, backgroundColor: grey[50], height: "100vh" }}
     >
-      <UserContext.Provider value={{ user, setUser }}>
+      <UserContextProvider>
         <SearchContextProvider>
-          <NavigationBar />
-          <Container maxWidth="lg" sx={{ paddingTop: "2rem" }}>
-            <Routes />
-          </Container>
+          <ErrorContextProvider>
+            <NavigationBar />
+            <Container maxWidth="lg" sx={{ paddingTop: "2rem" }}>
+              <Routes />
+            </Container>
+          </ErrorContextProvider>
         </SearchContextProvider>
-      </UserContext.Provider>
+      </UserContextProvider>
     </Box>
   );
 }
