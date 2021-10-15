@@ -1,10 +1,10 @@
 import { useContext, createContext } from "react";
 
 // Context to store logged in user information
-export const AppContext = createContext(null);
+export const UserContext = createContext(null);
 
-export function useAppContext() {
-  return useContext(AppContext);
+export function useUserContext() {
+  return useContext(UserContext);
 }
 
 // Context for data query

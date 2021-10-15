@@ -1,9 +1,8 @@
 export const WORKFLOW_STATUS = [
   "Succeeded",
-  "Started",
+  "Running",
   "Failed",
   "Aborted",
-  "Pending",
 ];
 
 // Workflow order
@@ -12,6 +11,9 @@ export const WORKFLOW_PIPELINE = {
   WTS: ["BCL_CONVERT", "WTS"],
   ctTSO: ["BCL_CONVERT", "DRAGEN_TSO_CTDNA"],
 };
+
+// Workflow Types Available
+export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
 
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
@@ -23,80 +25,86 @@ export const CONVERT_TO_DISPLAY_NAME = {
   sample_id: "Sample Id",
 };
 
-export const mock_metadata = [
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WTS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WTS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WTS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WTS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WGS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WGS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WGS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "WGS",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "ctTSO",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "ctTSO",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "ctTSO",
-  },
-  {
-    library_id: "L0000000",
-    sample_id: "PRJ210000",
-    subject_id: "SBJ00000",
-    type: "ctTSO",
-  },
-];
+export const mock_metadata = {
+  WTS: [
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WTS",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WTS",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WTS",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WTS",
+    },
+  ],
+  WGS: [
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WGS",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WGS",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WGS",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "WGS",
+    },
+  ],
+  ctTSO: [
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "ctTSO",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "ctTSO",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "ctTSO",
+    },
+    {
+      library_id: "L0000000",
+      sample_id: "PRJ210000",
+      subject_id: "SBJ00000",
+      type: "ctTSO",
+    },
+  ],
+};
 
 export const mock_sequence_run = [
   {

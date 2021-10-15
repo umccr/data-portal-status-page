@@ -7,15 +7,12 @@ import Link from "@mui/material/Link";
 import SequenceRunTable from "../components/sequenceRun/SequenceRunTable";
 import WorkflowFilter from "../components/metadata/WorkflowFilter";
 import {
-  useAppContext,
-  SearchQueryContext,
+  useUserContext,
 } from "../components/utils/ContextLib";
 
 function StatusPage() {
-  const { user } = useAppContext();
-
-  const [searchQueryState, setSearchQueryState] = useState({});
-
+  const { user } = useUserContext();
+  
   return (
     <Grid container>
       {user ? (
@@ -27,12 +24,9 @@ function StatusPage() {
           </Grid>
           <Grid item>
             {/* Query Search useContext */}
-            <SearchQueryContext.Provider
-              value={{ searchQueryState, setSearchQueryState }}
-            >
+
               <WorkflowFilter />
               <SequenceRunTable />
-            </SearchQueryContext.Provider>
           </Grid>
         </>
       ) : (

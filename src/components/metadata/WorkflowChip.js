@@ -16,7 +16,7 @@ function getStyleForStatus(status, isSelected) {
     case "succeeded":
       // Green color
       return { ...baseStyle, backgroundColor: green[100], color: green[900] };
-    case "started":
+    case "running":
       // Orange color
       return { ...baseStyle, backgroundColor: orange[100], color: orange[800] };
     case "failed":

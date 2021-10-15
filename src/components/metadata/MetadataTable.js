@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { API } from "aws-amplify";
 
+// MaterialUI component
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,64 +12,94 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import Container from "@mui/material/Container";
 
+// Custom Component
 import MetadataRow from "./MetadataRow";
+import { useSearchQueryContext } from "../utils/ContextLib";
+import ShowError from "../utils/ShowError";
 
 import {
   WORKFLOW_PIPELINE,
   FIELD_TO_DISPLAY,
   CONVERT_TO_DISPLAY_NAME,
+  SUPPORTED_PIPELINE,
 } from "../utils/Constants";
 
 import { mock_metadata } from "../utils/Constants";
 import { TableContainer } from "@mui/material";
 
+async function getMetadataFromInstrumentRunId(instrument_run_id) {
+  let metadataGrouped = {};
+
+  // Api Calls to LibraryRun to get list of Metadata
+  const APIConfig = {
+    queryStringParameters: {
+      instrument_run_id: instrument_run_id,
+    },
+  };
+  const responseLibraryRun = await API.get(
+    "DataPortalApi",
+    "/libraryrun",
+    APIConfig
+  );
+  const libraryRunList = responseLibraryRun.results;
+
+  // For each libraryRun list, fetch metadata
+  for (const libraryRun of libraryRunList) {
+    const APIConfig = {
+      queryStringParameters: {
+        library: libraryRun.library_id,
+      },
+    };
+    const responseMetadata = await API.get(
+      "DataPortalApi",
+      "/metadata",
+      APIConfig
+    );
+    const metadata_result = responseMetadata.results[0];
+    const metadata_result_type = metadata_result.type;
+
+    metadataGrouped[metadata_result_type] = [
+      ...metadataGrouped[metadata_result_type],
+      metadata_result,
+    ];
+  }
+  return metadataGrouped;
+}
+
 function MetadataTable(props) {
+  // Load data from context
+  const { searchQueryState } = useSearchQueryContext();
+
   // Props for data ID
   const { instrument_run_id } = props;
 
-  // Supported Workflow Types
-  const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
-
-  // isLoading mechanism
+  // Loading and error usecase
   const [isLoading, setIsLoading] = useState(false);
 
-  // isError
+  // State for error
   const [isError, setIsError] = useState(false);
+  function handleError(value) {
+    setIsError(value);
+  }
 
   // Data
-  const [libraryRunList, setLibraryRunList] = useState([]);
-
-  // Sort data
-  const sorted_data = {};
-  for (const key of SUPPORTED_PIPELINE) {
-    sorted_data[key] = [];
-  }
-  // Group data based on type
-  for (const each_data of mock_metadata) {
-    sorted_data[each_data.type].push(each_data);
-  }
-  // Filter to remove empty lists
-  const list_of_pipeline_to_display = SUPPORTED_PIPELINE.filter(
-    (each_type) => sorted_data[each_type].length > 0
-  );
+  const [metadataGrouped, setMetadataGrouped] = useState({});
+  const [pipelineToDisplay, setPipelineToDisplay] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Construct on API config including params
-        const APIConfig = {
-          queryStringParameters: {
-            instrument_run_id: instrument_run_id,
-          },
-        };
-        // Do the api call
-        const responseSequence = await API.get(
-          "DataPortalApi",
-          "/libraryrun",
-          APIConfig
-        );
-        setLibraryRunList(responseSequence.results);
+        if (searchQueryState.metadata) {
+          setMetadataGrouped(searchQueryState.metadata);
+        } else {
+          // Api Calls to get metadata List
+          const metadataResponseList = await getMetadataFromInstrumentRunId(
+            instrument_run_id
+          );
+          setMetadataGrouped(metadataResponseList);
+        }
+        setMetadataGrouped(mock_metadata);
       } catch (err) {
         console.log(err);
         setIsError(true);
@@ -76,7 +107,17 @@ function MetadataTable(props) {
       setIsLoading(false);
     };
     fetchData();
-  }, [instrument_run_id]);
+  }, [instrument_run_id, searchQueryState]);
+
+  useEffect(() => {
+    if (Object.keys(metadataGrouped).length !== 0) {
+      setPipelineToDisplay(
+        SUPPORTED_PIPELINE.filter(
+          (each_type) => metadataGrouped[each_type].length > 0
+        )
+      );
+    }
+  }, [metadataGrouped]);
 
   return (
     <>
@@ -84,7 +125,8 @@ function MetadataTable(props) {
         <CircularProgress sx={{ padding: "20px" }} />
       ) : (
         <Container sx={{ padding: "20px 20px" }}>
-          {list_of_pipeline_to_display.map((pipeline_type, index) => (
+          <ShowError handleError={handleError} isError={isError} />
+          {pipelineToDisplay.map((pipeline_type, index) => (
             <TableContainer key={index} sx={{ textAlign: "left" }}>
               <Typography variant="h6" gutterBottom component="div">
                 {pipeline_type}
@@ -125,9 +167,9 @@ function MetadataTable(props) {
                     </TableRow>
                   </TableHead>
 
-                  {/* Display Metadata Header */}
+                  {/* Display Body content */}
                   <TableBody>
-                    {sorted_data[pipeline_type].map((metadata, index) => (
+                    {metadataGrouped[pipeline_type].map((metadata, index) => (
                       <MetadataRow
                         key={index}
                         metadata={metadata}

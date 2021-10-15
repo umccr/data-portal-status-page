@@ -6,8 +6,9 @@ import { styled } from "@mui/material/styles";
 import { TableRow, TableCell } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { CONVERT_TO_DISPLAY_NAME, FIELD_TO_DISPLAY } from "../utils/Constants";
+import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
+import ShowError from "../utils/ShowError";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -19,10 +20,42 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+async function getWorkflow(metadata, workflow_list) {
+  const groupedWorkflow = {};
+
+  // Set Not Found by default
+  for (const workflow of workflow_list) {
+    groupedWorkflow[workflow] = "NOT FOUND";
+  }
+
+  const APIConfig = {
+    queryStringParameters: {
+      library_id: metadata.library_id,
+    },
+  };
+
+  const responseWorkflow = await API.get(
+    "DataPortalApi",
+    "/workflows/by_library_id/",
+    APIConfig
+  );
+
+  // Assumption each library_id have only one workflow
+  const workflowResults = responseWorkflow.results;
+  for (const workflow of workflowResults) {
+    groupedWorkflow[workflow.type_name] = workflow;
+  }
+  return groupedWorkflow;
+}
+
 function MetadataRow(props) {
   const { metadata, workflow_list } = props;
 
+  // State for error
   const [isError, setIsError] = useState(false);
+  function handleError(value) {
+    setIsError(value);
+  }
 
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
@@ -31,32 +64,19 @@ function MetadataRow(props) {
     const fetchData = async () => {
       try {
         // Construct on API config including params
-        // const APIConfig = {
-        //   queryStringParameters: {
-        //     libraryId: "L2000",
-        //   },
-        // };
-        // // TODO: Do the api call
-        // const responseSequence = await API.get(
-        //   "DataPortalApi",
-        //   "/workflow",
-        //   APIConfig
-        // );
-        setWorkflowStatus({
-          BCL_CONVERT: "Succeeded",
-          WTS: "Failed",
-          DRAGEN_TSO_CTDNA: "Started",
-        });
+        const groupedWorkflow = await getWorkflow(metadata, workflow_list);
+        setWorkflowStatus(groupedWorkflow);
       } catch (err) {
         console.log(err);
         setIsError(true);
       }
     };
     fetchData();
-  }, []);
+  }, [metadata, workflow_list]);
 
   return (
     <StyledTableRow>
+      {/* <ShowError handleError={handleError} isError={isError} /> */}
       {FIELD_TO_DISPLAY.map((field_name, index) => (
         <TableCell key={index} sx={{ textAlign: "center" }}>
           {metadata[field_name]}
