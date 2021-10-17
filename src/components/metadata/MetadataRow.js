@@ -10,6 +10,7 @@ import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 
 import { useDialogContext } from "../higherOrderComponent/DialogComponent";
+import { useFilterContext } from "./WorkflowFilter";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -21,12 +22,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-async function getWorkflow(metadata, workflow_list) {
+async function getWorkflow(metadata, workflow_list, statusFilterArray) {
   const groupedWorkflow = {};
 
   // Set Not Found by default
   for (const workflow of workflow_list) {
-    groupedWorkflow[workflow] = "NOT FOUND";
+    groupedWorkflow[workflow] = "-";
   }
 
   const APIConfig = {
@@ -44,8 +45,12 @@ async function getWorkflow(metadata, workflow_list) {
   // Assumption each library_id have only one workflow
   const workflowResults = responseWorkflow.results;
   for (const workflow of workflowResults) {
-    groupedWorkflow[workflow.type_name] = workflow;
+    // Only allow filtered 
+    if (statusFilterArray.includes(workflow.end_status)) {
+      groupedWorkflow[workflow.type_name] = workflow.end_status;
+    }
   }
+  console.log(workflowResults);
   return groupedWorkflow;
 }
 
@@ -53,15 +58,23 @@ function MetadataRow(props) {
   const { metadata, workflow_list } = props;
   const { setDialogInfo } = useDialogContext();
 
+  // Grab filter for workflows
+  const { statusFilterArray } = useFilterContext();
+
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
 
   useEffect(() => {
+    let componentUnmount = false;
     const fetchData = async () => {
       try {
         // Construct on API config including params
-        const groupedWorkflow = await getWorkflow(metadata, workflow_list);
-
+        const groupedWorkflow = await getWorkflow(
+          metadata,
+          workflow_list,
+          statusFilterArray
+        );
+        if (componentUnmount) return;
         setWorkflowStatus(groupedWorkflow);
       } catch (err) {
         setDialogInfo({
@@ -72,7 +85,11 @@ function MetadataRow(props) {
       }
     };
     fetchData();
-  }, [metadata, workflow_list, setDialogInfo]);
+
+    return () => {
+      componentUnmount = true;
+    };
+  }, [metadata, workflow_list, setDialogInfo, statusFilterArray]);
 
   return (
     <StyledTableRow>

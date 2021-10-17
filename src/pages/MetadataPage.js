@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Grid, Typography, TableContainer, Paper } from "@mui/material";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 // Custom Components
 import MetadataTable from "../components/metadata/MetadataTable";
 import WorkflowFilter from "../components/metadata/WorkflowFilter";
@@ -33,14 +33,15 @@ function MetadataPage() {
       <Grid item xs={12}>
         {/* Query Search useContext */}
 
-        <WorkflowFilter />
-        <TableContainer
-          component={Paper}
-          elevation={2}
-          sx={{ borderRadius: "10px"}}
-        >
-          <MetadataTable metadataList={metadataList} />
-        </TableContainer>
+        <WorkflowFilter>
+          <TableContainer
+            component={Paper}
+            elevation={2}
+            sx={{ borderRadius: "10px" }}
+          >
+            <MetadataTable metadataList={metadataList} />
+          </TableContainer>
+        </WorkflowFilter>
       </Grid>
     </>
   );

@@ -61,6 +61,8 @@ export default function SequenceRunTable() {
         } else {
           newSequenceList = await API.get("DataPortalApi", "/sequence");
         }
+
+        // Do Not update state on unmount
         if (componentUnmount) return;
 
         setSequenceRunList(newSequenceList);
