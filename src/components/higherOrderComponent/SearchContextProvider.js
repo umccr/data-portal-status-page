@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { useState, createContext, useContext } from "react";
 
 import { API } from "aws-amplify";
 import { useHistory } from "react-router-dom";
@@ -45,33 +45,17 @@ const SearchContextProvider = (props) => {
       );
       const metadataArray = metadataResponse.results;
       if (metadataArray.length > 0) {
-        // Found matching data! Just need to find workflow for each metadata
+        // Found matching metadata! Just need to find workflow for each metadata
 
-        const library_workflow = {};
-        for (const eachMetadata of metadataArray) {
-          const library_id = eachMetadata.library_id;
-
-          // Query Workflow Associated with the library ID
-          const APIConfig = {
-            queryStringParameters: {
-              library_id: library_id,
-            },
-          };
-          const workflowResponse = await API.get(
-            "DataPortalApi",
-            "/workflows/by_library_id",
-            APIConfig
-          );
-
-          library_workflow[library_id] = {
-            metadata: eachMetadata,
-            workflows: workflowResponse.results,
-          };
-        }
         // Set found data at setState
         setQueryResult({
-          metadataSearch: library_workflow,
+          metadataSearch: metadataArray,
         });
+
+        setIsLoading(false);
+
+        // Return value to which redirect the query
+        return "metadata";
       } else {
         // Try to find query keyword from sequence! Hopefully it is there
         const APIConfig = {
@@ -91,32 +75,40 @@ const SearchContextProvider = (props) => {
           // Found it! Set the value at setState
 
           setQueryResult({
-            sequence: sequenceArray,
+            sequenceSearch: sequenceArray,
           });
-        } else {
-          // Announcing no found data through HOC Dialog Component
-          setDialogInfo({
-            isOpen: true,
-            dialogTitle: "Not Found",
-            dialogContent:
-              "Sorry, no matching data found in our database. Please try again!",
-          });
+
+          setIsLoading(false);
+          // Return type where to push
+          return "sequence";
         }
+
+        setIsLoading(false);
+        // Announcing no found data through HOC Dialog Component
+        setDialogInfo({
+          isOpen: true,
+          dialogTitle: "Not Found",
+          dialogContent:
+            "Sorry, no matching data found in our database. Please try again!",
+        });
       }
     } catch (err) {
+      setIsLoading(false);
       setDialogInfo({
         isOpen: true,
         dialogTitle: "Error",
         dialogContent: "Sorry, An error has occured. Please try again!",
       });
     }
-    setIsLoading(false);
   };
   const history = useHistory();
   const searchHandler = async (query) => {
-    
-    await fetchData(query);
-    history.push("/search");
+    const queryType = await fetchData(query);
+    if (queryType === "metadata") {
+      history.push("/metadata");
+    } else if (queryType === "sequence") {
+      history.push("/");
+    }
   };
 
   return (

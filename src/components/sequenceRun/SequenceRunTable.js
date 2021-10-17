@@ -41,7 +41,7 @@ function displaySequenceRow(sequenceList) {
   }
 }
 
-export default function LibraryTable() {
+export default function SequenceRunTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
 
   const { queryResult } = useSearchContext();
@@ -50,21 +50,25 @@ export default function LibraryTable() {
 
   // Fetch sequence run data from API
   useEffect(() => {
+    let componentUnmount = false;
+
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        if (queryResult) {
-          setSequenceRunList(queryResult);
+        let newSequenceList = [];
+        if (queryResult.sequenceSearch) {
+          newSequenceList = queryResult.sequenceSearch;
         } else {
-          const responseSequence = await API.get("DataPortalApi", "/sequence");
-          setSequenceRunList(responseSequence.results);
+          newSequenceList = await API.get("DataPortalApi", "/sequence");
         }
+        if (componentUnmount) return;
 
-        // TODO: Remove the following line
+        setSequenceRunList(newSequenceList);
+        // TODO: Remove the following line (It uses mock data)
         setSequenceRunList(mock_sequence_run);
       } catch (err) {
         setDialogInfo({
-          isOpen:true,
+          isOpen: true,
           dialogTitle: "Error",
           dialogContent: "Sorry, An error has occured. Please try again!",
         });
@@ -72,6 +76,10 @@ export default function LibraryTable() {
       setIsLoading(false);
     };
     fetchData();
+
+    return () => {
+      componentUnmount = true;
+    };
   }, [queryResult, setDialogInfo]);
 
   return (

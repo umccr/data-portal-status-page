@@ -9,7 +9,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 
-import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
 import { useDialogContext } from "../higherOrderComponent/DialogComponent";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -52,7 +51,6 @@ async function getWorkflow(metadata, workflow_list) {
 
 function MetadataRow(props) {
   const { metadata, workflow_list } = props;
-  const { queryResult } = useSearchContext();
   const { setDialogInfo } = useDialogContext();
 
   // Set an empty placeholder for workflow status
@@ -61,24 +59,20 @@ function MetadataRow(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (queryResult) {
-          setWorkflowStatus(queryResult);
-        } else {
-          // Construct on API config including params
-          const groupedWorkflow = await getWorkflow(metadata, workflow_list);
+        // Construct on API config including params
+        const groupedWorkflow = await getWorkflow(metadata, workflow_list);
 
-          setWorkflowStatus(groupedWorkflow);
-        }
+        setWorkflowStatus(groupedWorkflow);
       } catch (err) {
         setDialogInfo({
-          isOpen:true,
+          isOpen: true,
           dialogTitle: "Error",
           dialogContent: "Sorry, An error has occured. Please try again!",
         });
       }
     };
     fetchData();
-  }, [metadata, workflow_list, queryResult, setDialogInfo]);
+  }, [metadata, workflow_list, setDialogInfo]);
 
   return (
     <StyledTableRow>

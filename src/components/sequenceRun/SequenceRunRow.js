@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import { API } from "aws-amplify";
+
+// Material-UI component
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
@@ -7,11 +11,52 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-
-import SequenceRunChip from "./SequenceRunChip";
-import MetadataTable from "../metadata/MetadataTable";
+import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
 
+// Custom Component
+import { useDialogContext } from "../higherOrderComponent/DialogComponent";
+import SequenceRunChip from "./SequenceRunChip";
+import MetadataTable from "../metadata/MetadataTable";
+
+import { mock_metadata } from "../utils/Constants";
+
+async function getMetadataFromInstrumentRunId(instrument_run_id) {
+  let metadataList = [];
+
+  // Api Calls to LibraryRun to get list of Metadata
+  const APIConfig = {
+    queryStringParameters: {
+      instrument_run_id: instrument_run_id,
+    },
+  };
+  const responseLibraryRun = await API.get(
+    "DataPortalApi",
+    "/libraryrun",
+    APIConfig
+  );
+  const libraryRunList = responseLibraryRun.results;
+
+  // For each libraryRun list, fetch metadata
+  for (const libraryRun of libraryRunList) {
+    const APIConfig = {
+      queryStringParameters: {
+        library: libraryRun.library_id,
+      },
+    };
+    const responseMetadata = await API.get(
+      "DataPortalApi",
+      "/metadata",
+      APIConfig
+    );
+    const metadata_result = responseMetadata.results[0];
+
+    metadataList = [...metadataList, metadata_result];
+  }
+  return metadataList;
+}
+
+// Convert time to Locale
 function getDateTimeString(iso_string) {
   let dateTime = new Date(iso_string);
   return dateTime.toLocaleString("en-GB");
@@ -19,12 +64,42 @@ function getDateTimeString(iso_string) {
 
 function SequenceRunRow(props) {
   const { data } = props;
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { setDialogInfo } = useDialogContext();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [metadataList, setMetadataList] = useState([]);
+
+  // Use Effect is row is expand to fetch metadata List
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const metadataList = await getMetadataFromInstrumentRunId(
+          data.instrument_run_id
+        );
+        setMetadataList(metadataList);
+        // TODO: Remove the following setMock Data
+        setMetadataList(mock_metadata);
+        setIsLoading(false);
+      } catch (err) {
+        setDialogInfo({
+          isOpen: true,
+          dialogTitle: "Error",
+          dialogContent:
+            "Sorry, An error has occured while fetching metadata. Please try again!",
+        });
+      }
+    };
+    if (isOpen) {
+      fetchData();
+    }
+  }, [isOpen, data.instrument_run_id, setDialogInfo]);
 
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell sx={{width:"100%"}}>
+        <TableCell sx={{ width: "100%" }}>
           <Grid
             container
             direction="row"
@@ -121,9 +196,23 @@ function SequenceRunRow(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ backgroundColor:grey[50], paddingBottom: 0, paddingTop: 0, textAlign:"center" }} >
+        <TableCell
+          style={{
+            backgroundColor: grey[50],
+            paddingBottom: 0,
+            paddingTop: 0,
+            textAlign: "center",
+          }}
+        >
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
-            <MetadataTable instrument_run_id={data.instrument_run_id} />
+            {isLoading ? (
+              <CircularProgress sx={{ padding: "20px" }} />
+            ) : (
+              <MetadataTable
+                instrument_run_id={data.instrument_run_id}
+                metadataList={metadataList}
+              />
+            )}
           </Collapse>
         </TableCell>
       </TableRow>
