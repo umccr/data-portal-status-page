@@ -18,11 +18,11 @@ class DataPortalStatusPageStack(cdk.Stack):
             parameter_name="/data_portal/status_page/bucket_name"
         ).string_value
 
-        # Query domain_name config from SSM Parameter Store (Created via Conosle)
-        domain_name = ssm.StringParameter.from_string_parameter_name(
+        # Query existing UMCCR domain
+        umccr_domain = ssm.StringParameter.from_string_parameter_name(
             self,
             "DomainName",
-            string_parameter_name="/data_portal/status_page/domain",
+            string_parameter_name="umccr_domain",
         ).string_value
 
         # --- Query deployment env specific config from SSM Parameter Store
@@ -95,7 +95,7 @@ class DataPortalStatusPageStack(cdk.Stack):
             enable_ip_v6 = False,
             viewer_certificate=cloudfront.ViewerCertificate.from_acm_certificate(
                 certificate=cert_use1,
-                aliases=[domain_name],
+                aliases=["status.data." + umccr_domain],
                 security_policy=cloudfront.SecurityPolicyProtocol.TLS_V1,
                 ssl_method=cloudfront.SSLMethod.SNI
             )

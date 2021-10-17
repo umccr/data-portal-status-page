@@ -24,9 +24,9 @@ CdkPipelineStack(
 PredeploymentStack(
   app,
   "PredeploymentStack",
-  stack_name = "Predeployment-sscheck-front-end",
+  stack_name = "Predeployment-data-portal-status-page",
   tags={
-    "stack":"cdkpipeline-sscheck-front-end"
+    "stack":"predeployment-data-portal-status-page"
   }
 )
 

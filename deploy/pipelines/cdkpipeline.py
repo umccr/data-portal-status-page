@@ -22,10 +22,10 @@ class DataPortalStatusPageStage(cdk.Stage):
             "StatusPage",
             stack_name="data-portal-status-page-stack",
             tags={
-                "environment":"dev",
-                "stack":"cdkpipeline-data-portal-status-page"
+                "stack": "cdkpipeline-data-portal-status-page"
             }
         )
+
 
 # Class for the CDK pipeline stack
 
@@ -160,8 +160,8 @@ class CdkPipelineStack(cdk.Stack):
                         actions=["ssm:GetParameter"],
                         effect=iam.Effect.ALLOW,
                         resources=[
-                            "arn:aws:ssm:ap-southeast-2:843407916570:parameter/data_portal/status_page/*",
-                            "arn:aws:ssm:ap-southeast-2:843407916570:parameter/data_portal/client/*"
+                            "arn:aws:ssm:%s:%s:parameter/data_portal/status_page/*" % (self.region, self.account),
+                            "arn:aws:ssm:%s:%s:parameter/data_portal/client/*" % (self.region, self.account)
                         ]
                     ),
                     iam.PolicyStatement(
@@ -174,7 +174,7 @@ class CdkPipelineStack(cdk.Stack):
                         effect=iam.Effect.ALLOW,
                         resources=[
                             front_end_bucket_arn,
-                            front_end_bucket_arn+"/*"
+                            front_end_bucket_arn + "/*"
                         ]
                     )
                 ]
