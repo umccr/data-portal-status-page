@@ -105,7 +105,7 @@ const SearchContextProvider = (props) => {
   const searchHandler = async (query) => {
     const queryType = await fetchData(query);
     if (queryType === "metadata") {
-      history.push("/metadata");
+      history.push({ pathname: "/metadata", search: `?search=${query}` });
     } else if (queryType === "sequence") {
       history.push("/");
     }

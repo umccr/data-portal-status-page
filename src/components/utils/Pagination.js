@@ -18,7 +18,7 @@ function Pagination(props) {
     handleChangeQuery((prevState) => {
       return {
         ...prevState,
-        page: 0,
+        page: 0 + 1, // Pagination starts at 1
         rowsPerPage: parseInt(event.target.value, 10),
       };
     });
