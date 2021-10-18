@@ -27,8 +27,7 @@ function useQuery() {
 function MetadataPage() {
   const [metadataList, setMetadataList] = useState([]);
   const { setDialogInfo } = useDialogContext();
-  const { queryResult } = useSearchContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get any searched value
   const query = useQuery();
@@ -55,20 +54,19 @@ function MetadataPage() {
         let metadataListResult = [];
         let paginationResult;
 
-        if (searchValue && queryResult.metadataSearch) {
-          metadataListResult = queryResult.metadataSearch;
-        } else {
-          const APIConfig = {
-            queryStringParameters: { ...queryParameter, search: searchValue },
-          };
-          const responseMetadata = await API.get(
-            "DataPortalApi",
-            "/metadata",
-            APIConfig
-          );
-          metadataListResult = responseMetadata.results;
-          paginationResult = responseMetadata.pagination;
-        }
+        const APIConfig = {
+          queryStringParameters: {
+            ...queryParameter,
+            search: searchValue,
+          },
+        };
+        const responseMetadata = await API.get(
+          "DataPortalApi",
+          "/metadata",
+          APIConfig
+        );
+        metadataListResult = responseMetadata.results;
+        paginationResult = responseMetadata.pagination;
 
         // Do Not update state on unmount
         if (componentUnmount) return;
@@ -91,7 +89,7 @@ function MetadataPage() {
     return () => {
       componentUnmount = true;
     };
-  }, [queryResult, searchValue, queryParameter, setDialogInfo]);
+  }, [searchValue, queryParameter, setDialogInfo]);
 
   return (
     <>

@@ -3,7 +3,6 @@ import TablePagination from "@mui/material/TablePagination";
 
 function Pagination(props) {
   const { pagination, handleChangeQuery } = props;
-
   // Pagination Handler
   const handleChangePage = (event, newPage) => {
     handleChangeQuery((prevState) => {

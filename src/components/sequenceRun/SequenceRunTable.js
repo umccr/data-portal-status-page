@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { API } from "aws-amplify";
+import { useLocation } from "react-router-dom";
 
 // Material UI Components
 import Table from "@mui/material/Table";
@@ -41,13 +42,20 @@ function displaySequenceRow(sequenceList) {
     );
   }
 }
-
+// A custom hook that builds on useLocation to parse
+// the query string
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 export default function SequenceRunTable() {
   const [sequenceRunList, setSequenceRunList] = useState([]);
 
-  const { queryResult } = useSearchContext();
   const { setDialogInfo } = useDialogContext();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Get any searched value
+  const query = useQuery();
+  const searchValue = query.get("search");
 
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({});
@@ -56,6 +64,7 @@ export default function SequenceRunTable() {
     rowsPerPage: 10,
     count: 0,
   });
+
   function handleChangeQuery(value) {
     setQueryParameter(value);
   }
@@ -69,36 +78,34 @@ export default function SequenceRunTable() {
       try {
         let newSequenceList = [];
         let paginationResult;
-        if (queryResult.sequenceSearch) {
-          newSequenceList = queryResult.sequenceSearch.results;
-          paginationResult = queryResult.sequenceSearch.pagination;
-        } else {
-          const APIConfig = {
-            queryStringParameters: {
-              ...queryParameter,
-            },
-          };
-          const sequenceResponse = await API.get(
-            "DataPortalApi",
-            "/sequence",
-            APIConfig
-          );
-          newSequenceList = sequenceResponse.results;
-          paginationResult = sequenceResponse.pagination;
-        }
+
+        const APIConfig = {
+          queryStringParameters: {
+            ...queryParameter,
+            search: searchValue,
+          },
+        };
+        const sequenceResponse = await API.get(
+          "DataPortalApi",
+          "/sequence",
+          APIConfig
+        );
+        newSequenceList = sequenceResponse.results;
+        paginationResult = sequenceResponse.pagination;
 
         // Do Not update state on unmount
         if (componentUnmount) return;
 
-        // setPagination(paginationResult);
+        
         setSequenceRunList(newSequenceList);
         // TODO: Remove the following line (It uses mock data)
         setSequenceRunList(mock_sequence_run);
+        setPagination(paginationResult);
       } catch (err) {
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",
-          dialogContent: "Sorry, An error has occured. Please try again!",
+          dialogContent: "Sorry, An error has occured while fetching sequences. Please try again!",
         });
       }
       setIsLoading(false);
@@ -108,7 +115,7 @@ export default function SequenceRunTable() {
     return () => {
       componentUnmount = true;
     };
-  }, [queryResult, setDialogInfo, queryParameter]);
+  }, [setDialogInfo, queryParameter, searchValue]);
 
   return (
     <>

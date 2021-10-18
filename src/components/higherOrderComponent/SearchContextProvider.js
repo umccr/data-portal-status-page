@@ -107,7 +107,7 @@ const SearchContextProvider = (props) => {
     if (queryType === "metadata") {
       history.push({ pathname: "/metadata", search: `?search=${query}` });
     } else if (queryType === "sequence") {
-      history.push("/");
+      history.push({ pathname: "/sequence", search: `?search=${query}` });
     }
   };
 
