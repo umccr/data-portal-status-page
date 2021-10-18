@@ -11,16 +11,12 @@ import AuthenticatedRoute from "./components/higherOrderComponent/AuthenticatedR
 export default function Routes() {
   return (
     <Switch>
-      <Route exact path="/">
-        <AuthenticatedRoute>
-          <StatusPage />
-        </AuthenticatedRoute>
-      </Route>
-      <Route exact path="/metadata">
-        <AuthenticatedRoute>
-          <MetadataPage />
-        </AuthenticatedRoute>
-      </Route>
+      <AuthenticatedRoute exact path="/">
+        <StatusPage />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute exact path="/metadata">
+        <MetadataPage />
+      </AuthenticatedRoute>
       <Route>
         <NotFound />
       </Route>

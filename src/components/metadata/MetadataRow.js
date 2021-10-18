@@ -45,12 +45,11 @@ async function getWorkflow(metadata, workflow_list, statusFilterArray) {
   // Assumption each library_id have only one workflow
   const workflowResults = responseWorkflow.results;
   for (const workflow of workflowResults) {
-    // Only allow filtered 
+    // Only allow filtered
     if (statusFilterArray.includes(workflow.end_status)) {
       groupedWorkflow[workflow.type_name] = workflow.end_status;
     }
   }
-  console.log(workflowResults);
   return groupedWorkflow;
 }
 
