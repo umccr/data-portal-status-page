@@ -1,6 +1,6 @@
-# UMCCR client CDK for Samplesheet Check
+# UMCCR client CDK for Data Status Page
 
-This cdk will build an AWS cloud infrastructure for the UMCCR samplesheet check. 
+This cdk will build an AWS cloud infrastructure for the UMCCR Data Status Page.
 
 
 The directories:

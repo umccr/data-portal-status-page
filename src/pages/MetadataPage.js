@@ -60,11 +60,13 @@ function MetadataPage() {
             search: searchValue,
           },
         };
+
         const responseMetadata = await API.get(
           "DataPortalApi",
           "/metadata",
           APIConfig
         );
+        console.log("response", responseMetadata);
         metadataListResult = responseMetadata.results;
         paginationResult = responseMetadata.pagination;
 
