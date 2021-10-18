@@ -1,18 +1,22 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound";
-import StatusPage from "./pages/StatusPage";
+import SequencePage from "./pages/SequencePage";
 import MetadataPage from "./pages/MetadataPage";
 import AuthenticatedRoute from "./components/higherOrderComponent/AuthenticatedRoute";
 
 // Declaring Routes
 // Route: can be access regardless auth/unauth
+// AuthenticatedRoute: Only Accessed when authenticated
 
 export default function Routes() {
   return (
     <Switch>
-      <AuthenticatedRoute exact path="/">
-        <StatusPage />
+      <Route exact path="/">
+        <Redirect to="/sequence" />
+      </Route>
+      <AuthenticatedRoute exact path="/sequence">
+        <SequencePage />
       </AuthenticatedRoute>
       <AuthenticatedRoute exact path="/metadata">
         <MetadataPage />
