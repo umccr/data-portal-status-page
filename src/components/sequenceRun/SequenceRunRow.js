@@ -18,15 +18,20 @@ import { grey } from "@mui/material/colors";
 import { useDialogContext } from "../higherOrderComponent/DialogComponent";
 import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
+import Pagination from "../utils/Pagination";
 
 import { mock_metadata } from "../utils/Constants";
 
-async function getMetadataFromInstrumentRunId(instrument_run_id) {
+async function getMetadataFromInstrumentRunId(
+  instrument_run_id,
+  queryParameter
+) {
   let metadataList = [];
 
   // Api Calls to LibraryRun to get list of Metadata
   const APIConfig = {
     queryStringParameters: {
+      ...queryParameter,
       instrument_run_id: instrument_run_id,
     },
   };
@@ -36,6 +41,7 @@ async function getMetadataFromInstrumentRunId(instrument_run_id) {
     APIConfig
   );
   const libraryRunList = responseLibraryRun.results;
+  const paginationRessuslt = responseLibraryRun.pagination;
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
@@ -53,7 +59,7 @@ async function getMetadataFromInstrumentRunId(instrument_run_id) {
 
     metadataList = [...metadataList, metadata_result];
   }
-  return metadataList;
+  return { pagination: paginationRessuslt, results: metadataList };
 }
 
 // Convert time to Locale
@@ -70,15 +76,28 @@ function SequenceRunRow(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [metadataList, setMetadataList] = useState([]);
 
+  // PAGINATION
+  const [queryParameter, setQueryParameter] = useState({});
+  const [pagination, setPagination] = useState({
+    page: 1,
+    rowsPerPage: 10,
+    count: 0,
+  });
+  function handleChangeQuery(value) {
+    setQueryParameter(value);
+  }
+
   // Use Effect is row is expand to fetch metadata List
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const metadataList = await getMetadataFromInstrumentRunId(
-          data.instrument_run_id
+        const metadataResponse = await getMetadataFromInstrumentRunId(
+          data.instrument_run_id,
+          queryParameter
         );
-        setMetadataList(metadataList);
+        setPagination(metadataResponse.pagination);
+        setMetadataList(metadataResponse.results);
         // TODO: Remove the following setMock Data
         setMetadataList(mock_metadata);
         setIsLoading(false);
@@ -94,7 +113,7 @@ function SequenceRunRow(props) {
     if (isOpen) {
       fetchData();
     }
-  }, [isOpen, data.instrument_run_id, setDialogInfo]);
+  }, [isOpen, data.instrument_run_id, queryParameter, setDialogInfo]);
 
   return (
     <React.Fragment>
@@ -208,10 +227,16 @@ function SequenceRunRow(props) {
             {isLoading ? (
               <CircularProgress sx={{ padding: "20px" }} />
             ) : (
-              <MetadataTable
-                instrument_run_id={data.instrument_run_id}
-                metadataList={metadataList}
-              />
+              <>
+                <MetadataTable
+                  instrument_run_id={data.instrument_run_id}
+                  metadataList={metadataList}
+                />
+                <Pagination
+                  pagination={pagination}
+                  handleChangeQuery={handleChangeQuery}
+                />
+              </>
             )}
           </Collapse>
         </TableCell>
