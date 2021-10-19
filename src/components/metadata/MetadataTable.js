@@ -19,16 +19,10 @@ import {
   WORKFLOW_PIPELINE,
   FIELD_TO_DISPLAY,
   WORKFLOW_STATUS_LENGTH,
+  convertToDisplayName
 } from "../utils/Constants";
 
-// Convert raw field name to displayed UI name (Capitalize Word)
-export function convertToDisplayName(str) {
-  let frags = str.split("_");
-  for (let i = 0; i < frags.length; i++) {
-    frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
-  }
-  return frags.join(" ");
-}
+
 
 function isDataFilteredOut(dataList, filterList) {
   for (const workflow of dataList) {

@@ -20,6 +20,17 @@ import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
 import Pagination from "../utils/Pagination";
 
+import { convertToDisplayName, getDateTimeString } from "../utils/Constants";
+
+function displayWithTypography(dataObject, key, typograhyStyle) {
+  "Display object with field in typography";
+  return (
+    <Typography variant="subtitle2" display="inline" sx={typograhyStyle}>
+      {convertToDisplayName(key)}: {getDateTimeString(dataObject[key])}
+    </Typography>
+  );
+}
+
 async function getMetadataFromInstrumentRunId(
   instrument_run_id,
   queryParameter
@@ -58,12 +69,6 @@ async function getMetadataFromInstrumentRunId(
     metadataList = [...metadataList, metadata_result];
   }
   return { pagination: paginationRessuslt, results: metadataList };
-}
-
-// Convert time to Locale
-function getDateTimeString(iso_string) {
-  let dateTime = new Date(iso_string);
-  return dateTime.toLocaleString("en-GB");
 }
 
 function SequenceRunRow(props) {
@@ -159,19 +164,16 @@ function SequenceRunRow(props) {
                 alignItems="center"
               >
                 <Grid item>
-                  <Typography display="inline" sx={{ fontWeight: "bold" }}>
-                    Sequence Run:{" "}
-                  </Typography>
-                  <Typography display="inline" sx={{ fontWeight: "medium" }}>
-                    {data.instrument_run_id}
-                  </Typography>
+                  {displayWithTypography(data, "instrument_run_id", {
+                    fontWeight: "bold",
+                  })}
                 </Grid>
                 <Grid item>
                   <SequenceRunChip status={data.status} />
                 </Grid>
               </Grid>
 
-              {/* Row for row_id and date_modified */}
+              {/* Row for row_id and end_time */}
               <Grid
                 item
                 container
@@ -182,28 +184,12 @@ function SequenceRunRow(props) {
                 {/* Place Holder for Number of Workflow has completed */}
 
                 {/* <Grid item>
-                <Typography display="inline" sx={{ fontWeight: "regular" }}>
-                  run_id:{" "}
-                </Typography>
-                <Typography display="inline" sx={{ fontWeight: "light" }}>
-                  {row.instrument_run_id}
-                </Typography>
-              </Grid> */}
+                {displayWithTypography(data, "number",{ fontWeight: "light" })}
+                </Grid> */}
                 <Grid item>
-                  <Typography
-                    variant="subtitle2"
-                    display="inline"
-                    sx={{ fontWeight: "light" }}
-                  >
-                    date_modified:{" "}
-                  </Typography>
-                  <Typography
-                    variant="subtitle2"
-                    display="inline"
-                    sx={{ fontWeight: "light" }}
-                  >
-                    {getDateTimeString(data.date_modified)}
-                  </Typography>
+                  {displayWithTypography(data, "end_time", {
+                    fontWeight: "light",
+                  })}
                 </Grid>
               </Grid>
             </Grid>

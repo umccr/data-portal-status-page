@@ -17,6 +17,21 @@ export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
+// Convert raw field name to displayed UI name (Capitalize Word)
+export function convertToDisplayName(str) {
+  let frags = str.split("_");
+  for (let i = 0; i < frags.length; i++) {
+    frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags.join(" ");
+}
+
+// Convert time to Locale
+export function getDateTimeString(iso_string) {
+  let dateTime = new Date(iso_string);
+  return dateTime.toLocaleString("en-GB");
+}
+
 export const mock_metadata = [
   {
     library_id: "L0000000",
