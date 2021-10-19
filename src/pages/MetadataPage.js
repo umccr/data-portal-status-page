@@ -70,7 +70,6 @@ function MetadataPage() {
 
         // Do Not update state on unmount
         if (componentUnmount) return;
-
         setMetadataList(metadataListResult);
         setPagination(paginationResult);
       } catch (err) {

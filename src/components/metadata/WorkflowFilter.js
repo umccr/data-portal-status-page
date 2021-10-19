@@ -16,7 +16,7 @@ export function useFilterContext() {
 }
 
 function WorkflowFilter(props) {
-  const [statusFilterArray, setStatusFilterArray] = useState(WORKFLOW_STATUS);
+  const [statusFilterArray, setStatusFilterArray] = useState([]);
 
   function handleOnClick(status) {
     if (statusFilterArray.includes(status)) {

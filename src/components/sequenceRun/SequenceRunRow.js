@@ -214,17 +214,14 @@ function SequenceRunRow(props) {
         <TableCell
           style={{
             backgroundColor: grey[50],
-            paddingBottom: 0,
-            paddingTop: 0,
+            padding: 0,
             textAlign: "center",
           }}
         >
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             {isLoading ? (
               <div style={{ padding: "20px" }}>
-                <CircularProgress
-                  aria-label="circular-loader"
-                />
+                <CircularProgress aria-label="circular-loader" />
               </div>
             ) : (
               <>

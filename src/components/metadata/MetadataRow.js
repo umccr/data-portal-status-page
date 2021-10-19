@@ -10,7 +10,6 @@ import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 
 import { useDialogContext } from "../higherOrderComponent/DialogComponent";
-import { useFilterContext } from "./WorkflowFilter";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "60px",
@@ -23,7 +22,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-async function getWorkflow(metadata, workflow_list, statusFilterArray) {
+async function getWorkflow(metadata, workflow_list) {
   const groupedWorkflow = {};
   // Set Not Found by default
   for (const workflow of workflow_list) {
@@ -45,20 +44,15 @@ async function getWorkflow(metadata, workflow_list, statusFilterArray) {
   // Assumption each library_id have only one workflow
   const workflowResults = responseWorkflow.results;
   for (const workflow of workflowResults) {
-    // Only allow filtered
-    if (statusFilterArray.includes(workflow.end_status)) {
-      groupedWorkflow[workflow.type_name] = workflow.end_status;
-    }
+    groupedWorkflow[workflow.type_name] = workflow.end_status;
   }
+
   return groupedWorkflow;
 }
 
 function MetadataRow(props) {
   const { metadata, workflow_list } = props;
   const { setDialogInfo } = useDialogContext();
-
-  // Grab filter for workflows
-  const { statusFilterArray } = useFilterContext();
 
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
@@ -70,8 +64,7 @@ function MetadataRow(props) {
         // Construct on API config including params
         const groupedWorkflow = await getWorkflow(
           metadata,
-          workflow_list,
-          statusFilterArray
+          workflow_list
         );
         if (componentUnmount) return;
         setWorkflowStatus(groupedWorkflow);
@@ -91,7 +84,7 @@ function MetadataRow(props) {
     return () => {
       componentUnmount = true;
     };
-  }, [metadata, workflow_list, setDialogInfo, statusFilterArray]);
+  }, [metadata, workflow_list, setDialogInfo]);
 
   return (
     <StyledTableRow>

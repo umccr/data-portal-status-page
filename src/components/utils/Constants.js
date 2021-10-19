@@ -1,4 +1,8 @@
+// Workflow Filter Status Bar
 export const WORKFLOW_STATUS = ["Succeeded", "Running", "Failed", "Aborted"];
+
+// Workflow filter length for comparison
+export const WORKFLOW_STATUS_LENGTH = WORKFLOW_STATUS.length
 
 // Workflow order
 export const WORKFLOW_PIPELINE = {
