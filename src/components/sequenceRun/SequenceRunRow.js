@@ -20,8 +20,6 @@ import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
 import Pagination from "../utils/Pagination";
 
-import { mock_metadata } from "../utils/Constants";
-
 async function getMetadataFromInstrumentRunId(
   instrument_run_id,
   queryParameter
@@ -226,7 +224,6 @@ function SequenceRunRow(props) {
               <div style={{ padding: "20px" }}>
                 <CircularProgress
                   aria-label="circular-loader"
-                  sx={{ padding: "20px" }}
                 />
               </div>
             ) : (

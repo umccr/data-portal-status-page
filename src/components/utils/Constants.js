@@ -13,13 +13,6 @@ export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
-// Convert raw field name to displayed UI name
-export const CONVERT_TO_DISPLAY_NAME = {
-  library_id: "Library Id",
-  subject_id: "Subject Id",
-  sample_id: "Sample Id",
-};
-
 export const mock_metadata = [
   {
     library_id: "L0000000",

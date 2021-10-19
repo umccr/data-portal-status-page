@@ -25,7 +25,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 async function getWorkflow(metadata, workflow_list, statusFilterArray) {
   const groupedWorkflow = {};
-
   // Set Not Found by default
   for (const workflow of workflow_list) {
     groupedWorkflow[workflow] = "-";
@@ -80,11 +79,14 @@ function MetadataRow(props) {
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",
-          dialogContent: "Sorry, An error has occured. Please try again!",
+          dialogContent:
+            "Sorry, An error has occured when fetching metadata. Please try again!",
         });
       }
     };
-    fetchData();
+    if (workflow_list) {
+      fetchData();
+    }
 
     return () => {
       componentUnmount = true;
@@ -99,16 +101,21 @@ function MetadataRow(props) {
           {metadata[field_name]}
         </TableCell>
       ))}
-
-      {workflow_list.map((field_name, index) => (
-        <TableCell key={index} sx={{ textAlign: "center" }}>
-          {workflowStatus[field_name] ? (
-            <WorkflowChip status={workflowStatus[field_name]} />
-          ) : (
-            <CircularProgress />
-          )}
-        </TableCell>
-      ))}
+      {workflow_list ? (
+        <>
+          {workflow_list.map((field_name, index) => (
+            <TableCell key={index} sx={{ textAlign: "center" }}>
+              {workflowStatus[field_name] ? (
+                <WorkflowChip status={workflowStatus[field_name]} />
+              ) : (
+                <CircularProgress />
+              )}
+            </TableCell>
+          ))}
+        </>
+      ) : (
+        <></>
+      )}
     </StyledTableRow>
   );
 }

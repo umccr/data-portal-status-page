@@ -17,10 +17,7 @@ import Typography from "@mui/material/Typography";
 // Custom Components
 import SequenceRunRow from "./SequenceRunRow";
 import Pagination from "../utils/Pagination";
-import { useSearchContext } from "../higherOrderComponent/SearchContextProvider";
 import { useDialogContext } from "../higherOrderComponent/DialogComponent";
-
-import { mock_sequence_run } from "../utils/Constants";
 
 function displaySequenceRow(sequenceList) {
   if (sequenceList.length > 1) {

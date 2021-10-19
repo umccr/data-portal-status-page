@@ -15,7 +15,6 @@ import {
 import Pagination from "../components/utils/Pagination";
 import MetadataTable from "../components/metadata/MetadataTable";
 import WorkflowFilter from "../components/metadata/WorkflowFilter";
-import { useSearchContext } from "../components/higherOrderComponent/SearchContextProvider";
 import { useDialogContext } from "../components/higherOrderComponent/DialogComponent";
 
 // A custom hook that builds on useLocation to parse
@@ -66,7 +65,6 @@ function MetadataPage() {
           "/metadata",
           APIConfig
         );
-        console.log("response", responseMetadata);
         metadataListResult = responseMetadata.results;
         paginationResult = responseMetadata.pagination;
 

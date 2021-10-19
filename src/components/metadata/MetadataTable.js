@@ -12,13 +12,18 @@ import Container from "@mui/material/Container";
 // Custom Component
 import MetadataRow from "./MetadataRow";
 
-import {
-  WORKFLOW_PIPELINE,
-  FIELD_TO_DISPLAY,
-  CONVERT_TO_DISPLAY_NAME,
-} from "../utils/Constants";
+import { WORKFLOW_PIPELINE, FIELD_TO_DISPLAY } from "../utils/Constants";
 
 import { TableContainer } from "@mui/material";
+
+// Convert raw field name to displayed UI name (Capitalize Word)
+export function convertToDisplayName(str) {
+  let frags = str.split("_");
+  for (let i = 0; i < frags.length; i++) {
+    frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags.join(" ");
+}
 
 function groupMetadataBasedOnType(metadataList) {
   const groupedMetadata = {};
@@ -45,17 +50,17 @@ function MetadataTable(props) {
   return (
     <>
       <Container sx={{ padding: "20px 20px" }}>
-        {metadataList.length === 0 ? (
+        {Object.keys(metadataGrouped).length === 0 ? (
           <Typography
             variant="h5"
-            sx={{ textAlign: "center", padding: "50px"}}
+            sx={{ textAlign: "center", padding: "50px" }}
           >
             Sorry! No Metadata Found
           </Typography>
         ) : (
           <>
-            {Object.keys(metadataGrouped).map((pipeline_type, index) => (
-              <TableContainer key={index} sx={{ textAlign: "left" }}>
+            {Object.keys(metadataGrouped).map((pipeline_type) => (
+              <TableContainer key={pipeline_type} sx={{ textAlign: "left" }}>
                 <Typography variant="h6" gutterBottom component="div">
                   {pipeline_type}
                 </Typography>
@@ -77,20 +82,26 @@ function MetadataTable(props) {
                             key={index}
                             sx={{ textAlign: "center", width: "100px" }}
                           >
-                            {CONVERT_TO_DISPLAY_NAME[field_name]}
+                            {convertToDisplayName(field_name)}
                           </TableCell>
                         ))}
 
-                        {/* Display Workflows header */}
-                        {WORKFLOW_PIPELINE[pipeline_type].map(
-                          (field_name, index) => (
-                            <TableCell
-                              key={index}
-                              sx={{ textAlign: "center", width: "100px" }}
-                            >
-                              {field_name}
-                            </TableCell>
-                          )
+                        {/* Display Workflows header if any*/}
+                        {WORKFLOW_PIPELINE[pipeline_type] ? (
+                          <>
+                            {WORKFLOW_PIPELINE[pipeline_type].map(
+                              (field_name, index) => (
+                                <TableCell
+                                  key={index}
+                                  sx={{ textAlign: "center", width: "100px" }}
+                                >
+                                  {field_name}
+                                </TableCell>
+                              )
+                            )}
+                          </>
+                        ) : (
+                          <></>
                         )}
                       </TableRow>
                     </TableHead>
