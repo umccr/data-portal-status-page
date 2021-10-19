@@ -13,6 +13,7 @@ import { useDialogContext } from "../higherOrderComponent/DialogComponent";
 import { useFilterContext } from "./WorkflowFilter";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  height: "60px",
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },

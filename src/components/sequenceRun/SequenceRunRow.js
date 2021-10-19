@@ -223,7 +223,12 @@ function SequenceRunRow(props) {
         >
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             {isLoading ? (
-              <CircularProgress sx={{ padding: "20px" }} />
+              <div style={{ padding: "20px" }}>
+                <CircularProgress
+                  aria-label="circular-loader"
+                  sx={{ padding: "20px" }}
+                />
+              </div>
             ) : (
               <>
                 <MetadataTable
