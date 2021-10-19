@@ -96,16 +96,14 @@ export default function SequenceRunTable() {
         // Do Not update state on unmount
         if (componentUnmount) return;
 
-        
         setSequenceRunList(newSequenceList);
-        // TODO: Remove the following line (It uses mock data)
-        setSequenceRunList(mock_sequence_run);
         setPagination(paginationResult);
       } catch (err) {
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",
-          dialogContent: "Sorry, An error has occured while fetching sequences. Please try again!",
+          dialogContent:
+            "Sorry, An error has occured while fetching sequences. Please try again!",
         });
       }
       setIsLoading(false);

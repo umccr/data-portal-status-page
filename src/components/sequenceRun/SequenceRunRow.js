@@ -98,8 +98,6 @@ function SequenceRunRow(props) {
         );
         setPagination(metadataResponse.pagination);
         setMetadataList(metadataResponse.results);
-        // TODO: Remove the following setMock Data
-        setMetadataList(mock_metadata);
         setIsLoading(false);
       } catch (err) {
         setDialogInfo({
