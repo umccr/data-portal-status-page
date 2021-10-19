@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import SequencePage from "./pages/SequencePage";
 import MetadataPage from "./pages/MetadataPage";
-import AuthenticatedRoute from "./components/higherOrderComponent/AuthenticatedRoute";
+import AuthenticatedRoute from "./components/utils/AuthenticatedRoute";
 
 // Declaring Routes
 // Route: can be access regardless auth/unauth

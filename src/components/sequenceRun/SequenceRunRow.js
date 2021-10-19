@@ -15,7 +15,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
 
 // Custom Component
-import { useDialogContext } from "../higherOrderComponent/DialogComponent";
+import { useDialogContext } from "../utils/DialogComponent";
 import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
 import Pagination from "../utils/Pagination";

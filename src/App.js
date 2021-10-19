@@ -8,9 +8,9 @@ import { grey } from "@mui/material/colors";
 // Custom components
 import Routes from "./Routes";
 import NavigationBar from "./components/app/NavigationBar";
-import SearchContextProvider from "./components/higherOrderComponent/SearchContextProvider";
-import UserContextProvider from "./components/higherOrderComponent/UserContextProvider";
-import DialogComponent from "./components/higherOrderComponent/DialogComponent";
+import SearchContextProvider from "./components/utils/SearchContextProvider";
+import UserContextProvider from "./components/utils/UserContextProvider";
+import DialogComponent from "./components/utils/DialogComponent";
 
 function App() {
   return (

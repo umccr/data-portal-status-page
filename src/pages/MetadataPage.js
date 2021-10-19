@@ -15,7 +15,7 @@ import {
 import Pagination from "../components/utils/Pagination";
 import MetadataTable from "../components/metadata/MetadataTable";
 import WorkflowFilter from "../components/metadata/WorkflowFilter";
-import { useDialogContext } from "../components/higherOrderComponent/DialogComponent";
+import { useDialogContext } from "../components/utils/DialogComponent";
 
 // A custom hook that builds on useLocation to parse
 // the query string

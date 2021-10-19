@@ -9,7 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import WorkflowChip from "./WorkflowChip";
 
-import { useDialogContext } from "../higherOrderComponent/DialogComponent";
+import { useDialogContext } from "../utils/DialogComponent";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "60px",
