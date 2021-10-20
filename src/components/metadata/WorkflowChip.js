@@ -23,9 +23,6 @@ function getStyleForStatus(status, isSelected) {
       // Pink color
       return { ...baseStyle, backgroundColor: red[100], color: red[400] };
     case "aborted":
-      // Red color
-      return { ...baseStyle, backgroundColor: red[200], color: red[900] };
-    case "pending":
       // Brown color
       return { ...baseStyle, backgroundColor: brown[100], color: brown[500] };
     default:

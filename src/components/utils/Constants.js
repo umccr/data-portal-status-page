@@ -1,8 +1,8 @@
 // Workflow Filter Status Bar
-export const WORKFLOW_STATUS = ["Succeeded", "Running", "Failed", "Aborted"];
+export const WORKFLOW_STATUS = ["Succeeded", "Running", "Aborted", "Failed"];
 
 // Workflow filter length for comparison
-export const WORKFLOW_STATUS_LENGTH = WORKFLOW_STATUS.length
+export const WORKFLOW_STATUS_LENGTH = WORKFLOW_STATUS.length;
 
 // Workflow order
 export const WORKFLOW_PIPELINE = {
@@ -24,10 +24,7 @@ export function groupListBasedOnKey(objectList, key) {
     const objectKey = object[key];
 
     if (groupedObject[objectKey]) {
-      groupedObject[objectKey] = [
-        ...groupedObject[objectKey],
-        object,
-      ];
+      groupedObject[objectKey] = [...groupedObject[objectKey], object];
     } else {
       groupedObject[objectKey] = [object];
     }
@@ -38,11 +35,10 @@ export function groupListBasedOnKey(objectList, key) {
 // De-duplicate values in the array
 export function uniqueArray(array) {
   var a = array.concat();
-  for(var i=0; i<a.length; ++i) {
-      for(var j=i+1; j<a.length; ++j) {
-          if(a[i] === a[j])
-              a.splice(j--, 1);
-      }
+  for (var i = 0; i < a.length; ++i) {
+    for (var j = i + 1; j < a.length; ++j) {
+      if (a[i] === a[j]) a.splice(j--, 1);
+    }
   }
 
   return a;
