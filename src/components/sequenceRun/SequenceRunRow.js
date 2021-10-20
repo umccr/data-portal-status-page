@@ -50,7 +50,7 @@ async function getMetadataFromInstrumentRunId(
     APIConfig
   );
   const libraryRunList = responseLibraryRun.results;
-  const paginationRessuslt = responseLibraryRun.pagination;
+  const paginationResult = responseLibraryRun.pagination;
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
@@ -68,7 +68,7 @@ async function getMetadataFromInstrumentRunId(
 
     metadataList = [...metadataList, metadata_result];
   }
-  return { pagination: paginationRessuslt, results: metadataList };
+  return { pagination: paginationResult, results: metadataList };
 }
 
 function SequenceRunRow(props) {
@@ -80,7 +80,9 @@ function SequenceRunRow(props) {
   const [metadataList, setMetadataList] = useState([]);
 
   // PAGINATION
-  const [queryParameter, setQueryParameter] = useState({});
+  const [queryParameter, setQueryParameter] = useState({
+    rowsPerPage: 50,
+  });
   const [pagination, setPagination] = useState({
     page: 1,
     rowsPerPage: 10,
@@ -226,6 +228,7 @@ function SequenceRunRow(props) {
                 <Pagination
                   pagination={pagination}
                   handleChangeQuery={handleChangeQuery}
+                  paginationName="Library Run"
                 />
               </>
             )}

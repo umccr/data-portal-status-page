@@ -145,6 +145,7 @@ export default function SequenceRunTable() {
       <Pagination
         pagination={pagination}
         handleChangeQuery={handleChangeQuery}
+        paginationName="sequence"
       />
     </>
   );

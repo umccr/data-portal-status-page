@@ -1,8 +1,9 @@
 import React from "react";
-import TablePagination from "@mui/material/TablePagination";
+import { TablePagination, Typography } from "@mui/material";
 
 function Pagination(props) {
-  const { pagination, handleChangeQuery } = props;
+  const { pagination, handleChangeQuery, paginationName } = props;
+
   // Pagination Handler
   const handleChangePage = (event, newPage) => {
     handleChangeQuery((prevState) => {
@@ -24,15 +25,26 @@ function Pagination(props) {
   };
 
   return (
-    <TablePagination
-      sx={{ display: "flex", justifyContent: "center" }}
-      component="div"
-      count={pagination.count}
-      page={pagination.page - 1}
-      onPageChange={handleChangePage}
-      rowsPerPage={pagination.rowsPerPage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
-    />
+    <>
+      <TablePagination
+        sx={{ display: "flex", justifyContent: "center" }}
+        component="div"
+        count={pagination.count}
+        page={pagination.page - 1}
+        onPageChange={handleChangePage}
+        rowsPerPage={pagination.rowsPerPage}
+        showFirstButton={true}
+        showLastButton={true}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <Typography
+        variant="caption"
+        display="block"
+        sx={{ display: "flex", justifyContent: "center", marginBottom: "1em" }}
+      >
+        *Pagination is based on {paginationName} results
+      </Typography>
+    </>
   );
 }
 
