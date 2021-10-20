@@ -22,11 +22,11 @@ import Pagination from "../utils/Pagination";
 
 import { convertToDisplayName, getDateTimeString } from "../utils/Constants";
 
-function displayWithTypography(dataObject, key, typograhyStyle) {
+function displayWithTypography(key, data, typograhyStyle) {
   "Display object with field in typography";
   return (
     <Typography variant="subtitle2" display="inline" sx={typograhyStyle}>
-      {convertToDisplayName(key)}: {getDateTimeString(dataObject[key])}
+      {convertToDisplayName(key)}: {data}
     </Typography>
   );
 }
@@ -164,9 +164,13 @@ function SequenceRunRow(props) {
                 alignItems="center"
               >
                 <Grid item>
-                  {displayWithTypography(data, "instrument_run_id", {
-                    fontWeight: "bold",
-                  })}
+                  {displayWithTypography(
+                    "instrument_run_id",
+                    data.instrument_run_id,
+                    {
+                      fontWeight: "bold",
+                    }
+                  )}
                 </Grid>
                 <Grid item>
                   <SequenceRunChip status={data.status} />
@@ -187,9 +191,13 @@ function SequenceRunRow(props) {
                 {displayWithTypography(data, "number",{ fontWeight: "light" })}
                 </Grid> */}
                 <Grid item>
-                  {displayWithTypography(data, "end_time", {
-                    fontWeight: "light",
-                  })}
+                  {displayWithTypography(
+                    "end_time",
+                    getDateTimeString(data.end_time),
+                    {
+                      fontWeight: "light",
+                    }
+                  )}
                 </Grid>
               </Grid>
             </Grid>
