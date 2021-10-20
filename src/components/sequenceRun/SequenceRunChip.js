@@ -1,24 +1,33 @@
-import React from 'react'
+import React from "react";
 import Chip from "@mui/material/Chip";
 
-function colorForStatus(status) {
+import { green, orange, red } from "@mui/material/colors";
+
+// Custom function
+import { convertToDisplayName } from "../utils/Constants";
+
+function getStyleForStatus(status, isSelected) {
+  const baseStyle = { fontWeight: "Medium" };
+
   switch (status.toLowerCase()) {
-    case "complete":
-      // Green color
-      return "#C8E6C9";
+    case "succeeded":
+      return { ...baseStyle, backgroundColor: green[100] };
+
+    case "started":
+      return { ...baseStyle, backgroundColor: orange[100] };
+
+    case "failed":
+      return { ...baseStyle, backgroundColor: red[100] };
+
     default:
-      // Orange Color
-      return "#FFE0B2";
+      return {};
   }
 }
 
-function SequenceRunChip({status}) {
+function SequenceRunChip({ status }) {
   return (
-    <Chip
-      label={status}
-      sx={{ backgroundColor: colorForStatus(status), color: "black" }}
-    />
-  )
+    <Chip label={convertToDisplayName(status)} sx={getStyleForStatus(status)} />
+  );
 }
 
-export default SequenceRunChip
+export default SequenceRunChip;
