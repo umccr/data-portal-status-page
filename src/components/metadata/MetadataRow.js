@@ -62,10 +62,7 @@ function MetadataRow(props) {
     const fetchData = async () => {
       try {
         // Construct on API config including params
-        const groupedWorkflow = await getWorkflow(
-          metadata,
-          workflow_list
-        );
+        const groupedWorkflow = await getWorkflow(metadata, workflow_list);
         if (componentUnmount) return;
         setWorkflowStatus(groupedWorkflow);
       } catch (err) {
@@ -94,21 +91,16 @@ function MetadataRow(props) {
           {metadata[field_name]}
         </TableCell>
       ))}
-      {workflow_list ? (
-        <>
-          {workflow_list.map((field_name, index) => (
-            <TableCell key={index} sx={{ textAlign: "center" }}>
-              {workflowStatus[field_name] ? (
-                <WorkflowChip status={workflowStatus[field_name]} />
-              ) : (
-                <CircularProgress />
-              )}
-            </TableCell>
-          ))}
-        </>
-      ) : (
-        <></>
-      )}
+
+      {workflow_list.map((field_name, index) => (
+        <TableCell key={index} sx={{ textAlign: "center" }}>
+          {workflowStatus[field_name] ? (
+            <WorkflowChip status={workflowStatus[field_name]} />
+          ) : (
+            <CircularProgress />
+          )}
+        </TableCell>
+      ))}
     </StyledTableRow>
   );
 }

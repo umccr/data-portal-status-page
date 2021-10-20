@@ -14,7 +14,7 @@ import {
 // Custom Components
 import Pagination from "../components/utils/Pagination";
 import MetadataTable from "../components/metadata/MetadataTable";
-import WorkflowFilter from "../components/metadata/WorkflowFilter";
+import WorkflowFilter from "../components/metadata/MetadataToolbar";
 import { useDialogContext } from "../components/utils/DialogComponent";
 
 // A custom hook that builds on useLocation to parse

@@ -2,28 +2,21 @@ import React, { useEffect, useState } from "react";
 import { API } from "aws-amplify";
 
 // MaterialUI component
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { TableContainer, LinearProgress } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
 
 // Custom Component
-import MetadataRow from "./MetadataRow";
-import { useFilterContext } from "./WorkflowFilter";
+import { useMetadataToolbarContext } from "./MetadataToolbar";
+import MetadataListsView from "./MetadataListView";
 
 import {
-  WORKFLOW_PIPELINE,
-  FIELD_TO_DISPLAY,
   WORKFLOW_STATUS_LENGTH,
   SUPPORTED_PIPELINE,
-  convertToDisplayName,
   groupListBasedOnKey,
   uniqueArray,
 } from "../utils/Constants";
+import MetadataTabView from "./MetadataTabView";
 
 function isDataFilteredOut(dataList, filterList) {
   for (const workflow of dataList) {
@@ -42,7 +35,9 @@ function MetadataTable(props) {
   // Props for metadata
   const { metadataList } = props;
 
-  const { statusFilterArray } = useFilterContext();
+  const { toolbarState } = useMetadataToolbarContext();
+  const statusFilterArray = toolbarState.status;
+  const toggleView = toolbarState.toggleView;
   const [isLoading, setIsLoading] = useState(true);
   const [metadataGrouped, setMetadataGrouped] = useState({});
 
@@ -92,14 +87,17 @@ function MetadataTable(props) {
       const groupedDataResult = groupListBasedOnKey(rawData, "type");
 
       if (componentUnmount) return;
-      console.log(groupedDataResult);
+
       setMetadataGrouped(groupedDataResult);
-      console.log(
-        uniqueArray([...SUPPORTED_PIPELINE, ...Object.keys(groupedDataResult)])
-      );
+
       // To have an order which metadata type to be displayed on top
       setPipelineDisplay(
-        uniqueArray([...SUPPORTED_PIPELINE, ...Object.keys(groupedDataResult)])
+        uniqueArray([
+          ...SUPPORTED_PIPELINE,
+          ...Object.keys(groupedDataResult),
+        ]).filter((eachPipeline) => {
+          return groupedDataResult[eachPipeline] !== undefined;
+        })
       );
       setIsLoading(false);
     }
@@ -125,80 +123,17 @@ function MetadataTable(props) {
             </Typography>
           ) : (
             <>
-              {/* To preserve ordering of most popular pipeline */}
-              {pipelineDisplay
-                .filter((eachPipeline) => {
-                  return metadataGrouped[eachPipeline] !== undefined;
-                })
-                .map((pipeline_type) => (
-                  <TableContainer
-                    key={pipeline_type}
-                    sx={{ textAlign: "left" }}
-                  >
-                    <Typography variant="h6" gutterBottom component="div">
-                      {pipeline_type}
-                    </Typography>
-
-                    <TableContainer
-                      sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}
-                    >
-                      <Table
-                        sx={{ tableLayout: "fixed" }}
-                        size="small"
-                        aria-label="MetaData"
-                      >
-                        {/* Display Table Headers */}
-                        <TableHead>
-                          <TableRow sx={{ backgroundColor: "#CFD8DC" }}>
-                            {/* Display metadata Headers */}
-                            {FIELD_TO_DISPLAY.map((field_name, index) => (
-                              <TableCell
-                                key={index}
-                                sx={{ textAlign: "center", width: "100px" }}
-                              >
-                                {convertToDisplayName(field_name)}
-                              </TableCell>
-                            ))}
-
-                            {/* Display Workflows header if any*/}
-                            {WORKFLOW_PIPELINE[pipeline_type] ? (
-                              <>
-                                {WORKFLOW_PIPELINE[pipeline_type].map(
-                                  (field_name, index) => (
-                                    <TableCell
-                                      key={index}
-                                      sx={{
-                                        textAlign: "center",
-                                        width: "100px",
-                                      }}
-                                    >
-                                      {field_name}
-                                    </TableCell>
-                                  )
-                                )}
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </TableRow>
-                        </TableHead>
-
-                        {/* Display Body content */}
-                        <TableBody>
-                          {metadataGrouped[pipeline_type].map(
-                            (metadata, index) => (
-                              <MetadataRow
-                                key={index}
-                                metadata={metadata}
-                                workflow_list={WORKFLOW_PIPELINE[pipeline_type]}
-                              />
-                            )
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </TableContainer>
-                ))}
+              {toggleView === "tab" ? (
+                <MetadataTabView
+                  metadataGrouped={metadataGrouped}
+                  pipelineDisplay={pipelineDisplay}
+                />
+              ) : (
+                <MetadataListsView
+                  metadataGrouped={metadataGrouped}
+                  pipelineDisplay={pipelineDisplay}
+                />
+              )}
             </>
           )}
         </Container>

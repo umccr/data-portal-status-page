@@ -3,7 +3,7 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 
 import SequenceRunTable from "../components/sequenceRun/SequenceRunTable";
-import WorkflowFilter from "../components/metadata/WorkflowFilter";
+import WorkflowFilter from "../components/metadata/MetadataToolbar";
 
 function SequencePage() {
   return (

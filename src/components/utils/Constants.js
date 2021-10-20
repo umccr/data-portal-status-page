@@ -14,6 +14,15 @@ export const WORKFLOW_PIPELINE = {
 // Workflow Types Available
 export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
 
+// Get workflow pipeline
+export function getWorkflowPipeline(pipelineType) {
+  const pipeline = WORKFLOW_PIPELINE[pipelineType];
+  if (pipeline) {
+    return pipeline;
+  }
+  return ["BCL_CONVERT"];
+}
+
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
