@@ -19,10 +19,11 @@ import {
   WORKFLOW_PIPELINE,
   FIELD_TO_DISPLAY,
   WORKFLOW_STATUS_LENGTH,
-  convertToDisplayName
+  SUPPORTED_PIPELINE,
+  convertToDisplayName,
+  groupListBasedOnKey,
+  uniqueArray,
 } from "../utils/Constants";
-
-
 
 function isDataFilteredOut(dataList, filterList) {
   for (const workflow of dataList) {
@@ -37,23 +38,6 @@ function isDataFilteredOut(dataList, filterList) {
   return true;
 }
 
-function groupMetadataBasedOnType(metadataList) {
-  const groupedMetadata = {};
-  for (const metadata of metadataList) {
-    const metadataType = metadata.type;
-
-    if (groupedMetadata[metadataType]) {
-      groupedMetadata[metadataType] = [
-        ...groupedMetadata[metadataType],
-        metadata,
-      ];
-    } else {
-      groupedMetadata[metadataType] = [metadata];
-    }
-  }
-  return groupedMetadata;
-}
-
 function MetadataTable(props) {
   // Props for metadata
   const { metadataList } = props;
@@ -61,6 +45,9 @@ function MetadataTable(props) {
   const { statusFilterArray } = useFilterContext();
   const [isLoading, setIsLoading] = useState(true);
   const [metadataGrouped, setMetadataGrouped] = useState({});
+
+  // Pipeline List to dislay (to ensure order of workflow)
+  const [pipelineDisplay, setPipelineDisplay] = useState([]);
 
   useEffect(() => {
     let componentUnmount = false;
@@ -102,11 +89,18 @@ function MetadataTable(props) {
       ) {
         await filterData(rawData);
       }
-      const groupedDataResult = groupMetadataBasedOnType(rawData);
+      const groupedDataResult = groupListBasedOnKey(rawData, "type");
 
       if (componentUnmount) return;
-
+      console.log(groupedDataResult);
       setMetadataGrouped(groupedDataResult);
+      console.log(
+        uniqueArray([...SUPPORTED_PIPELINE, ...Object.keys(groupedDataResult)])
+      );
+      // To have an order which metadata type to be displayed on top
+      setPipelineDisplay(
+        uniqueArray([...SUPPORTED_PIPELINE, ...Object.keys(groupedDataResult)])
+      );
       setIsLoading(false);
     }
 
@@ -116,7 +110,6 @@ function MetadataTable(props) {
       componentUnmount = true;
     };
   }, [metadataList, statusFilterArray]);
-
   return (
     <>
       {isLoading ? (
@@ -132,69 +125,80 @@ function MetadataTable(props) {
             </Typography>
           ) : (
             <>
-              {Object.keys(metadataGrouped).map((pipeline_type) => (
-                <TableContainer key={pipeline_type} sx={{ textAlign: "left" }}>
-                  <Typography variant="h6" gutterBottom component="div">
-                    {pipeline_type}
-                  </Typography>
-
+              {/* To preserve ordering of most popular pipeline */}
+              {pipelineDisplay
+                .filter((eachPipeline) => {
+                  return metadataGrouped[eachPipeline] !== undefined;
+                })
+                .map((pipeline_type) => (
                   <TableContainer
-                    sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}
+                    key={pipeline_type}
+                    sx={{ textAlign: "left" }}
                   >
-                    <Table
-                      sx={{ tableLayout: "fixed" }}
-                      size="small"
-                      aria-label="MetaData"
+                    <Typography variant="h6" gutterBottom component="div">
+                      {pipeline_type}
+                    </Typography>
+
+                    <TableContainer
+                      sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}
                     >
-                      {/* Display Table Headers */}
-                      <TableHead>
-                        <TableRow sx={{ backgroundColor: "#CFD8DC" }}>
-                          {/* Display metadata Headers */}
-                          {FIELD_TO_DISPLAY.map((field_name, index) => (
-                            <TableCell
-                              key={index}
-                              sx={{ textAlign: "center", width: "100px" }}
-                            >
-                              {convertToDisplayName(field_name)}
-                            </TableCell>
-                          ))}
+                      <Table
+                        sx={{ tableLayout: "fixed" }}
+                        size="small"
+                        aria-label="MetaData"
+                      >
+                        {/* Display Table Headers */}
+                        <TableHead>
+                          <TableRow sx={{ backgroundColor: "#CFD8DC" }}>
+                            {/* Display metadata Headers */}
+                            {FIELD_TO_DISPLAY.map((field_name, index) => (
+                              <TableCell
+                                key={index}
+                                sx={{ textAlign: "center", width: "100px" }}
+                              >
+                                {convertToDisplayName(field_name)}
+                              </TableCell>
+                            ))}
 
-                          {/* Display Workflows header if any*/}
-                          {WORKFLOW_PIPELINE[pipeline_type] ? (
-                            <>
-                              {WORKFLOW_PIPELINE[pipeline_type].map(
-                                (field_name, index) => (
-                                  <TableCell
-                                    key={index}
-                                    sx={{ textAlign: "center", width: "100px" }}
-                                  >
-                                    {field_name}
-                                  </TableCell>
-                                )
-                              )}
-                            </>
-                          ) : (
-                            <></>
+                            {/* Display Workflows header if any*/}
+                            {WORKFLOW_PIPELINE[pipeline_type] ? (
+                              <>
+                                {WORKFLOW_PIPELINE[pipeline_type].map(
+                                  (field_name, index) => (
+                                    <TableCell
+                                      key={index}
+                                      sx={{
+                                        textAlign: "center",
+                                        width: "100px",
+                                      }}
+                                    >
+                                      {field_name}
+                                    </TableCell>
+                                  )
+                                )}
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                          </TableRow>
+                        </TableHead>
+
+                        {/* Display Body content */}
+                        <TableBody>
+                          {metadataGrouped[pipeline_type].map(
+                            (metadata, index) => (
+                              <MetadataRow
+                                key={index}
+                                metadata={metadata}
+                                workflow_list={WORKFLOW_PIPELINE[pipeline_type]}
+                              />
+                            )
                           )}
-                        </TableRow>
-                      </TableHead>
-
-                      {/* Display Body content */}
-                      <TableBody>
-                        {metadataGrouped[pipeline_type].map(
-                          (metadata, index) => (
-                            <MetadataRow
-                              key={index}
-                              metadata={metadata}
-                              workflow_list={WORKFLOW_PIPELINE[pipeline_type]}
-                            />
-                          )
-                        )}
-                      </TableBody>
-                    </Table>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </TableContainer>
-                </TableContainer>
-              ))}
+                ))}
             </>
           )}
         </Container>

@@ -17,6 +17,37 @@ export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
+// Grouped data based on object key
+export function groupListBasedOnKey(objectList, key) {
+  const groupedObject = {};
+  for (const object of objectList) {
+    const objectKey = object[key];
+
+    if (groupedObject[objectKey]) {
+      groupedObject[objectKey] = [
+        ...groupedObject[objectKey],
+        object,
+      ];
+    } else {
+      groupedObject[objectKey] = [object];
+    }
+  }
+  return groupedObject;
+}
+
+// De-duplicate values in the array
+export function uniqueArray(array) {
+  var a = array.concat();
+  for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+          if(a[i] === a[j])
+              a.splice(j--, 1);
+      }
+  }
+
+  return a;
+}
+
 // Convert raw field name to displayed UI name (Capitalize Word)
 export function convertToDisplayName(str) {
   let frags = str.split("_");
