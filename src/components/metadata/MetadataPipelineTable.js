@@ -18,13 +18,17 @@ import {
 } from "../utils/Constants";
 
 function MetadataPipelineTable(props) {
-  const { pipelineType, metadataGrouped } = props;
+  const { pipelineType, metadataGrouped, noTitle } = props;
 
   return (
     <TableContainer sx={{ textAlign: "left", margin: "1em 0 1em" }}>
-      <Typography variant="h6" gutterBottom component="div">
-        {pipelineType}
-      </Typography>
+      {noTitle ? (
+        <></>
+      ) : (
+        <Typography variant="h6" gutterBottom component="div">
+          {pipelineType}
+        </Typography>
+      )}
 
       <TableContainer
         sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}

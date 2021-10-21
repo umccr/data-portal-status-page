@@ -111,6 +111,7 @@ function MetadataPage() {
               <Pagination
                 pagination={pagination}
                 handleChangeQuery={handleChangeQuery}
+                paginationName="metadata"
               />
             </TableContainer>
           )}

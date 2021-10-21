@@ -66,6 +66,9 @@ function MetadataTable(props) {
           APIConfig
         );
 
+        // Insert workflow on the data to prevent refetching on other component
+        metadata["completed_workflows"] = responseWorkflow.results;
+
         if (isDataFilteredOut(responseWorkflow.results, statusFilterArray)) {
           metadataListResult.splice(i, 1);
         }

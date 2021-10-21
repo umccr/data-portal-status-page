@@ -22,28 +22,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-async function getWorkflow(metadata, workflow_list) {
+function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   const groupedWorkflow = {};
   // Set Not Found by default
   for (const workflow of workflow_list) {
     groupedWorkflow[workflow] = "-";
   }
 
-  const APIConfig = {
-    queryStringParameters: {
-      library_id: metadata.library_id,
-    },
-  };
-
-  const responseWorkflow = await API.get(
-    "DataPortalApi",
-    "/workflows/by_library_id/",
-    APIConfig
-  );
-
-  // Assumption each library_id have only one workflow
-  const workflowResults = responseWorkflow.results;
-  for (const workflow of workflowResults) {
+  for (const workflow of metadataCompletedWorkflow) {
     groupedWorkflow[workflow.type_name] = workflow.end_status;
   }
 
@@ -53,7 +39,6 @@ async function getWorkflow(metadata, workflow_list) {
 function MetadataRow(props) {
   const { metadata, workflow_list } = props;
   const { setDialogInfo } = useDialogContext();
-
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
 
@@ -61,8 +46,25 @@ function MetadataRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        // Construct on API config including params
-        const groupedWorkflow = await getWorkflow(metadata, workflow_list);
+        if (!metadata.completed_workflows) {
+          const APIConfig = {
+            queryStringParameters: {
+              library_id: metadata.library_id,
+            },
+          };
+
+          const responseWorkflow = await API.get(
+            "DataPortalApi",
+            "/workflows/by_library_id/",
+            APIConfig
+          );
+          metadata["completed_workflows"] = responseWorkflow.results;
+        }
+        const groupedWorkflow = groupWorkflow(
+          metadata["completed_workflows"],
+          workflow_list
+        );
+
         if (componentUnmount) return;
         setWorkflowStatus(groupedWorkflow);
       } catch (err) {

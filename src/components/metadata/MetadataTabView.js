@@ -46,6 +46,7 @@ function MetadataTabView(props) {
           <MetadataPipelineTable
             metadataGrouped={metadataGrouped}
             pipelineType={eachPipeline}
+            noTitle
           />
         </TabPanel>
       ))}
