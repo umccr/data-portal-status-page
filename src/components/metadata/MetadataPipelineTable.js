@@ -12,7 +12,6 @@ import TableContainer from "@mui/material/TableContainer";
 import MetadataRow from "./MetadataRow";
 
 import {
-  WORKFLOW_PIPELINE,
   FIELD_TO_DISPLAY,
   convertToDisplayName,
   getWorkflowPipeline,

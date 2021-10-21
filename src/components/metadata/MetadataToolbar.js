@@ -8,7 +8,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import TabIcon from "@mui/icons-material/Tab";
 import ListIcon from "@mui/icons-material/List";
 import Toolbar from "@mui/material/Toolbar";
-
+import { styled } from "@mui/material/styles";
 // Custom Component
 import WorkflowChip from "./WorkflowChip";
 import { WORKFLOW_STATUS } from "../utils/Constants";
@@ -19,7 +19,15 @@ export const MetadataToolbarContext = createContext(null);
 export function useMetadataToolbarContext() {
   return useContext(MetadataToolbarContext);
 }
-
+// Styling Componentss
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+  [theme.breakpoints.up("sm")]: {
+    padding: 0,
+    minHeight: "64px",
+  },
+  padding: 0,
+  minHeight: "64px",
+}));
 function MetadataToolbar(props) {
   const [toolbarState, setToolbarState] = useState({
     status: [],
@@ -53,7 +61,7 @@ function MetadataToolbar(props) {
 
   return (
     <MetadataToolbarContext.Provider value={{ toolbarState }}>
-      <Toolbar>
+      <StyledToolbar>
         <Typography sx={{ paddingRight: "1em" }}>Filter by</Typography>
         <Grid sx={{ width: "auto", flex: 1 }} item container spacing={0.2}>
           {WORKFLOW_STATUS.map((status, index) => (
@@ -81,7 +89,7 @@ function MetadataToolbar(props) {
             <ListIcon />
           </ToggleButton>
         </ToggleButtonGroup>
-      </Toolbar>
+      </StyledToolbar>
       {props.children}
     </MetadataToolbarContext.Provider>
   );
