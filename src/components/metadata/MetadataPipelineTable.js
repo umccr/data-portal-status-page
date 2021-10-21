@@ -21,11 +21,16 @@ function MetadataPipelineTable(props) {
   const { pipelineType, metadataGrouped, noTitle } = props;
 
   return (
-    <TableContainer sx={{ textAlign: "left", margin: "1em 0 1em" }}>
+    <TableContainer sx={{ textAlign: "left", margin: "1em 0 2em" }}>
       {noTitle ? (
         <></>
       ) : (
-        <Typography variant="h6" gutterBottom component="div">
+        <Typography
+          sx={{ margin: "0 0 1em 0" }}
+          variant="h6"
+          gutterBottom
+          component="div"
+        >
           {pipelineType}
         </Typography>
       )}
