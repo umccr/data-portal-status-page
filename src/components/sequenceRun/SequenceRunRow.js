@@ -19,7 +19,7 @@ import { useDialogContext } from "../utils/DialogComponent";
 import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
 import Pagination from "../utils/Pagination";
-
+import { useMetadataToolbarContext } from "../metadata/MetadataToolbar";
 import { convertToDisplayName, getDateTimeString } from "../utils/Constants";
 
 function displayWithTypography(key, data, typograhyStyle) {
@@ -46,7 +46,7 @@ async function getMetadataFromInstrumentRunId(
   };
   const responseLibraryRun = await API.get(
     "DataPortalApi",
-    "/libraryrun",
+    "/libraryrun/by_workflow",
     APIConfig
   );
   const libraryRunList = responseLibraryRun.results;
@@ -78,6 +78,8 @@ function SequenceRunRow(props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [metadataList, setMetadataList] = useState([]);
+  const { toolbarState } = useMetadataToolbarContext();
+  const statusArray = toolbarState.status;
 
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
@@ -94,13 +96,17 @@ function SequenceRunRow(props) {
 
   // Use Effect is row is expand to fetch metadata List
   useEffect(() => {
+    let componentUnmount = false;
     const fetchData = async () => {
       try {
+        queryParameter["end_status"] = statusArray[0];
         setIsLoading(true);
         const metadataResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,
           queryParameter
         );
+
+        if (componentUnmount) return;
         setPagination(metadataResponse.pagination);
         setMetadataList(metadataResponse.results);
         setIsLoading(false);
@@ -116,7 +122,16 @@ function SequenceRunRow(props) {
     if (isOpen) {
       fetchData();
     }
-  }, [isOpen, data.instrument_run_id, queryParameter, setDialogInfo]);
+    return () => {
+      componentUnmount = true;
+    };
+  }, [
+    isOpen,
+    data.instrument_run_id,
+    queryParameter,
+    setDialogInfo,
+    statusArray,
+  ]);
 
   return (
     <React.Fragment>

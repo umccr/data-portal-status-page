@@ -19,6 +19,7 @@ export const MetadataToolbarContext = createContext(null);
 export function useMetadataToolbarContext() {
   return useContext(MetadataToolbarContext);
 }
+
 // Styling Componentss
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
@@ -28,7 +29,9 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: 0,
   minHeight: "64px",
 }));
+
 function MetadataToolbar(props) {
+
   const [toolbarState, setToolbarState] = useState({
     status: [],
     toggleView: "tab",
@@ -38,16 +41,28 @@ function MetadataToolbar(props) {
     if (toolbarState["status"].includes(status)) {
       setToolbarState((prevState) => ({
         ...prevState,
-        status: prevState["status"].filter(
-          (currentFilter) => currentFilter !== status
-        ),
+        status: [],
       }));
     } else {
       setToolbarState((prevState) => ({
         ...prevState,
-        status: [...prevState["status"], status],
+        status: [status],
       }));
     }
+
+    // if (toolbarState["status"].includes(status)) {
+    //   setToolbarState((prevState) => ({
+    //     ...prevState,
+    //     status: prevState["status"].filter(
+    //       (currentFilter) => currentFilter !== status
+    //     ),
+    //   }));
+    // } else {
+    //   setToolbarState((prevState) => ({
+    //     ...prevState,
+    //     status: [...prevState["status"], status],
+    //   }));
+    // }
   }
 
   function handleViewToggleChange(event, newValue) {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { API } from "aws-amplify";
 
 // MaterialUI component
 import Typography from "@mui/material/Typography";
@@ -11,25 +10,11 @@ import { useMetadataToolbarContext } from "./MetadataToolbar";
 import MetadataListsView from "./MetadataListView";
 
 import {
-  WORKFLOW_STATUS_LENGTH,
   SUPPORTED_PIPELINE,
   groupListBasedOnKey,
   uniqueArray,
 } from "../utils/Constants";
 import MetadataTabView from "./MetadataTabView";
-
-function isDataFilteredOut(dataList, filterList) {
-  for (const workflow of dataList) {
-    const end_status = workflow.end_status;
-
-    // If any of the data contain one of the filtered status
-    // It will not filtered the data out
-    if (filterList.includes(end_status)) {
-      return false;
-    }
-  }
-  return true;
-}
 
 function MetadataTable(props) {
   // Props for metadata
@@ -47,46 +32,10 @@ function MetadataTable(props) {
   useEffect(() => {
     let componentUnmount = false;
 
-    // Remove element from array if
-    async function filterData(metadataListResult) {
-      let i = metadataListResult.length;
-      while (i--) {
-        const metadata = metadataListResult[i];
-        const library_id = metadata.library_id;
-
-        const APIConfig = {
-          queryStringParameters: {
-            library_id: library_id,
-          },
-        };
-
-        const responseWorkflow = await API.get(
-          "DataPortalApi",
-          "/workflows/by_library_id",
-          APIConfig
-        );
-
-        // Insert workflow on the data to prevent refetching on other component
-        metadata["completed_workflows"] = responseWorkflow.results;
-
-        if (isDataFilteredOut(responseWorkflow.results, statusFilterArray)) {
-          metadataListResult.splice(i, 1);
-        }
-      }
-      return metadataListResult;
-    }
-
     async function filterAndGroup(data) {
       setIsLoading(true);
       let rawData = [...data];
 
-      const workflowFilterLength = statusFilterArray.length;
-      if (
-        workflowFilterLength < WORKFLOW_STATUS_LENGTH &&
-        workflowFilterLength > 0
-      ) {
-        await filterData(rawData);
-      }
       const groupedDataResult = groupListBasedOnKey(rawData, "type");
 
       if (componentUnmount) return;
