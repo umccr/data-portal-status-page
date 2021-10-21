@@ -127,10 +127,39 @@ function NavigationBar(props) {
             to="/"
             sx={{
               color: "black",
+              margin: "0 50px 0 0",
             }}
           >
             <Typography variant="h6" component="div">
               UMCCR
+            </Typography>
+          </Button>
+          <Button
+            color="primary"
+            LinkComponent={RouterLink}
+            to="/sequence"
+            sx={{
+              margin: "0 10px 0 10px",
+              color: "black",
+              textTransform: "none",
+            }}
+          >
+            <Typography variant="subtitle1" component="div">
+              Sequence
+            </Typography>
+          </Button>
+          <Button
+            color="primary"
+            LinkComponent={RouterLink}
+            to="/metadata"
+            sx={{
+              color: "black",
+              margin: "0 10px 0 10px",
+              textTransform: "none",
+            }}
+          >
+            <Typography variant="subtitle1" component="div">
+              Metadata
             </Typography>
           </Button>
         </div>
@@ -145,7 +174,6 @@ function NavigationBar(props) {
             value={searchInput}
             onKeyPress={(e) => e.key === "Enter" && onSearchClick()}
           />
-          
         </Search>
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>
