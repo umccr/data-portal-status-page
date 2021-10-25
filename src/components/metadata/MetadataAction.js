@@ -26,7 +26,7 @@ async function getQueryMetadata(queryParameter) {
   };
   const responseLibraryRun = await API.get(
     "DataPortalApi",
-    "/libraryrun/by_workflow",
+    "/libraryrun/",
     APIConfig
   );
 

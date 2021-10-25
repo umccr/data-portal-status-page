@@ -46,7 +46,7 @@ async function getMetadataFromInstrumentRunId(
   };
   const responseLibraryRun = await API.get(
     "DataPortalApi",
-    "/libraryrun/by_workflow",
+    "/libraryrun/",
     APIConfig
   );
   const libraryRunList = responseLibraryRun.results;

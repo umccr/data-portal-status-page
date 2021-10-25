@@ -55,7 +55,7 @@ function MetadataRow(props) {
 
           const responseWorkflow = await API.get(
             "DataPortalApi",
-            "/workflows/by_library_id/",
+            "/workflows/",
             APIConfig
           );
           metadata["completed_workflows"] = responseWorkflow.results;
