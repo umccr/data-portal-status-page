@@ -39,16 +39,23 @@ class DataPortalStatusPageStack(cdk.Stack):
             string_parameter_name="hosted_zone_name"
         ).string_value
 
-        cert_use1_arn = ssm.StringParameter.from_string_parameter_name(
+        # Fetch existing hosted_zone
+        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(
             self,
-            "SSLCertUSE1ARN",
-            string_parameter_name="cert_use1_arn",
+            "HostedZone",
+            hosted_zone_id=hosted_zone_id,
+            zone_name=hosted_zone_name,
         )
 
-        cert_use1 = acm.Certificate.from_certificate_arn(
+        cert_use1 = acm.DnsValidatedCertificate(
             self,
-            "SSLCertUSE1",
-            certificate_arn=cert_use1_arn.string_value,
+            "SSLCertificateUSE1StatusPage",
+            hosted_zone=hosted_zone,
+            region="us-east-1",
+            domain_name="status.data." + umccr_domain,
+            validation=acm.CertificateValidation.from_dns(
+                hosted_zone=hosted_zone
+            )
         )
 
         # Creating bucket for the build directory code
@@ -99,14 +106,6 @@ class DataPortalStatusPageStack(cdk.Stack):
                 security_policy=cloudfront.SecurityPolicyProtocol.TLS_V1,
                 ssl_method=cloudfront.SSLMethod.SNI
             )
-        )
-
-        # Fetch existing hosted_zone
-        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(
-            self,
-            "HostedZone",
-            hosted_zone_id=hosted_zone_id,
-            zone_name=hosted_zone_name,
         )
 
         # Create A-Record to Route53
