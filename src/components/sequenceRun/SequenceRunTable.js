@@ -76,12 +76,20 @@ export default function SequenceRunTable() {
         let newSequenceList = [];
         let paginationResult;
 
-        const APIConfig = {
+        let APIConfig = {
           queryStringParameters: {
             ...queryParameter,
-            search: searchValue,
           },
         };
+        if (searchValue) {
+          APIConfig = {
+            queryStringParameters: {
+              ...APIConfig,
+              search: searchValue,
+            },
+          };
+        }
+
         const sequenceResponse = await API.get(
           "DataPortalApi",
           "/sequence",

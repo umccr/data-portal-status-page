@@ -40,7 +40,7 @@ const SearchContextProvider = (props) => {
       };
       const metadataResponse = await API.get(
         "DataPortalApi",
-        "/metadata",
+        "/libraryrun",
         APIConfig
       );
       const metadataArray = metadataResponse.results;

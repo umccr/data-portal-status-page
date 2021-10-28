@@ -151,7 +151,7 @@ function NavigationBar(props) {
           <Button
             color="primary"
             LinkComponent={RouterLink}
-            to="/metadata"
+            to="/libraryrun"
             sx={{
               color: "black",
               margin: "0 10px 0 10px",
@@ -159,7 +159,7 @@ function NavigationBar(props) {
             }}
           >
             <Typography variant="subtitle1" component="div">
-              Metadata
+              LibraryRun
             </Typography>
           </Button>
         </div>

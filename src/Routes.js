@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import SequencePage from "./pages/SequencePage";
-import MetadataPage from "./pages/MetadataPage";
+import LibraryRunPage from "./pages/LibraryRunPage";
 import AuthenticatedRoute from "./components/utils/AuthenticatedRoute";
 
 // Declaring Routes
@@ -18,8 +18,8 @@ export default function Routes() {
       <AuthenticatedRoute exact path="/sequence">
         <SequencePage />
       </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/metadata">
-        <MetadataPage />
+      <AuthenticatedRoute exact path="/libraryrun">
+        <LibraryRunPage />
       </AuthenticatedRoute>
       <Route>
         <NotFound />
