@@ -1,98 +1,95 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+// MaterialUI component
 import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import LinearProgress from "@mui/material/LinearProgress";
 
-import MetadataRow from "./MetadataRow";
+// Custom Component
+import { useMetadataToolbarContext } from "./MetadataToolbar";
+import MetadataListsView from "./MetadataListView";
 
 import {
-  WORKFLOW_PIPELINE,
-  FIELD_TO_DISPLAY,
-  CONVERT_TO_DISPLAY_NAME,
+  SUPPORTED_PIPELINE,
+  groupListBasedOnKey,
+  uniqueArray,
 } from "../utils/Constants";
+import MetadataTabView from "./MetadataTabView";
 
+function MetadataTable(props) {
+  // Props for metadata
+  const { metadataList } = props;
 
-import { mock_metadata } from "../utils/Constants";
-import { TableContainer } from "@mui/material";
+  const { toolbarState } = useMetadataToolbarContext();
+  const statusFilterArray = toolbarState.status;
+  const toggleView = toolbarState.toggleView;
+  const [isLoading, setIsLoading] = useState(true);
+  const [metadataGrouped, setMetadataGrouped] = useState({});
 
-function MetadataTable() {
-  // Supported Workflow Types
-  const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
+  // Pipeline List to dislay (to ensure order of workflow)
+  const [pipelineDisplay, setPipelineDisplay] = useState([]);
 
-  const sorted_data = {
-    WGS: [],
-    WTS: [],
-    ctTSO: [],
-  };
+  useEffect(() => {
+    let componentUnmount = false;
 
-  // Group data based on type
-  for (const each_data of mock_metadata) {
-    sorted_data[each_data.type].push(each_data);
-  }
-  // List of workflow to display
-  const list_of_pipeline_to_display = SUPPORTED_PIPELINE.filter(
-    (each_type) => sorted_data[each_type].length > 0
-  );
+    async function filterAndGroup(data) {
+      setIsLoading(true);
+      let rawData = [...data];
 
+      const groupedDataResult = groupListBasedOnKey(rawData, "type");
+
+      if (componentUnmount) return;
+
+      setMetadataGrouped(groupedDataResult);
+
+      // To have an order which metadata type to be displayed on top
+      setPipelineDisplay(
+        uniqueArray([
+          ...SUPPORTED_PIPELINE,
+          ...Object.keys(groupedDataResult),
+        ]).filter((eachPipeline) => {
+          return groupedDataResult[eachPipeline] !== undefined;
+        })
+      );
+      setIsLoading(false);
+    }
+
+    filterAndGroup(metadataList);
+
+    return () => {
+      componentUnmount = true;
+    };
+  }, [metadataList, statusFilterArray]);
   return (
     <>
-      {list_of_pipeline_to_display.map((pipeline_type, index) => (
-        <TableContainer key={index}>
-          <Typography variant="h6" gutterBottom component="div">
-            {pipeline_type}
-          </Typography>
-
-          <TableContainer
-            sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}
-          >
-            <Table
-              sx={{ tableLayout: "fixed" }}
-              size="small"
-              aria-label="MetaData"
+      {isLoading ? (
+        <LinearProgress />
+      ) : (
+        <Container sx={{ padding: "20px 20px" }}>
+          {Object.keys(metadataGrouped).length === 0 ? (
+            <Typography
+              variant="h5"
+              sx={{ textAlign: "center", padding: "50px" }}
             >
-              {/* Display Table Headers */}
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "#CFD8DC" }}>
-                  {/* Display metadata Headers */}
-                  {FIELD_TO_DISPLAY.map((field_name, index) => (
-                    <TableCell
-                      key={index}
-                      sx={{ textAlign: "center", width: "100px" }}
-                    >
-                      {CONVERT_TO_DISPLAY_NAME[field_name]}
-                    </TableCell>
-                  ))}
-
-                  {/* Display Workflows header */}
-                  {WORKFLOW_PIPELINE[pipeline_type].map((field_name, index) => (
-                    <TableCell
-                      key={index}
-                      sx={{ textAlign: "center", width: "100px" }}
-                    >
-                      {field_name}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-
-              {/* Display Metadata Header */}
-              <TableBody>
-                {sorted_data[pipeline_type].map((metadata, index) => (
-                  <MetadataRow
-                    key={index}
-                    metadata={metadata}
-                    workflow_list={WORKFLOW_PIPELINE[pipeline_type]}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </TableContainer>
-      ))}
+              Sorry! No Metadata Found
+            </Typography>
+          ) : (
+            <>
+              {toggleView === "tab" ? (
+                <MetadataTabView
+                  metadataGrouped={metadataGrouped}
+                  pipelineDisplay={pipelineDisplay}
+                />
+              ) : (
+                <MetadataListsView
+                  metadataGrouped={metadataGrouped}
+                  pipelineDisplay={pipelineDisplay}
+                />
+              )}
+            </>
+          )}
+        </Container>
+      )}
     </>
   );
 }

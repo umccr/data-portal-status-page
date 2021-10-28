@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import { API } from "aws-amplify";
+
+// Material-UI component
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import TableCell from "@mui/material/TableCell";
@@ -7,23 +11,132 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import CircularProgress from "@mui/material/CircularProgress";
+import { grey } from "@mui/material/colors";
 
+// Custom Component
+import { useDialogContext } from "../utils/DialogComponent";
 import SequenceRunChip from "./SequenceRunChip";
 import MetadataTable from "../metadata/MetadataTable";
+import Pagination from "../utils/Pagination";
+import { useMetadataToolbarContext } from "../metadata/MetadataToolbar";
+import { convertToDisplayName, getDateTimeString } from "../utils/Constants";
 
-function getDateTimeString(iso_string) {
-  let dateTime = new Date(iso_string);
-  return dateTime.toLocaleString("en-GB");
+function displayWithTypography(key, data, typograhyStyle) {
+  "Display object with field in typography";
+  return (
+    <Typography variant="subtitle2" display="inline" sx={typograhyStyle}>
+      {convertToDisplayName(key)}: {data}
+    </Typography>
+  );
+}
+
+async function getMetadataFromInstrumentRunId(
+  instrument_run_id,
+  queryParameter
+) {
+  let metadataList = [];
+
+  // Api Calls to LibraryRun to get list of Metadata
+  const APIConfig = {
+    queryStringParameters: {
+      ...queryParameter,
+      instrument_run_id: instrument_run_id,
+    },
+  };
+  const responseLibraryRun = await API.get(
+    "DataPortalApi",
+    "/libraryrun/",
+    APIConfig
+  );
+  const libraryRunList = responseLibraryRun.results;
+  const paginationResult = responseLibraryRun.pagination;
+
+  // For each libraryRun list, fetch metadata
+  for (const libraryRun of libraryRunList) {
+    const APIConfig = {
+      queryStringParameters: {
+        library: libraryRun.library_id,
+      },
+    };
+    const responseMetadata = await API.get(
+      "DataPortalApi",
+      "/metadata",
+      APIConfig
+    );
+    const metadata_result = responseMetadata.results[0];
+
+    metadataList = [...metadataList, metadata_result];
+  }
+  return { pagination: paginationResult, results: metadataList };
 }
 
 function SequenceRunRow(props) {
-  const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const { data } = props;
+  const [isOpen, setIsOpen] = useState(false);
+  const { setDialogInfo } = useDialogContext();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [metadataList, setMetadataList] = useState([]);
+  const { toolbarState } = useMetadataToolbarContext();
+  const statusArray = toolbarState.status;
+
+  // PAGINATION
+  const [queryParameter, setQueryParameter] = useState({
+    rowsPerPage: 50,
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    rowsPerPage: 10,
+    count: 0,
+  });
+  function handleChangeQuery(value) {
+    setQueryParameter(value);
+  }
+
+  // Use Effect is row is expand to fetch metadata List
+  useEffect(() => {
+    let componentUnmount = false;
+    const fetchData = async () => {
+      try {
+        queryParameter["end_status"] = statusArray[0];
+        setIsLoading(true);
+        const metadataResponse = await getMetadataFromInstrumentRunId(
+          data.instrument_run_id,
+          queryParameter
+        );
+
+        if (componentUnmount) return;
+        setPagination(metadataResponse.pagination);
+        setMetadataList(metadataResponse.results);
+        setIsLoading(false);
+      } catch (err) {
+        setDialogInfo({
+          isOpen: true,
+          dialogTitle: "Error",
+          dialogContent:
+            "Sorry, An error has occured while fetching metadata. Please try again!",
+        });
+      }
+    };
+    if (isOpen) {
+      fetchData();
+    }
+    return () => {
+      componentUnmount = true;
+    };
+  }, [
+    isOpen,
+    data.instrument_run_id,
+    queryParameter,
+    setDialogInfo,
+    statusArray,
+  ]);
 
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell sx={{width:"100%"}}>
+        <TableCell sx={{ width: "100%" }}>
           <Grid
             container
             direction="row"
@@ -43,9 +156,9 @@ function SequenceRunRow(props) {
               <IconButton
                 aria-label="expand row"
                 size="small"
-                onClick={() => setOpen(!open)}
+                onClick={() => setIsOpen(!isOpen)}
               >
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             </Grid>
 
@@ -68,19 +181,20 @@ function SequenceRunRow(props) {
                 alignItems="center"
               >
                 <Grid item>
-                  <Typography display="inline" sx={{ fontWeight: "bold" }}>
-                    Sequence Run:{" "}
-                  </Typography>
-                  <Typography display="inline" sx={{ fontWeight: "medium" }}>
-                    {row.instrument_run_id}
-                  </Typography>
+                  {displayWithTypography(
+                    "instrument_run_id",
+                    data.instrument_run_id,
+                    {
+                      fontWeight: "bold",
+                    }
+                  )}
                 </Grid>
                 <Grid item>
-                  <SequenceRunChip status={row.status} />
+                  <SequenceRunChip status={data.status} />
                 </Grid>
               </Grid>
 
-              {/* Row for row_id and date_modified */}
+              {/* Row for row_id and end_time */}
               <Grid
                 item
                 container
@@ -91,28 +205,16 @@ function SequenceRunRow(props) {
                 {/* Place Holder for Number of Workflow has completed */}
 
                 {/* <Grid item>
-                <Typography display="inline" sx={{ fontWeight: "regular" }}>
-                  run_id:{" "}
-                </Typography>
-                <Typography display="inline" sx={{ fontWeight: "light" }}>
-                  {row.instrument_run_id}
-                </Typography>
-              </Grid> */}
+                {displayWithTypography(data, "number",{ fontWeight: "light" })}
+                </Grid> */}
                 <Grid item>
-                  <Typography
-                    variant="subtitle2"
-                    display="inline"
-                    sx={{ fontWeight: "light" }}
-                  >
-                    date_modified:{" "}
-                  </Typography>
-                  <Typography
-                    variant="subtitle2"
-                    display="inline"
-                    sx={{ fontWeight: "light" }}
-                  >
-                    {getDateTimeString(row.date_modified)}
-                  </Typography>
+                  {displayWithTypography(
+                    "end_time",
+                    getDateTimeString(data.end_time),
+                    {
+                      fontWeight: "light",
+                    }
+                  )}
                 </Grid>
               </Grid>
             </Grid>
@@ -120,9 +222,31 @@ function SequenceRunRow(props) {
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <MetadataTable />
+        <TableCell
+          style={{
+            backgroundColor: grey[50],
+            padding: 0,
+            textAlign: "center",
+          }}
+        >
+          <Collapse in={isOpen} timeout="auto" unmountOnExit>
+            {isLoading ? (
+              <div style={{ padding: "20px" }}>
+                <CircularProgress aria-label="circular-loader" />
+              </div>
+            ) : (
+              <>
+                <MetadataTable
+                  instrument_run_id={data.instrument_run_id}
+                  metadataList={metadataList}
+                />
+                <Pagination
+                  pagination={pagination}
+                  handleChangeQuery={handleChangeQuery}
+                  paginationName="Library Run"
+                />
+              </>
+            )}
           </Collapse>
         </TableCell>
       </TableRow>

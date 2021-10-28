@@ -1,10 +1,8 @@
-export const WORKFLOW_STATUS = [
-  "Succeeded",
-  "Started",
-  "Failed",
-  "Aborted",
-  "Pending",
-];
+// Workflow Filter Status Bar
+export const WORKFLOW_STATUS = ["Succeeded", "Running", "Aborted", "Failed"];
+
+// Workflow filter length for comparison
+export const WORKFLOW_STATUS_LENGTH = WORKFLOW_STATUS.length;
 
 // Workflow order
 export const WORKFLOW_PIPELINE = {
@@ -13,15 +11,62 @@ export const WORKFLOW_PIPELINE = {
   ctTSO: ["BCL_CONVERT", "DRAGEN_TSO_CTDNA"],
 };
 
+// Workflow Types Available
+export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
+
+// Get workflow pipeline
+export function getWorkflowPipeline(pipelineType) {
+  const pipeline = WORKFLOW_PIPELINE[pipelineType];
+  if (pipeline) {
+    return pipeline;
+  }
+  return ["BCL_CONVERT"];
+}
+
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
-// Convert raw field name to displayed UI name
-export const CONVERT_TO_DISPLAY_NAME = {
-  library_id: "Library Id",
-  subject_id: "Subject Id",
-  sample_id: "Sample Id",
-};
+// Grouped data based on object key
+export function groupListBasedOnKey(objectList, key) {
+  const groupedObject = {};
+  for (const object of objectList) {
+    const objectKey = object[key];
+
+    if (groupedObject[objectKey]) {
+      groupedObject[objectKey] = [...groupedObject[objectKey], object];
+    } else {
+      groupedObject[objectKey] = [object];
+    }
+  }
+  return groupedObject;
+}
+
+// De-duplicate values in the array
+export function uniqueArray(array) {
+  var a = array.concat();
+  for (var i = 0; i < a.length; ++i) {
+    for (var j = i + 1; j < a.length; ++j) {
+      if (a[i] === a[j]) a.splice(j--, 1);
+    }
+  }
+
+  return a;
+}
+
+// Convert raw field name to displayed UI name (Capitalize Word)
+export function convertToDisplayName(str) {
+  let frags = str.split("_");
+  for (let i = 0; i < frags.length; i++) {
+    frags[i] = frags[i].charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags.join(" ");
+}
+
+// Convert time to Locale
+export function getDateTimeString(iso_string) {
+  let dateTime = new Date(iso_string);
+  return dateTime.toLocaleString("en-GB");
+}
 
 export const mock_metadata = [
   {
@@ -48,6 +93,7 @@ export const mock_metadata = [
     subject_id: "SBJ00000",
     type: "WTS",
   },
+
   {
     library_id: "L0000000",
     sample_id: "PRJ210000",
@@ -72,6 +118,7 @@ export const mock_metadata = [
     subject_id: "SBJ00000",
     type: "WGS",
   },
+
   {
     library_id: "L0000000",
     sample_id: "PRJ210000",
