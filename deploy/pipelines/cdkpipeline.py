@@ -124,8 +124,8 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                     ),
                     "REACT_APP_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal/status_page/bucket_name",
-                        type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
+                        value=props["bucket_name"][app_stage],
+                        type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                     ),
                     "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
                         value="/data_portal/backend/api_domain_name",
