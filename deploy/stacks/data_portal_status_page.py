@@ -10,13 +10,15 @@ from aws_cdk import (
 
 class DataPortalStatusPageStack(cdk.Stack):
 
-    def __init__(self, scope: cdk.Construct, construct_id: str,constants=None, **kwargs) -> None:
+    def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # Defining app constants
+        app_stage = self.node.try_get_context("app_stage")
+        props = self.node.try_get_context("props")
+
         # Load SSM parameter for bucket name ( Created via Console)
-        bucket_name = ssm.StringParameter.from_string_parameter_attributes(self, "bucketValue",
-            parameter_name="/data_portal/status_page/bucket_name"
-        ).string_value
+        bucket_name = props["bucket_name"][app_stage]
 
         # Query existing UMCCR domain
         umccr_domain = ssm.StringParameter.from_string_parameter_name(
@@ -59,7 +61,9 @@ class DataPortalStatusPageStack(cdk.Stack):
         )
 
         # Creating bucket for the build directory code
-        client_bucket = s3.Bucket(self, "data-portal-status-page-client-bucket", 
+        client_bucket = s3.Bucket(
+            self, 
+            "data-portal-status-page-client-bucket", 
             bucket_name = bucket_name,
             auto_delete_objects = True,
             removal_policy = cdk.RemovalPolicy.DESTROY,
