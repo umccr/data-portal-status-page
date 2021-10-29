@@ -26,8 +26,8 @@ props = {
         "prod": "data-portal-status-page"
     },
     "bucket_name": {
-        "dev": "data-portal-status-page-client-dev",
-        "prod": "data-portal-status-page-client-prod"
+        "dev": "org.umccr.dev.data.status",
+        "prod": "org.umccr.prod.data.status"
     },
     "repository_source": "data-portal-status-page",
     "branch_source": {
