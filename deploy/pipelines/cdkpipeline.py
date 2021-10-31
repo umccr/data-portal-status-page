@@ -18,12 +18,15 @@ class DataPortalStatusPageStage(cdk.Stage):
     def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        app_stage = self.node.try_get_context("app_stage")
+
         # Create stack defined on stacks folder
         DataPortalStatusPageStack(
             self,
             "StatusPage",
             stack_name="data-portal-status-page-stack",
             tags={
+                "stage": app_stage,
                 "stack": "cdkpipeline-data-portal-status-page"
             }
         )
@@ -36,6 +39,10 @@ class CdkPipelineStack(cdk.Stack):
 
     def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # Defining app stage
+        app_stage = self.node.try_get_context("app_stage")
+        props = self.node.try_get_context("props")
 
         # Load SSM parameter for GitHub repo (Created via Console)
         codestar_arn = ssm.StringParameter.from_string_parameter_attributes(self, "codestarArn",
@@ -55,8 +62,8 @@ class CdkPipelineStack(cdk.Stack):
             connection_arn=codestar_arn,
             output=source_artifact,
             owner="umccr",
-            repo="data-portal-status-page",
-            branch="dev",
+            repo=props["repository_source"],
+            branch=props["branch_source"][app_stage],
             action_name="Source"
         )
 
@@ -65,7 +72,7 @@ class CdkPipelineStack(cdk.Stack):
             self,
             "CDKPipeline",
             cloud_assembly_artifact=cloud_artifact,
-            pipeline_name="data-portal-status-page",
+            pipeline_name=props["pipeline_name"][app_stage],
             source_action=code_star_action,
             cross_account_keys=False,
             synth_action=pipelines.SimpleSynthAction(
@@ -101,16 +108,11 @@ class CdkPipelineStack(cdk.Stack):
         react_build_stage = pipeline.add_stage(
             stage_name="ReactBuild",
         )
-        front_end_bucket_name = ssm.StringParameter.from_string_parameter_attributes(
-            self,
-            "FrontEndBucketName",
-            parameter_name="/data_portal/status_page/bucket_name"
-        ).string_value
 
         front_end_bucket_arn = s3.Bucket.from_bucket_name(
             self,
             "FrontEndBucket",
-            bucket_name=front_end_bucket_name
+            bucket_name=props["bucket_name"][app_stage]
         ).bucket_arn
 
         react_build_stage.add_actions(
@@ -122,8 +124,8 @@ class CdkPipelineStack(cdk.Stack):
                         type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                     ),
                     "REACT_APP_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
-                        value="/data_portal/status_page/bucket_name",
-                        type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
+                        value=props["bucket_name"][app_stage],
+                        type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                     ),
                     "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
                         value="/data_portal/backend/api_domain_name",
