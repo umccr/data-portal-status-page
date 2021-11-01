@@ -30,7 +30,7 @@ props = {
         "dev": "org.umccr.dev.data.status",
         "prod": "org.umccr.prod.data.status"
     },
-    "repository_source": "data-portal-status-page",
+    "repository_source": "umccr/data-portal-status-page",
     "branch_source": {
         "dev": "dev",
         "prod": "main"
