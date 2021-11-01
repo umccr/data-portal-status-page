@@ -55,6 +55,7 @@ class DataPortalStatusPageStack(cdk.Stack):
             hosted_zone=hosted_zone,
             region="us-east-1",
             domain_name="status.data." + umccr_domain,
+            subject_alternative_names=props["alternative_domain_name"][app_stage],
             validation=acm.CertificateValidation.from_dns(
                 hosted_zone=hosted_zone
             )
