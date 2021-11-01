@@ -60,7 +60,8 @@ CdkPipelineStack(
 
 """ 
 The Predeployment stack are meant to be run once, before the pipeline stack is deployed.
-Undeployed predeployment stack may result on a rollback at the pipeline stack
+Failure to do so may result in a stack rollback on the pipeline stack.
+NOTE: Please Validate SSL Certificate from predeployment stack thorugh console. (for prod account)
 """
 PredeploymentStack(
     app,

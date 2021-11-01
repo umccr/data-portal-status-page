@@ -60,12 +60,16 @@ _*Predeployment stack must be deployed before any other stack to avoid stack rol
 
 To deploy the application stack. You will just need to deploy 2 stacks which are `predeployment` and `pipeline` stack. The pipeline stack will take care of the `data_portal_status_page` stack deployment.
 
+_*After the predeployment stack is deployed. SSL certificate must be validated before proceeding to pipeline stack_
+
 Instruction on deployment (**must** be in order):
 
 Deploy predeployment stack
 ```
 $ cdk deploy DataPortalStatusPagePredeploymentStack --profile=dev
 ```
+
+Validate SSL certificate through the console before proceeding.
 
 Deploy pipeline stack
 ```
