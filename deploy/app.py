@@ -29,9 +29,9 @@ props = {
         "dev": "data-portal-status-page-client-dev",
         "prod": "data-portal-status-page-client-prod"
     },
-    "repository_source": "data-portal-status-page",
+    "repository_source": "umccr/data-portal-status-page",
     "branch_source": {
-        "dev": "dev",
+        "dev": "pipeline-resource-migration",
         "prod": "main"
     }
 }
