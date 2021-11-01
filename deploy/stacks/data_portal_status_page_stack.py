@@ -20,15 +20,6 @@ class DataPortalStatusPageStack(cdk.Stack):
         # Load SSM parameter for bucket name ( Created via Console)
         bucket_name = props["bucket_name"][app_stage]
 
-        # Query existing UMCCR domain
-        umccr_domain = ssm.StringParameter.from_string_parameter_name(
-            self,
-            "DomainName",
-            string_parameter_name="umccr_domain",
-        ).string_value
-
-        # --- Query deployment env specific config from SSM Parameter Store
-
         hosted_zone_id = ssm.StringParameter.from_string_parameter_name(
             self,
             "HostedZoneID",
@@ -49,13 +40,20 @@ class DataPortalStatusPageStack(cdk.Stack):
             zone_name=hosted_zone_name,
         )
 
-        cert_use1 = acm.Certificate(
+        # SSM parameter for AWS SNS ARN
+        cert_use1_arn = ssm.StringParameter.from_string_parameter_name(
             self,
-            "SSLCertificateUSE1StatusPage",
-            domain_name= "status.data." + umccr_domain,
-            subject_alternative_names=props["alias_domain_name"][app_stage],
-            validation=acm.CertificateValidation.from_dns()
+            "CertUSE1ARN",
+            string_parameter_name ="/data_portal/status_page/ssl_certificate_arn"
+        ).string_value
+
+
+        cert_use1 = acm.Certificate.from_certificate_arn(
+            self,
+            "FetchCertificateFromArn",
+            certificate_arn=cert_use1_arn
         )
+
 
         # Creating bucket for the build directory code
         client_bucket = s3.Bucket(

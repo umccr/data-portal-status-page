@@ -7,7 +7,8 @@ from aws_cdk import (
 )
 
 # Import cdk pipeline stack
-from pipelines.cdkpipeline import CdkPipelineStack
+from stacks.pipeline_stack import CdkPipelineStack
+from stacks.predeployment_stack import PredeploymentStack
 
 # Account environment and region
 account_id = os.environ.get('CDK_DEFAULT_ACCOUNT')
@@ -49,11 +50,25 @@ app = cdk.App(
 
 CdkPipelineStack(
     app,
-    "DataPortalStatusPageCdkPipeline",
-    stack_name="cdkpipeline-data-portal-status-page",
+    "DataPortalStatusPagePipeline",
+    stack_name="pipeline-data-portal-status-page",
     tags={
         "stage": app_stage,
-        "stack": "cdkpipeline-data-portal-status-page"
+        "stack": "pipeline-data-portal-status-page"
+    }
+)
+
+""" 
+The Predeployment stack are meant to be run once, before the pipeline stack is deployed.
+Undeployed predeployment stack may result on a rollback at the pipeline stack
+"""
+PredeploymentStack(
+    app,
+    "DataPortalStatusPagePredeploymentStack",
+    stack_name="predeployment-data-portal-status-page",
+    tags={
+        "stage": app_stage,
+        "stack": "predeployment-data-portal-status-page"
     }
 )
 
