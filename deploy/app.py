@@ -7,7 +7,8 @@ from aws_cdk import (
 )
 
 # Import cdk pipeline stack
-from pipelines.cdkpipeline import CdkPipelineStack
+from stacks.pipeline_stack import CdkPipelineStack
+from stacks.predeployment_stack import PredeploymentStack
 
 # Account environment and region
 account_id = os.environ.get('CDK_DEFAULT_ACCOUNT')
@@ -26,13 +27,17 @@ props = {
         "prod": "data-portal-status-page"
     },
     "bucket_name": {
-        "dev": "data-portal-status-page-client-dev",
-        "prod": "data-portal-status-page-client-prod"
+        "dev": "org.umccr.dev.data.status",
+        "prod": "org.umccr.prod.data.status"
     },
     "repository_source": "umccr/data-portal-status-page",
     "branch_source": {
         "dev": "dev",
         "prod": "main"
+    },
+    "alias_domain_name":{
+        "dev": ["status.data.dev.umccr.org"],
+        "prod": ["status.data.umccr.org", "status.data.prod.umccr.org"]
     }
 }
 
@@ -45,11 +50,26 @@ app = cdk.App(
 
 CdkPipelineStack(
     app,
-    "DataPortalStatusPageCdkPipeline",
-    stack_name="cdkpipeline-data-portal-status-page",
+    "DataPortalStatusPagePipeline",
+    stack_name="pipeline-data-portal-status-page",
     tags={
         "stage": app_stage,
-        "stack": "cdkpipeline-data-portal-status-page"
+        "stack": "pipeline-data-portal-status-page"
+    }
+)
+
+""" 
+The Predeployment stack are meant to be run once, before the pipeline stack is deployed.
+Failure to do so may result in a stack rollback on the pipeline stack.
+NOTE: Please Validate SSL Certificate from predeployment stack thorugh console. (for prod account)
+"""
+PredeploymentStack(
+    app,
+    "DataPortalStatusPagePredeploymentStack",
+    stack_name="predeployment-data-portal-status-page",
+    tags={
+        "stage": app_stage,
+        "stack": "predeployment-data-portal-status-page"
     }
 )
 

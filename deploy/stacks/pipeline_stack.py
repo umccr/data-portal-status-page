@@ -11,7 +11,7 @@ from aws_cdk import (
     aws_sns as sns,
     aws_codestarnotifications as codestarnotifications
 )
-from stacks.data_portal_status_page import DataPortalStatusPageStack
+from .data_portal_status_page_stack import DataPortalStatusPageStack
 
 
 class DataPortalStatusPageStage(cdk.Stage):
@@ -27,7 +27,7 @@ class DataPortalStatusPageStage(cdk.Stage):
             stack_name="data-portal-status-page-stack",
             tags={
                 "stage": app_stage,
-                "stack": "cdkpipeline-data-portal-status-page"
+                "stack": "pipeline-data-portal-status-page"
             }
         )
 
