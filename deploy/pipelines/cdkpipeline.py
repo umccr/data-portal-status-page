@@ -131,7 +131,10 @@ class CdkPipelineStack(cdk.Stack):
             "ProjectReactBuild",
             check_secrets_in_plain_text_env_variables=False,
             description="The project from codebuild to build react project.",
-            project_name="DataPortalStatusPageReactBuild"
+            project_name="DataPortalStatusPageReactBuild",
+            environment=codebuild.BuildEnvironment(
+                build_image=codebuild.LinuxBuildImage.STANDARD_5_0
+            )
         )
 
         react_codebuild_project.add_to_role_policy(
@@ -207,7 +210,7 @@ class CdkPipelineStack(cdk.Stack):
         )
 
         # Create React Build app stage
-        react_build_stage = self_mutate_pipeline.pipeline.add_stage(
+        self_mutate_pipeline.pipeline.add_stage(
             stage_name="ReactBuild",
             actions=[
                 react_build_actions
@@ -215,101 +218,29 @@ class CdkPipelineStack(cdk.Stack):
         )
 
 
-        # react_build_stage.add_actions(
-            # pipelines.ShellScriptAction(
-            #     action_name="BuildScript",
-            #     environment_variables={
-            #         "REACT_APP_REGION": codebuild.BuildEnvironmentVariable(
-            #             value="ap-southeast-2",
-            #             type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
-            #         ),
-            #         "REACT_APP_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
-            #             value=props["bucket_name"][app_stage],
-            #             type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
-            #         ),
-            #         "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
-            #             value="/data_portal/backend/api_domain_name",
-            #             type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
-            #         ),
-            #         "REACT_APP_COG_USER_POOL_ID": codebuild.BuildEnvironmentVariable(
-            #             value="/data_portal/client/cog_user_pool_id",
-            #             type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
-            #         ),
-            #         "REACT_APP_COG_APP_CLIENT_ID": codebuild.BuildEnvironmentVariable(
-            #             value="/data_portal/status_page/cog_app_client_id_stage",
-            #             type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
-            #         ),
-            #         "REACT_APP_OAUTH_DOMAIN": codebuild.BuildEnvironmentVariable(
-            #             value="/data_portal/client/oauth_domain",
-            #             type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
-            #         ),
-            #         "REACT_APP_OAUTH_REDIRECT_IN": codebuild.BuildEnvironmentVariable(
-            #             value="/data_portal/status_page/oauth_redirect_in_stage",
-            #             type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
-            #         ),
-            #         "REACT_APP_OAUTH_REDIRECT_OUT": codebuild.BuildEnvironmentVariable(
-            #             value="/data_portal/status_page/oauth_redirect_out_stage",
-            #             type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
-            #         ),
-            #     },
-            #     commands=[
-            #         "env | grep REACT",
-            #         "npm i react-scripts",
-            #         "npm run build",
-            #         "npm run deploy"
-            #     ],
-            #     additional_artifacts=[source_artifact],
-            #     role_policy_statements=[
-            #         iam.PolicyStatement(
-            #             actions=["ssm:GetParameter"],
-            #             effect=iam.Effect.ALLOW,
-            #             resources=[
-            #                 "arn:aws:ssm:%s:%s:parameter/data_portal/status_page/*" % (
-            #                     self.region, self.account),
-            #                 "arn:aws:ssm:%s:%s:parameter/data_portal/client/*" % (
-            #                     self.region, self.account)
-            #             ]
-            #         ),
-            #         iam.PolicyStatement(
-            #             actions=[
-            #                 "s3:DeleteObject",
-            #                 "s3:GetObject",
-            #                 "s3:ListBucket",
-            #                 "s3:PutObject"
-            #             ],
-            #             effect=iam.Effect.ALLOW,
-            #             resources=[
-            #                 front_end_bucket_arn,
-            #                 front_end_bucket_arn + "/*"
-            #             ]
-            #         )
-            #     ]
-            # )
-        # )
+        # SSM parameter for AWS SNS ARN
+        data_portal_notification_sns_arn = ssm.StringParameter.from_string_parameter_attributes(
+            self,
+            "DataPortalSNSArn",
+            parameter_name="/data_portal/backend/notification_sns_topic_arn"
+        ).string_value
 
-        # # SSM parameter for AWS SNS ARN
-        # data_portal_notification_sns_arn = ssm.StringParameter.from_string_parameter_attributes(
-        #     self,
-        #     "DataPortalSNSArn",
-        #     parameter_name="/data_portal/backend/notification_sns_topic_arn"
-        # ).string_value
+        # SNS chatbot
+        data_portal_sns_notification = sns.Topic.from_topic_arn(
+            self,
+            "DataPortalSNS",
+            topic_arn=data_portal_notification_sns_arn
+        )
 
-        # # SNS chatbot
-        # data_portal_sns_notification = sns.Topic.from_topic_arn(
-        #     self,
-        #     "DataPortalSNS",
-        #     topic_arn=data_portal_notification_sns_arn
-        # )
-
-        # # Add Chatbot Notificaiton
-        # pipeline.code_pipeline.notify_on(
-        #     "SlackNotificationStatusPage",
-        #     target=data_portal_sns_notification,
-        #     events=[
-        #         codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_FAILED,
-        #         codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_SUCCEEDED
-        #     ],
-        #     detail_type=codestarnotifications.DetailType.BASIC,
-        #     enabled=True,
-        #     notification_rule_name="SlackNotificationStatusPagePipeline"
-        # )
+        # Add Chatbot Notificaiton
+        self_mutate_pipeline.pipeline.notify_on(
+            "SlackNotificationStatusPage",
+            target=data_portal_sns_notification,
+            events=[
+                codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_FAILED,
+                codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_SUCCEEDED
+            ],
+            detail_type=codestarnotifications.DetailType.BASIC,
+            enabled=True,
+            notification_rule_name="SlackNotificationStatusPagePipeline"
+        )

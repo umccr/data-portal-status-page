@@ -31,7 +31,7 @@ props = {
     },
     "repository_source": "umccr/data-portal-status-page",
     "branch_source": {
-        "dev": "pipeline-resource-migration",
+        "dev": "dev",
         "prod": "main"
     }
 }
