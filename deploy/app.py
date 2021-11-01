@@ -33,6 +33,10 @@ props = {
     "branch_source": {
         "dev": "dev",
         "prod": "main"
+    },
+    "alternative_domain_name":{
+        "dev": [],
+        "prod": ["status.data.umccr.org"]
     }
 }
 
