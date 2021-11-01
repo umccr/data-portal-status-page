@@ -55,7 +55,7 @@ class DataPortalStatusPageStack(cdk.Stack):
             hosted_zone=hosted_zone,
             region="us-east-1",
             domain_name="status.data." + umccr_domain,
-            subject_alternative_names=props["alternative_domain_name"][app_stage],
+            subject_alternative_names=props["alias_domain_name"][app_stage],
             validation=acm.CertificateValidation.from_dns(
                 hosted_zone=hosted_zone
             )
@@ -107,7 +107,7 @@ class DataPortalStatusPageStack(cdk.Stack):
             enable_ip_v6 = False,
             viewer_certificate=cloudfront.ViewerCertificate.from_acm_certificate(
                 certificate=cert_use1,
-                aliases=["status.data." + umccr_domain],
+                aliases=props["alias_domain_name"][app_stage],
                 security_policy=cloudfront.SecurityPolicyProtocol.TLS_V1,
                 ssl_method=cloudfront.SSLMethod.SNI
             )

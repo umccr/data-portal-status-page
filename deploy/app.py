@@ -34,9 +34,9 @@ props = {
         "dev": "dev",
         "prod": "main"
     },
-    "alternative_domain_name":{
-        "dev": [],
-        "prod": ["status.data.umccr.org"]
+    "alias_domain_name":{
+        "dev": ["status.data.dev.umccr.org"],
+        "prod": ["status.data.umccr.org", "status.data.prod.umccr.org"]
     }
 }
 
