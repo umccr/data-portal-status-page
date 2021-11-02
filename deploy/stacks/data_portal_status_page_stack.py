@@ -18,7 +18,7 @@ class DataPortalStatusPageStack(cdk.Stack):
         props = self.node.try_get_context("props")
 
         # Load SSM parameter for bucket name ( Created via Console)
-        bucket_name = props["bucket_name"][app_stage]
+        bucket_name = props["client_bucket_name"][app_stage]
 
         hosted_zone_id = ssm.StringParameter.from_string_parameter_name(
             self,

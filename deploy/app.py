@@ -26,7 +26,11 @@ props = {
         "dev": "data-portal-status-page",
         "prod": "data-portal-status-page"
     },
-    "bucket_name": {
+    "pipeline_artifact_bucket_name" :{
+        "dev": "data-portal-status-page-artifact-dev",
+        "prod": "data-portal-status-page-artifact-prod"
+    },
+    "client_bucket_name": {
         "dev": "org.umccr.dev.data.status",
         "prod": "org.umccr.prod.data.status"
     },

@@ -52,8 +52,8 @@ class CdkPipelineStack(cdk.Stack):
         # Create S3 bucket for artifacts
         pipeline_artifact_bucket = s3.Bucket(
             self, 
-            "data-portal-status-page-client-bucket", 
-            bucket_name = "data-portal-status-page-artifact-dev",
+            "data-portal-status-page-artifact-bucket", 
+            bucket_name = props["pipeline_artifact_bucket_name"][app_stage],
             auto_delete_objects = True,
             removal_policy = cdk.RemovalPolicy.DESTROY,
             block_public_access= s3.BlockPublicAccess.BLOCK_ALL
@@ -120,7 +120,7 @@ class CdkPipelineStack(cdk.Stack):
         front_end_bucket_arn = s3.Bucket.from_bucket_name(
             self,
             "FrontEndBucket",
-            bucket_name=props["bucket_name"][app_stage]
+            bucket_name=props["client_bucket_name"][app_stage]
         ).bucket_arn
 
         self_mutate_pipeline.build_pipeline()
@@ -177,7 +177,7 @@ class CdkPipelineStack(cdk.Stack):
                     type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                 ),
                 "REACT_APP_BUCKET_NAME": codebuild.BuildEnvironmentVariable(
-                    value=props["bucket_name"][app_stage],
+                    value=props["client_bucket_name"][app_stage],
                     type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                 ),
                 "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
