@@ -28,12 +28,36 @@ class PredeploymentStack(cdk.Stack):
             string_parameter_name="umccr_domain",
         ).string_value
 
-        cert_use1 = acm.Certificate(
+        hosted_zone_id = ssm.StringParameter.from_string_parameter_name(
+            self,
+            "HostedZoneID",
+            string_parameter_name="hosted_zone_id"
+        ).string_value
+
+        hosted_zone_name = ssm.StringParameter.from_string_parameter_name(
+            self,
+            "HostedZoneName",
+            string_parameter_name="hosted_zone_name"
+        ).string_value
+
+        # Fetch existing hosted_zone
+        hosted_zone = route53.HostedZone.from_hosted_zone_attributes(
+            self,
+            "HostedZone",
+            hosted_zone_id=hosted_zone_id,
+            zone_name=hosted_zone_name,
+        )
+
+        cert_use1 = acm.DnsValidatedCertificate(
             self,
             "SSLCertificateUSE1StatusPage",
-            domain_name= "status.data." + umccr_domain,
             subject_alternative_names=props["alias_domain_name"][app_stage],
-            validation=acm.CertificateValidation.from_dns()
+            hosted_zone=hosted_zone,
+            region="us-east-1",
+            domain_name="status.data." + umccr_domain,
+            validation=acm.CertificateValidation.from_dns(
+                hosted_zone=hosted_zone
+            )
         )
 
         # Create ARN for cert_use1 created above
