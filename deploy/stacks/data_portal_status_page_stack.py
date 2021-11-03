@@ -23,13 +23,13 @@ class DataPortalStatusPageStack(cdk.Stack):
         hosted_zone_id = ssm.StringParameter.from_string_parameter_name(
             self,
             "HostedZoneID",
-            string_parameter_name="hosted_zone_id"
+            string_parameter_name="/hosted_zone/umccr/id"
         ).string_value
 
         hosted_zone_name = ssm.StringParameter.from_string_parameter_name(
             self,
             "HostedZoneName",
-            string_parameter_name="hosted_zone_name"
+            string_parameter_name="/hosted_zone/umccr/name"
         ).string_value
 
         # Fetch existing hosted_zone
@@ -53,7 +53,6 @@ class DataPortalStatusPageStack(cdk.Stack):
             "FetchCertificateFromArn",
             certificate_arn=cert_use1_arn
         )
-
 
         # Creating bucket for the build directory code
         client_bucket = s3.Bucket(
