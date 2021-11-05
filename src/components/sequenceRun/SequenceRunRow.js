@@ -208,13 +208,21 @@ function SequenceRunRow(props) {
                 {displayWithTypography(data, "number",{ fontWeight: "light" })}
                 </Grid> */}
                 <Grid item>
-                  {displayWithTypography(
-                    "end_time",
-                    getDateTimeString(data.end_time),
-                    {
-                      fontWeight: "light",
-                    }
-                  )}
+                  {data.end_time // Display end_time if exist otherwise start_time is displayed
+                    ? displayWithTypography(
+                        "end_time",
+                        getDateTimeString(data.end_time),
+                        {
+                          fontWeight: "light",
+                        }
+                      )
+                    : displayWithTypography(
+                        "start_time",
+                        getDateTimeString(data.start_time),
+                        {
+                          fontWeight: "light",
+                        }
+                      )}
                 </Grid>
               </Grid>
             </Grid>
