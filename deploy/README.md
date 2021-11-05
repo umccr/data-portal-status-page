@@ -51,25 +51,19 @@ $ pip install -r requirements.txt
 
 # Stack Deployment
 
-There are 3 stacks in this application:
+**Prerequisite**
+- A valid SSL Certificate in `us-east-1` region at ACM for all the domain name needed. See [here](app.py#L42) (`alias_domain_name` on the props variable) on what domain need to be included, determined based on which account is deployed.
+- SSM Parameter for the certificate ARN created above with the name of `/data_portal/status_page/ssl_certificate_arn`
+
+_Deploying the stack without prerequisite above may result in a stack rollback_
+
+There are 2 stacks in this application:
 - *data_portal_status_page* - Contains the applications stack
 - *pipeline* - Contains the pipeline for the stack to run and self update
-- *predeployment* - Contains predeployment resource that is needed for other stacks.
 
-_*Predeployment stack must be deployed before any other stack to avoid stack rollback_
 
-To deploy the application stack. You will just need to deploy 2 stacks which are `predeployment` and `pipeline` stack. The pipeline stack will take care of the `data_portal_status_page` stack deployment.
+To deploy the application stack, you will need to deploy the `pipeline` stack. The pipeline stack will take care of the `data_portal_status_page` stack deployment.
 
-_*After the predeployment stack is deployed. SSL certificate must be validated before proceeding to pipeline stack_
-
-Instruction on deployment (**must** be in order):
-
-Deploy predeployment stack
-```
-$ cdk deploy DataPortalStatusPagePredeploymentStack --profile=dev
-```
-
-Validate SSL certificate through the console before proceeding.
 
 Deploy pipeline stack
 ```
