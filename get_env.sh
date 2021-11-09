@@ -51,7 +51,7 @@ if [ -n "$1" ] && [ "$1" = "unset" ]; then
   return 0
 fi
 
-# Some parameter is taken from data-portal-client
+# Parameter is taken from data-portal-client
 # Reference: https://github.com/umccr/data-portal-client
 cog_user_pool_id=$(aws ssm get-parameter --name '/data_portal/client/cog_user_pool_id' | jq -r .Parameter.Value)
 if [[ "$cog_user_pool_id" == "" ]]; then
@@ -59,20 +59,25 @@ if [[ "$cog_user_pool_id" == "" ]]; then
   return 1
 fi
 cog_app_client_id_local=$(aws ssm get-parameter --name '/data_portal/client/cog_app_client_id_local' | jq -r .Parameter.Value)
-
+data_portal_client_domain=$(aws ssm get-parameter --name '/hosted_zone/umccr/name' | jq -r .Parameter.Value)
 oauth_domain=$(aws ssm get-parameter --name '/data_portal/client/oauth_domain' | jq -r .Parameter.Value)
 oauth_redirect_in_local=$(aws ssm get-parameter --name '/data_portal/client/oauth_redirect_in_local' | jq -r .Parameter.Value)
 oauth_redirect_out_local=$(aws ssm get-parameter --name '/data_portal/client/oauth_redirect_out_local' | jq -r .Parameter.Value)
 
+# Status page parameter
 bucket_name=$(aws ssm get-parameter --name '/data_portal/status_page/bucket_name' | jq -r .Parameter.Value)
 
+# App
 export REACT_APP_BUCKET_NAME=$bucket_name
 export REACT_APP_DATA_PORTAL_API_DOMAIN=localhost:8000
 export REACT_APP_REGION=ap-southeast-2
+export REACT_APP_UMCCR_DOMAIN_NAME=$data_portal_client_domain
 
+# Cognito
 export REACT_APP_COG_USER_POOL_ID=$cog_user_pool_id
 export REACT_APP_COG_APP_CLIENT_ID=$cog_app_client_id_local
 
+# Oauth
 export REACT_APP_OAUTH_DOMAIN=$oauth_domain
 export REACT_APP_OAUTH_REDIRECT_IN=$oauth_redirect_in_local
 export REACT_APP_OAUTH_REDIRECT_OUT=$oauth_redirect_out_local

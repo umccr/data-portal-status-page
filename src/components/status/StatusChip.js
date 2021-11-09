@@ -31,7 +31,7 @@ function getStyleForStatus(status, isSelected) {
   }
 }
 
-function WorkflowChip({ status, isClick, handleClick }) {
+function StatusChip({ status, isClick, handleClick }) {
   return (
     <Chip
       onClick={handleClick}
@@ -41,4 +41,4 @@ function WorkflowChip({ status, isClick, handleClick }) {
   );
 }
 
-export default WorkflowChip;
+export default StatusChip;

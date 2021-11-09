@@ -6,9 +6,9 @@ import { TableContainer, Paper, LinearProgress } from "@mui/material";
 
 // Custom Components
 import Pagination from "../utils/Pagination";
-import MetadataTable from "../metadata/MetadataTable";
+import StatusIndex from "../status/StatusIndex";
 import { useDialogContext } from "../utils/DialogComponent";
-import { useMetadataToolbarContext } from "../metadata/MetadataToolbar";
+import { useStatusToolbarContext } from "../status/StatusToolbar";
 // A custom hook that builds on useLocation to parse
 // the query string
 function useQuery() {
@@ -52,7 +52,7 @@ function LibraryRunAction() {
   const [metadataList, setMetadataList] = useState([]);
   const { setDialogInfo } = useDialogContext();
   const [isLoading, setIsLoading] = useState(true);
-  const { toolbarState } = useMetadataToolbarContext();
+  const { toolbarState } = useStatusToolbarContext();
   // Get any searched value
   const query = useQuery();
   const searchValue = query.get("search");
@@ -134,7 +134,7 @@ function LibraryRunAction() {
           elevation={2}
           sx={{ borderRadius: "10px", marginBottom: "20px" }}
         >
-          <MetadataTable metadataList={metadataList} />
+          <StatusIndex metadataList={metadataList} />
           <Pagination
             pagination={pagination}
             handleChangeQuery={handleChangeQuery}

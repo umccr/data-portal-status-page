@@ -10,14 +10,14 @@ import ListIcon from "@mui/icons-material/List";
 import Toolbar from "@mui/material/Toolbar";
 import { styled } from "@mui/material/styles";
 // Custom Component
-import WorkflowChip from "./WorkflowChip";
+import WorkflowChip from "./StatusChip";
 import { WORKFLOW_STATUS } from "../utils/Constants";
 
 // Context to store logged in user information
-export const MetadataToolbarContext = createContext(null);
+export const StatusToolbarContext = createContext(null);
 
-export function useMetadataToolbarContext() {
-  return useContext(MetadataToolbarContext);
+export function useStatusToolbarContext() {
+  return useContext(StatusToolbarContext);
 }
 
 // Styling Componentss
@@ -30,7 +30,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   minHeight: "64px",
 }));
 
-function MetadataToolbar(props) {
+function StatusToolbar(props) {
 
   const [toolbarState, setToolbarState] = useState({
     status: [],
@@ -75,7 +75,7 @@ function MetadataToolbar(props) {
   }
 
   return (
-    <MetadataToolbarContext.Provider value={{ toolbarState }}>
+    <StatusToolbarContext.Provider value={{ toolbarState }}>
       <StyledToolbar>
         <Typography sx={{ paddingRight: "1em" }}>Filter by</Typography>
         <Grid sx={{ width: "auto", flex: 1 }} item container spacing={0.2}>
@@ -106,8 +106,8 @@ function MetadataToolbar(props) {
         </ToggleButtonGroup>
       </StyledToolbar>
       {props.children}
-    </MetadataToolbarContext.Provider>
+    </StatusToolbarContext.Provider>
   );
 }
 
-export default MetadataToolbar;
+export default StatusToolbar;

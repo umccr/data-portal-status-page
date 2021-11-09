@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 
+// Aws amplify components
 import { API } from "aws-amplify";
 
+// mui components
 import { styled } from "@mui/material/styles";
-import { TableRow, TableCell } from "@mui/material";
+import { TableRow, TableCell, Link } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
+// Custom Component
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
-import WorkflowChip from "./WorkflowChip";
-
+import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
+
+const DATA_PORTAL_CLIENT_DOMAIN = "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "60px",
@@ -36,7 +40,7 @@ function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   return groupedWorkflow;
 }
 
-function MetadataRow(props) {
+function StatusRow(props) {
   const { metadata, workflow_list } = props;
   const { setDialogInfo } = useDialogContext();
   // Set an empty placeholder for workflow status
@@ -87,17 +91,31 @@ function MetadataRow(props) {
 
   return (
     <StyledTableRow>
-      {/* <ShowError handleError={handleError} isError={isError} /> */}
       {FIELD_TO_DISPLAY.map((field_name, index) => (
         <TableCell key={index} sx={{ textAlign: "center" }}>
-          {metadata[field_name]}
+          {field_name === "subject_id" ? (
+            <Link
+              underline="hover"
+              color="black"
+              href={
+                "https://" +
+                DATA_PORTAL_CLIENT_DOMAIN +
+                "/subjects/" +
+                metadata[field_name]
+              }
+            >
+              {metadata[field_name]}
+            </Link>
+          ) : (
+            metadata[field_name]
+          )}
         </TableCell>
       ))}
 
       {workflow_list.map((field_name, index) => (
         <TableCell key={index} sx={{ textAlign: "center" }}>
           {workflowStatus[field_name] ? (
-            <WorkflowChip status={workflowStatus[field_name]} />
+            <StatusChip status={workflowStatus[field_name]} />
           ) : (
             <CircularProgress />
           )}
@@ -107,4 +125,4 @@ function MetadataRow(props) {
   );
 }
 
-export default MetadataRow;
+export default StatusRow;

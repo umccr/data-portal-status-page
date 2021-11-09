@@ -3,7 +3,7 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 
 import SequenceRunTable from "../components/sequenceRun/SequenceRunTable";
-import WorkflowFilter from "../components/metadata/MetadataToolbar";
+import StatusToolbar from "../components/status/StatusToolbar";
 
 function SequencePage() {
   return (
@@ -16,9 +16,9 @@ function SequencePage() {
       <Grid item>
 
         {/* Wrap Filter component to be assesible by child */}
-        <WorkflowFilter>
+        <StatusToolbar>
           <SequenceRunTable />
-        </WorkflowFilter>
+        </StatusToolbar>
       </Grid>
     </>
   );

@@ -4,7 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-import MetadataPipelineTable from "./MetadataPipelineTable";
+import StatusTable from "../StatusTable";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -16,7 +16,7 @@ function TabPanel(props) {
   );
 }
 
-function MetadataTabView(props) {
+function StatusTabView(props) {
   const { pipelineDisplay, metadataGrouped } = props;
 
   const [tabValue, setTabValue] = React.useState(pipelineDisplay[0]);
@@ -43,7 +43,7 @@ function MetadataTabView(props) {
       /> */}
       {pipelineDisplay.map((eachPipeline) => (
         <TabPanel key={eachPipeline} value={tabValue} index={eachPipeline}>
-          <MetadataPipelineTable
+          <StatusTable
             metadataGrouped={metadataGrouped}
             pipelineType={eachPipeline}
             noTitle
@@ -54,4 +54,4 @@ function MetadataTabView(props) {
   );
 }
 
-export default MetadataTabView;
+export default StatusTabView;
