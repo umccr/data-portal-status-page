@@ -7,7 +7,7 @@ import { TableRow, TableCell } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
-import WorkflowChip from "./WorkflowChip";
+import StatusChip from "./StatusChip";
 
 import { useDialogContext } from "../utils/DialogComponent";
 
@@ -36,7 +36,7 @@ function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   return groupedWorkflow;
 }
 
-function MetadataRow(props) {
+function StatusRow(props) {
   const { metadata, workflow_list } = props;
   const { setDialogInfo } = useDialogContext();
   // Set an empty placeholder for workflow status
@@ -97,7 +97,7 @@ function MetadataRow(props) {
       {workflow_list.map((field_name, index) => (
         <TableCell key={index} sx={{ textAlign: "center" }}>
           {workflowStatus[field_name] ? (
-            <WorkflowChip status={workflowStatus[field_name]} />
+            <StatusChip status={workflowStatus[field_name]} />
           ) : (
             <CircularProgress />
           )}
@@ -107,4 +107,4 @@ function MetadataRow(props) {
   );
 }
 
-export default MetadataRow;
+export default StatusRow;

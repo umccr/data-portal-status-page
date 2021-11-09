@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 
 // Custom Component
-import MetadataRow from "./MetadataRow";
+import StatusRow from "./StatusRow";
 
 import {
   FIELD_TO_DISPLAY,
@@ -17,7 +17,10 @@ import {
   getWorkflowPipeline,
 } from "../utils/Constants";
 
-function MetadataPipelineTable(props) {
+function StatusTable(props) {
+  // The Status table is the table for each individual library run grouped by metadata type.
+  // For example one status Table is the table of Tumor Normal type runs
+
   const { pipelineType, metadataGrouped, noTitle } = props;
 
   return (
@@ -71,7 +74,7 @@ function MetadataPipelineTable(props) {
           {/* Display Body content */}
           <TableBody>
             {metadataGrouped[pipelineType].map((metadata, index) => (
-              <MetadataRow
+              <StatusRow
                 key={index}
                 metadata={metadata}
                 workflow_list={getWorkflowPipeline(pipelineType)}
@@ -84,4 +87,4 @@ function MetadataPipelineTable(props) {
   );
 }
 
-export default MetadataPipelineTable;
+export default StatusTable;

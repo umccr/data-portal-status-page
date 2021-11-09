@@ -1,12 +1,12 @@
 import React from "react";
-import MetadataPipelineTable from "./MetadataPipelineTable";
+import StatusTable from "../StatusTable";
 
-function MetadataListView(props) {
+function StatusListView(props) {
   const { pipelineDisplay, metadataGrouped } = props;
   return (
     <>
       {pipelineDisplay.map((pipelineType) => (
-        <MetadataPipelineTable
+        <StatusTable
           key={pipelineType}
           metadataGrouped={metadataGrouped}
           pipelineType={pipelineType}
@@ -16,4 +16,4 @@ function MetadataListView(props) {
   );
 }
 
-export default MetadataListView;
+export default StatusListView;
