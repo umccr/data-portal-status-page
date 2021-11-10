@@ -139,10 +139,10 @@ function StatusRow(props) {
               )}
               {field_name === "TUMOR_NORMAL" && !noLinkIcon ? (
                 <>
-                  {/* Div added to cover space needed in IconButton as it use absolute pos */}
-                  <div style={{ marginRight: "50px" }} />
+                  {/* Div added to cover space needed in IconButton as it use absolute  */}
+                  <div style={{ marginRight: "20px" }} />
                   <IconButton
-                    sx={{ position: "absolute", right: "1rem", width: "35px" }}
+                    sx={{ position: "absolute", right: "0" }}
                     aria-label="expand tumor normal row"
                     size="small"
                     onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
