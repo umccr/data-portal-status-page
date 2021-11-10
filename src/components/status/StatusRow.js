@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles";
 import { TableRow, TableCell, Link, IconButton } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinkIcon from "@mui/icons-material/Link";
+import { grey } from "@mui/material/colors";
 
 // Custom Component
 import StatusPairing from "./StatusPairing";
@@ -20,8 +21,9 @@ const DATA_PORTAL_CLIENT_DOMAIN =
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "60px",
+  backgroundColor: "white",
   "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+    backgroundColor: grey[100],
   },
   // hide last border
   "&:last-child td, &:last-child th": {
@@ -119,7 +121,10 @@ function StatusRow(props) {
         ))}
 
         {workflow_list.map((field_name, index) => (
-          <TableCell key={index} sx={{ textAlign: "center" }}>
+          <TableCell
+            key={index}
+            sx={{ textAlign: "center", position: "relative" }}
+          >
             <div
               style={{
                 display: "flex",
@@ -133,13 +138,18 @@ function StatusRow(props) {
                 <CircularProgress />
               )}
               {field_name === "TUMOR_NORMAL" && !noLinkIcon ? (
-                <IconButton
-                  aria-label="expand tumor normal row"
-                  size="small"
-                  onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
-                >
-                  <LinkIcon color="disabled" />
-                </IconButton>
+                <>
+                  {/* Div added to cover space needed in IconButton as it use absolute  */}
+                  <div style={{ marginRight: "20px" }} />
+                  <IconButton
+                    sx={{ position: "absolute", right: "0" }}
+                    aria-label="expand tumor normal row"
+                    size="small"
+                    onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
+                  >
+                    <LinkIcon color="disabled" />
+                  </IconButton>
+                </>
               ) : (
                 <></>
               )}

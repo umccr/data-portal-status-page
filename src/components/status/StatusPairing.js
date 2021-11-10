@@ -4,7 +4,13 @@ import React, { useEffect, useState } from "react";
 import { API } from "aws-amplify";
 
 // Material Ui Component
-import { Collapse, TableRow, TableCell, CircularProgress } from "@mui/material";
+import {
+  Collapse,
+  TableRow,
+  TableCell,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 
 // Custom component
 import { useDialogContext } from "../utils/DialogComponent";
@@ -41,7 +47,7 @@ function StatusPairing(props) {
   const [pairingResponse, setPairingResponse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [metadataGrouped, setMetadataGrouped] = useState({ WGS: [] });
-  
+
   // UseEffect to fetch pairing data associated with the library_id
   useEffect(() => {
     let componentUnmount = false;
@@ -60,11 +66,12 @@ function StatusPairing(props) {
           APIConfig
         );
 
-        // Grab a metadata list to be shown in the table
-        const metadataList = createMetadataObjectFromTNPairing(
-          pairingResponse[0]
-        );
-        console.log(metadataList);
+        let metadataList = [];
+
+        // Grab a metadata list to be shown in the table if any
+        if (pairingResponse.length > 0) {
+          metadataList = createMetadataObjectFromTNPairing(pairingResponse[0]);
+        }
 
         // Set some state
         setPairingResponse(pairingResponse[0]);
@@ -95,6 +102,7 @@ function StatusPairing(props) {
         style={{
           padding: 0,
           textAlign: "center",
+          backgroundColor: "#fff7f7",
         }}
       >
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
@@ -103,14 +111,20 @@ function StatusPairing(props) {
               <CircularProgress aria-label="circular-loader" />
             </div>
           ) : (
-            <>
-              <StatusTable
-                noLinkIcon
-                pipelineType="WGS"
-                metadataGrouped={metadataGrouped}
-                title={"Pairing for " + pairingResponse.subject_id}
-              />
-            </>
+            <div style={{ padding: "0 3em 0 3em" }}>
+              {pairingResponse ? (
+                <StatusTable
+                  noLinkIcon
+                  pipelineType="WGS"
+                  metadataGrouped={metadataGrouped}
+                  title={"Pairing for " + pairingResponse.subject_id}
+                />
+              ) : (
+                <Typography padding="20px 0 20px 0">
+                  Sorry, no pairing data is found!
+                </Typography>
+              )}
+            </div>
           )}
         </Collapse>
       </TableCell>
