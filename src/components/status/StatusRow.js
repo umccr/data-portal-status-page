@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles";
 import { TableRow, TableCell, Link, IconButton } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import LinkIcon from "@mui/icons-material/Link";
+import { grey } from "@mui/material/colors";
 
 // Custom Component
 import StatusPairing from "./StatusPairing";
@@ -20,8 +21,9 @@ const DATA_PORTAL_CLIENT_DOMAIN =
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "60px",
+  backgroundColor: "white",
   "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+    backgroundColor: grey[100],
   },
   // hide last border
   "&:last-child td, &:last-child th": {

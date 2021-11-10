@@ -102,6 +102,7 @@ function StatusPairing(props) {
         style={{
           padding: 0,
           textAlign: "center",
+          backgroundColor: "#fff7f7",
         }}
       >
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
@@ -119,7 +120,7 @@ function StatusPairing(props) {
                   title={"Pairing for " + pairingResponse.subject_id}
                 />
               ) : (
-                <Typography padding="1em 0 1em 0">
+                <Typography padding="20px 0 20px 0">
                   Sorry, no pairing data is found!
                 </Typography>
               )}
