@@ -5,15 +5,18 @@ import { API } from "aws-amplify";
 
 // mui components
 import { styled } from "@mui/material/styles";
-import { TableRow, TableCell, Link } from "@mui/material";
+import { TableRow, TableCell, Link, IconButton } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import LinkIcon from "@mui/icons-material/Link";
 
 // Custom Component
+import StatusPairing from "./StatusPairing";
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
 
-const DATA_PORTAL_CLIENT_DOMAIN = "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
+const DATA_PORTAL_CLIENT_DOMAIN =
+  "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "60px",
@@ -41,10 +44,12 @@ function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
 }
 
 function StatusRow(props) {
-  const { metadata, workflow_list } = props;
+  const { metadata, workflow_list, noLinkIcon } = props;
   const { setDialogInfo } = useDialogContext();
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
+
+  const [isTNPairingOpen, setIsTNPairingOpen] = useState(false);
 
   useEffect(() => {
     let componentUnmount = false;
@@ -90,38 +95,68 @@ function StatusRow(props) {
   }, [metadata, workflow_list, setDialogInfo]);
 
   return (
-    <StyledTableRow>
-      {FIELD_TO_DISPLAY.map((field_name, index) => (
-        <TableCell key={index} sx={{ textAlign: "center" }}>
-          {field_name === "subject_id" ? (
-            <Link
-              underline="hover"
-              color="black"
-              href={
-                "https://" +
-                DATA_PORTAL_CLIENT_DOMAIN +
-                "/subjects/" +
-                metadata[field_name]
-              }
-            >
-              {metadata[field_name]}
-            </Link>
-          ) : (
-            metadata[field_name]
-          )}
-        </TableCell>
-      ))}
+    <>
+      <StyledTableRow>
+        {FIELD_TO_DISPLAY.map((field_name, index) => (
+          <TableCell key={index} sx={{ textAlign: "center" }}>
+            {field_name === "subject_id" ? (
+              <Link
+                underline="hover"
+                color="black"
+                href={
+                  "https://" +
+                  DATA_PORTAL_CLIENT_DOMAIN +
+                  "/subjects/" +
+                  metadata[field_name]
+                }
+              >
+                {metadata[field_name]}
+              </Link>
+            ) : (
+              metadata[field_name]
+            )}
+          </TableCell>
+        ))}
 
-      {workflow_list.map((field_name, index) => (
-        <TableCell key={index} sx={{ textAlign: "center" }}>
-          {workflowStatus[field_name] ? (
-            <StatusChip status={workflowStatus[field_name]} />
-          ) : (
-            <CircularProgress />
-          )}
-        </TableCell>
-      ))}
-    </StyledTableRow>
+        {workflow_list.map((field_name, index) => (
+          <TableCell key={index} sx={{ textAlign: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {workflowStatus[field_name] ? (
+                <StatusChip status={workflowStatus[field_name]} />
+              ) : (
+                <CircularProgress />
+              )}
+              {field_name === "TUMOR_NORMAL" && !noLinkIcon ? (
+                <IconButton
+                  aria-label="expand tumor normal row"
+                  size="small"
+                  onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
+                >
+                  <LinkIcon color="disabled" />
+                </IconButton>
+              ) : (
+                <></>
+              )}
+            </div>
+          </TableCell>
+        ))}
+      </StyledTableRow>
+      {isTNPairingOpen ? (
+        <StatusPairing
+          library_id={metadata["library_id"]}
+          isOpen={isTNPairingOpen}
+          numSpan={FIELD_TO_DISPLAY.length + workflow_list.length}
+        />
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 
