@@ -121,7 +121,10 @@ function StatusRow(props) {
         ))}
 
         {workflow_list.map((field_name, index) => (
-          <TableCell key={index} sx={{ textAlign: "center" }}>
+          <TableCell
+            key={index}
+            sx={{ textAlign: "center", position: "relative" }}
+          >
             <div
               style={{
                 display: "flex",
@@ -135,13 +138,18 @@ function StatusRow(props) {
                 <CircularProgress />
               )}
               {field_name === "TUMOR_NORMAL" && !noLinkIcon ? (
-                <IconButton
-                  aria-label="expand tumor normal row"
-                  size="small"
-                  onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
-                >
-                  <LinkIcon color="disabled" />
-                </IconButton>
+                <>
+                  {/* Div added to cover space needed in IconButton as it use absolute pos */}
+                  <div style={{ marginRight: "50px" }} />
+                  <IconButton
+                    sx={{ position: "absolute", right: "1rem", width: "35px" }}
+                    aria-label="expand tumor normal row"
+                    size="small"
+                    onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
+                  >
+                    <LinkIcon color="disabled" />
+                  </IconButton>
+                </>
               ) : (
                 <></>
               )}
