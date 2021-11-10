@@ -6,21 +6,21 @@ import Container from "@mui/material/Container";
 import LinearProgress from "@mui/material/LinearProgress";
 
 // Custom Component
-import { useMetadataToolbarContext } from "./MetadataToolbar";
-import MetadataListsView from "./MetadataListView";
+import { useStatusToolbarContext } from "./StatusToolbar";
+import StatusListsView from "./views/StatusListView";
+import StatusTabView from "./views/StatusTabView";
 
 import {
   SUPPORTED_PIPELINE,
   groupListBasedOnKey,
   uniqueArray,
 } from "../utils/Constants";
-import MetadataTabView from "./MetadataTabView";
 
-function MetadataTable(props) {
+function StatusIndex(props) {
   // Props for metadata
   const { metadataList } = props;
 
-  const { toolbarState } = useMetadataToolbarContext();
+  const { toolbarState } = useStatusToolbarContext();
   const statusFilterArray = toolbarState.status;
   const toggleView = toolbarState.toggleView;
   const [isLoading, setIsLoading] = useState(true);
@@ -76,12 +76,12 @@ function MetadataTable(props) {
           ) : (
             <>
               {toggleView === "tab" ? (
-                <MetadataTabView
+                <StatusTabView
                   metadataGrouped={metadataGrouped}
                   pipelineDisplay={pipelineDisplay}
                 />
               ) : (
-                <MetadataListsView
+                <StatusListsView
                   metadataGrouped={metadataGrouped}
                   pipelineDisplay={pipelineDisplay}
                 />
@@ -94,4 +94,4 @@ function MetadataTable(props) {
   );
 }
 
-export default MetadataTable;
+export default StatusIndex;

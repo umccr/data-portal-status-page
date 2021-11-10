@@ -8,13 +8,15 @@ import { Link as RouterLink } from "react-router-dom";
 
 // Material UI Components
 import { styled } from "@mui/material/styles";
-import { AppBar, Toolbar, Button, Typography, InputBase } from "@mui/material";
+import { AppBar, Toolbar, Button, Typography, InputBase, Link } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { grey } from "@mui/material/colors";
 
 // Custom Components
 import { useUserContext } from "../utils/UserContextProvider";
 import { useSearchContext } from "../utils/SearchContextProvider";
+
+const DATA_PORTAL_CLIENT_DOMAIN = "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
 
 // Styling Componentss
 const Search = styled("div")(({ theme }) => ({
@@ -159,7 +161,25 @@ function NavigationBar(props) {
             }}
           >
             <Typography variant="subtitle1" component="div">
-              LibraryRun
+              Library Run
+            </Typography>
+          </Button>
+          {/* Quick link to UMCCR Data Portal */}
+          <Button
+            color="primary"
+            LinkComponent={Link}
+            href={
+              "https://" +
+              DATA_PORTAL_CLIENT_DOMAIN
+            }
+            sx={{
+              color: "black",
+              margin: "0 10px 0 10px",
+              textTransform: "none",
+            }}
+          >
+            <Typography variant="subtitle1" component="div">
+              Data Portal
             </Typography>
           </Button>
         </div>

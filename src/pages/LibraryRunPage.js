@@ -3,7 +3,7 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 
 import LibraryRunAction from "../components/libraryRun/LibraryRunAction";
-import MetadataToolbar from "../components/metadata/MetadataToolbar";
+import StatusToolbar from "../components/status/StatusToolbar";
 
 function LibraryRunPage() {
   return (
@@ -14,9 +14,9 @@ function LibraryRunPage() {
         </Typography>
       </Grid>
       <Grid item xs={12}>
-        <MetadataToolbar>
+        <StatusToolbar>
           <LibraryRunAction />
-        </MetadataToolbar>
+        </StatusToolbar>
       </Grid>
     </>
   );

@@ -180,6 +180,10 @@ class CdkPipelineStack(cdk.Stack):
                     value=props["client_bucket_name"][app_stage],
                     type=codebuild.BuildEnvironmentVariableType.PLAINTEXT
                 ),
+                "REACT_APP_UMCCR_DOMAIN_NAME": codebuild.BuildEnvironmentVariable(
+                    value="/hosted_zone/umccr/name",
+                    type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE
+                ),
                 "REACT_APP_DATA_PORTAL_API_DOMAIN": codebuild.BuildEnvironmentVariable(
                     value="/data_portal/backend/api_domain_name",
                     type=codebuild.BuildEnvironmentVariableType.PARAMETER_STORE

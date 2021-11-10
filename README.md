@@ -4,12 +4,13 @@
 This is the front end code for UMCCR Status Page.
 
 The directories:
-- *deploy* - It will contain the AWS cdk cloud infrastructrure. [CDK readme](deploy/README.md)
+- *deploy* - It will contain the AWS cdk cloud infrastructrure. 
 - *public* - Contains static files.
 - *src* - The react source code.
 
+**AWS-CDK Infrastructure**
 
-### To Run Locally
+See CDK readme at deploy directory. [CDK readme](deploy/README.md)
 
 **React**
 

@@ -17,9 +17,9 @@ import { grey } from "@mui/material/colors";
 // Custom Component
 import { useDialogContext } from "../utils/DialogComponent";
 import SequenceRunChip from "./SequenceRunChip";
-import MetadataTable from "../metadata/MetadataTable";
+import StatusIndex from "../status/StatusIndex";
 import Pagination from "../utils/Pagination";
-import { useMetadataToolbarContext } from "../metadata/MetadataToolbar";
+import { useStatusToolbarContext } from "../status/StatusToolbar";
 import { convertToDisplayName, getDateTimeString } from "../utils/Constants";
 
 function displayWithTypography(key, data, typograhyStyle) {
@@ -78,7 +78,7 @@ function SequenceRunRow(props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [metadataList, setMetadataList] = useState([]);
-  const { toolbarState } = useMetadataToolbarContext();
+  const { toolbarState } = useStatusToolbarContext();
   const statusArray = toolbarState.status;
 
   // PAGINATION
@@ -208,13 +208,21 @@ function SequenceRunRow(props) {
                 {displayWithTypography(data, "number",{ fontWeight: "light" })}
                 </Grid> */}
                 <Grid item>
-                  {displayWithTypography(
-                    "end_time",
-                    getDateTimeString(data.end_time),
-                    {
-                      fontWeight: "light",
-                    }
-                  )}
+                  {data.end_time // Display end_time if exist otherwise start_time is displayed
+                    ? displayWithTypography(
+                        "end_time",
+                        getDateTimeString(data.end_time),
+                        {
+                          fontWeight: "light",
+                        }
+                      )
+                    : displayWithTypography(
+                        "start_time",
+                        getDateTimeString(data.start_time),
+                        {
+                          fontWeight: "light",
+                        }
+                      )}
                 </Grid>
               </Grid>
             </Grid>
@@ -236,7 +244,7 @@ function SequenceRunRow(props) {
               </div>
             ) : (
               <>
-                <MetadataTable
+                <StatusIndex
                   instrument_run_id={data.instrument_run_id}
                   metadataList={metadataList}
                 />
