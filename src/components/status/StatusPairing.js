@@ -110,7 +110,7 @@ function StatusPairing(props) {
               <CircularProgress aria-label="circular-loader" />
             </div>
           ) : (
-            <>
+            <div style={{ padding: "0 3em 0 3em" }}>
               {pairingResponse ? (
                 <StatusTable
                   noLinkIcon
@@ -119,11 +119,11 @@ function StatusPairing(props) {
                   title={"Pairing for " + pairingResponse.subject_id}
                 />
               ) : (
-                <Typography padding="1rem 0 1rem 0">
+                <Typography padding="1em 0 1em 0">
                   Sorry, no pairing data is found!
                 </Typography>
               )}
-            </>
+            </div>
           )}
         </Collapse>
       </TableCell>
