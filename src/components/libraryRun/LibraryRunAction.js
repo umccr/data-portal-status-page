@@ -33,7 +33,7 @@ async function getQueryMetadata(queryParameter) {
   for (const libraryRun of libraryRunList) {
     const APIConfig = {
       queryStringParameters: {
-        library: libraryRun.library_id,
+        library_id: libraryRun.library_id,
       },
     };
     const responseMetadata = await API.get(
