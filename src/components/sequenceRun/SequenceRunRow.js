@@ -99,7 +99,9 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        queryParameter["end_status"] = statusArray[0];
+        if (statusArray.length > 0){
+          queryParameter["end_status"] = statusArray[0];
+        }
         setIsLoading(true);
         const metadataResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,

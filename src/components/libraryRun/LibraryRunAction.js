@@ -92,7 +92,7 @@ function LibraryRunAction() {
             },
           };
         }
-        if (toolbarState.status.length === 1) {
+        if (toolbarState.status.length > 0) {
           APIConfig = {
             ...queryParameter,
             end_status: toolbarState.status[0],
