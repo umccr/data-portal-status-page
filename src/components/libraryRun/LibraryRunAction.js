@@ -33,7 +33,7 @@ async function getQueryMetadata(queryParameter) {
   for (const libraryRun of libraryRunList) {
     const APIConfig = {
       queryStringParameters: {
-        library: libraryRun.library_id,
+        library_id: libraryRun.library_id,
       },
     };
     const responseMetadata = await API.get(
@@ -92,7 +92,7 @@ function LibraryRunAction() {
             },
           };
         }
-        if (toolbarState.status.length === 1) {
+        if (toolbarState.status.length > 0) {
           APIConfig = {
             ...queryParameter,
             end_status: toolbarState.status[0],

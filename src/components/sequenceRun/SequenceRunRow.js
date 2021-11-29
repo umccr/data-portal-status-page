@@ -56,7 +56,7 @@ async function getMetadataFromInstrumentRunId(
   for (const libraryRun of libraryRunList) {
     const APIConfig = {
       queryStringParameters: {
-        library: libraryRun.library_id,
+        library_id: libraryRun.library_id,
       },
     };
     const responseMetadata = await API.get(
@@ -99,7 +99,9 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        queryParameter["end_status"] = statusArray[0];
+        if (statusArray.length > 0){
+          queryParameter["end_status"] = statusArray[0];
+        }
         setIsLoading(true);
         const metadataResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,
