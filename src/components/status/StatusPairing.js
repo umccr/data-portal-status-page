@@ -16,7 +16,25 @@ import {
 import { useDialogContext } from "../utils/DialogComponent";
 import StatusTable from "./StatusTable";
 
-function createMetadataObjectFromTNPairing(TNPairingResponse) {
+async function getWorkflowIdFromLibraryId(library_id){
+
+  const APIConfig = {
+    queryStringParameters: {
+      library_id: library_id,
+    },
+  };
+
+  const library_run_response = await API.get(
+    "DataPortalApi",
+    "/libraryrun/",
+    APIConfig
+  );
+  
+  const library_run = library_run_response.results[0]
+  return library_run.workflows
+}
+
+async function createMetadataObjectFromTNPairing(TNPairingResponse) {
   const objectArray = [];
 
   const subject_id = TNPairingResponse.subject_id;
@@ -27,6 +45,7 @@ function createMetadataObjectFromTNPairing(TNPairingResponse) {
       subject_id: subject_id,
       library_id: eachSubject.rglb,
       sample_id: eachSubject.rgsm,
+      workflow_id: await getWorkflowIdFromLibraryId(eachSubject.rglb)
     });
   }
 
@@ -35,6 +54,7 @@ function createMetadataObjectFromTNPairing(TNPairingResponse) {
       subject_id: subject_id,
       library_id: eachSubject.rglb,
       sample_id: eachSubject.rgsm,
+      workflow_id: await getWorkflowIdFromLibraryId(eachSubject.rglb)
     });
   }
   return objectArray;
@@ -65,12 +85,12 @@ function StatusPairing(props) {
           "/pairing/by_libraries/",
           APIConfig
         );
-
+        
         let metadataList = [];
 
         // Grab a metadata list to be shown in the table if any
         if (pairingResponse.length > 0) {
-          metadataList = createMetadataObjectFromTNPairing(pairingResponse[0]);
+          metadataList = await createMetadataObjectFromTNPairing(pairingResponse[0]);
         }
 
         // Set some state
