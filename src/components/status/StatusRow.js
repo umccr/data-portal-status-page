@@ -33,6 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   const groupedWorkflow = {};
+  
   // Set Not Found by default
   for (const workflow of workflow_list) {
     groupedWorkflow[workflow] = "-";
@@ -58,19 +59,26 @@ function StatusRow(props) {
     const fetchData = async () => {
       try {
         if (!metadata.completed_workflows) {
-          const APIConfig = {
-            queryStringParameters: {
-              library_id: metadata.library_id,
-            },
-          };
 
+          // Construct workflow query param string
+          let queryPath = "/workflows?"
+          
+          for (const workflow_id of metadata.workflow_id){
+            queryPath = queryPath.concat("id=", workflow_id, "&")
+          }
+          
+          if (queryPath.slice(-1) === '&' ){
+            queryPath = queryPath.slice(0,-1)
+          }
+          
           const responseWorkflow = await API.get(
             "DataPortalApi",
-            "/workflows/",
-            APIConfig
+            queryPath
           );
+
           metadata["completed_workflows"] = responseWorkflow.results;
         }
+
         const groupedWorkflow = groupWorkflow(
           metadata["completed_workflows"],
           workflow_list
@@ -83,7 +91,10 @@ function StatusRow(props) {
           isOpen: true,
           dialogTitle: "Error",
           dialogContent:
-            "Sorry, An error has occured when fetching metadata. Please try again!",
+            ''.concat(
+            "Sorry, An error has occured when fetching metadata. Please try again!\n",
+            "\nError:", err
+            )
         });
       }
     };

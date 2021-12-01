@@ -35,7 +35,7 @@ async function getMetadataFromInstrumentRunId(
   instrument_run_id,
   queryParameter
 ) {
-  let metadataList = [];
+  let display_field_list = [];
   let isBclConvert = false;
 
   // Api Calls to LibraryRun to get list of Metadata
@@ -70,13 +70,29 @@ async function getMetadataFromInstrumentRunId(
       "/metadata",
       APIConfig
     );
+    
     const metadata_result = responseMetadata.results[0];
+    
+    // Expected data to extract from metadata and libraryRun
+    // {
+    //   library_id: 
+    //   sample_id:
+    //   subject_id:
+    //   workflow_id:
+    // }
 
-    metadataList = [...metadataList, metadata_result];
+    const extract_data = {
+      ...metadata_result,
+      library_id: libraryRun.library_id,
+      workflow_id: libraryRun.workflows
+    }
+    
+
+    display_field_list = [...display_field_list, extract_data];
   }
   return {
     pagination: paginationResult,
-    results: metadataList,
+    results: display_field_list,
     isBclConvert: isBclConvert,
   };
 }
@@ -87,7 +103,7 @@ function SequenceRunRow(props) {
   const { setDialogInfo } = useDialogContext();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [metadataList, setMetadataList] = useState([]);
+  const [dataToDisplay, setDataToDisplay] = useState([]);
   const { toolbarState } = useStatusToolbarContext();
   const statusArray = toolbarState.status;
   const [isBclConvert, setIsBclConvert] = useState(false);
@@ -113,15 +129,15 @@ function SequenceRunRow(props) {
           queryParameter["end_status"] = statusArray[0];
         }
         setIsLoading(true);
-        const metadataResponse = await getMetadataFromInstrumentRunId(
+        const apiResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,
           queryParameter
         );
 
         if (componentUnmount) return;
-        setPagination(metadataResponse.pagination);
-        setMetadataList(metadataResponse.results);
-        setIsBclConvert(metadataResponse.isBclConvert);
+        setPagination(apiResponse.pagination);
+        setDataToDisplay(apiResponse.results);
+        setIsBclConvert(apiResponse.isBclConvert);
         setIsLoading(false);
       } catch (err) {
         setDialogInfo({
@@ -268,8 +284,7 @@ function SequenceRunRow(props) {
             ) : (
               <>
                 <StatusIndex
-                  instrument_run_id={data.instrument_run_id}
-                  metadataList={metadataList}
+                  metadataList={dataToDisplay}
                 />
                 <Pagination
                   pagination={pagination}
