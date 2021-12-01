@@ -3,9 +3,6 @@ import Chip from "@mui/material/Chip";
 
 import { green, orange, red } from "@mui/material/colors";
 
-// Custom function
-import { convertToDisplayName } from "../utils/Constants";
-
 function getStyleForStatus(status, isSelected) {
   const baseStyle = { fontWeight: "Medium" };
 
@@ -24,9 +21,9 @@ function getStyleForStatus(status, isSelected) {
   }
 }
 
-function SequenceRunChip({ status }) {
+function SequenceRunChip({label, status }) {
   return (
-    <Chip label={convertToDisplayName(status)} sx={getStyleForStatus(status)} />
+    <Chip label={label} sx={getStyleForStatus(status)} />
   );
 }
 
