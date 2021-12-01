@@ -55,9 +55,9 @@ async function getMetadataFromInstrumentRunId(
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
-    // BCL Convert 
-    if (libraryRun.workflows.length > 0){
-      isBclConvert = true
+    // BCL Convert
+    if (libraryRun.workflows.length > 0) {
+      isBclConvert = true;
     }
 
     const APIConfig = {
@@ -74,7 +74,11 @@ async function getMetadataFromInstrumentRunId(
 
     metadataList = [...metadataList, metadata_result];
   }
-  return { pagination: paginationResult, results: metadataList, isBclConvert: isBclConvert };
+  return {
+    pagination: paginationResult,
+    results: metadataList,
+    isBclConvert: isBclConvert,
+  };
 }
 
 function SequenceRunRow(props) {
@@ -105,7 +109,7 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        if (statusArray.length > 0){
+        if (statusArray.length > 0) {
           queryParameter["end_status"] = statusArray[0];
         }
         setIsLoading(true);
@@ -117,7 +121,7 @@ function SequenceRunRow(props) {
         if (componentUnmount) return;
         setPagination(metadataResponse.pagination);
         setMetadataList(metadataResponse.results);
-        setIsBclConvert(metadataResponse.isBclConvert)
+        setIsBclConvert(metadataResponse.isBclConvert);
         setIsLoading(false);
       } catch (err) {
         setDialogInfo({
@@ -233,10 +237,16 @@ function SequenceRunRow(props) {
                         }
                       )}
                 </Grid>
-                <Grid item>
-                  <SequenceRunChip label="BCL Convert" status={isBclConvert?'succeeded':''} />
-                </Grid>
-
+                {isOpen ? (
+                  <Grid item>
+                    <SequenceRunChip
+                      label="BCL Convert"
+                      status={isBclConvert ? "succeeded" : ""}
+                    />
+                  </Grid>
+                ) : (
+                  <></>
+                )}
               </Grid>
             </Grid>
           </Grid>
