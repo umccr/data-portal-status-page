@@ -6,9 +6,9 @@ export const WORKFLOW_STATUS_LENGTH = WORKFLOW_STATUS.length;
 
 // Workflow order
 export const WORKFLOW_PIPELINE = {
-  WGS: ["BCL_CONVERT", "DRAGEN_WGS_QC", "TUMOR_NORMAL"],
-  WTS: ["BCL_CONVERT", "WTS"],
-  ctTSO: ["BCL_CONVERT", "DRAGEN_TSO_CTDNA"],
+  WGS: ["DRAGEN_WGS_QC", "TUMOR_NORMAL"],
+  WTS: ["WTS"],
+  ctTSO: ["DRAGEN_TSO_CTDNA"],
 };
 
 // Workflow Types Available
@@ -20,7 +20,7 @@ export function getWorkflowPipeline(pipelineType) {
   if (pipeline) {
     return pipeline;
   }
-  return ["BCL_CONVERT"];
+  return [];
 }
 
 // Raw field name

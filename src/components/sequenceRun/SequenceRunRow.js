@@ -36,6 +36,7 @@ async function getMetadataFromInstrumentRunId(
   queryParameter
 ) {
   let display_field_list = [];
+  let isBclConvert = false;
 
   // Api Calls to LibraryRun to get list of Metadata
   const APIConfig = {
@@ -54,6 +55,11 @@ async function getMetadataFromInstrumentRunId(
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
+    // BCL Convert
+    if (libraryRun.workflows.length > 0) {
+      isBclConvert = true;
+    }
+
     const APIConfig = {
       queryStringParameters: {
         library_id: libraryRun.library_id,
@@ -84,7 +90,11 @@ async function getMetadataFromInstrumentRunId(
 
     display_field_list = [...display_field_list, extract_data];
   }
-  return { pagination: paginationResult, results: display_field_list };
+  return {
+    pagination: paginationResult,
+    results: display_field_list,
+    isBclConvert: isBclConvert,
+  };
 }
 
 function SequenceRunRow(props) {
@@ -96,7 +106,7 @@ function SequenceRunRow(props) {
   const [dataToDisplay, setDataToDisplay] = useState([]);
   const { toolbarState } = useStatusToolbarContext();
   const statusArray = toolbarState.status;
-
+  const [isBclConvert, setIsBclConvert] = useState(false);
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
     rowsPerPage: 50,
@@ -115,7 +125,7 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        if (statusArray.length > 0){
+        if (statusArray.length > 0) {
           queryParameter["end_status"] = statusArray[0];
         }
         setIsLoading(true);
@@ -127,6 +137,7 @@ function SequenceRunRow(props) {
         if (componentUnmount) return;
         setPagination(apiResponse.pagination);
         setDataToDisplay(apiResponse.results);
+        setIsBclConvert(apiResponse.isBclConvert);
         setIsLoading(false);
       } catch (err) {
         setDialogInfo({
@@ -187,7 +198,7 @@ function SequenceRunRow(props) {
               direction="column"
               justifyContent="flex-start"
               alignItems="center"
-              spacing={0}
+              spacing={1}
               padding={0.5}
             >
               {/* Row for sequence run Name and status */}
@@ -208,7 +219,7 @@ function SequenceRunRow(props) {
                   )}
                 </Grid>
                 <Grid item>
-                  <SequenceRunChip status={data.status} />
+                  <SequenceRunChip label="Sequencing" status={data.status} />
                 </Grid>
               </Grid>
 
@@ -242,6 +253,16 @@ function SequenceRunRow(props) {
                         }
                       )}
                 </Grid>
+                {isOpen ? (
+                  <Grid item>
+                    <SequenceRunChip
+                      label="BCL Convert"
+                      status={isBclConvert ? "succeeded" : ""}
+                    />
+                  </Grid>
+                ) : (
+                  <></>
+                )}
               </Grid>
             </Grid>
           </Grid>
