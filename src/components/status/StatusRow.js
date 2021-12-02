@@ -5,13 +5,11 @@ import { API } from "aws-amplify";
 
 // mui components
 import { styled } from "@mui/material/styles";
-import { TableRow, TableCell, Link, IconButton } from "@mui/material";
+import { TableRow, TableCell, Link } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import LinkIcon from "@mui/icons-material/Link";
 import { grey } from "@mui/material/colors";
 
 // Custom Component
-import StatusPairing from "./StatusPairing";
 import { FIELD_TO_DISPLAY } from "../utils/Constants";
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
@@ -52,7 +50,6 @@ function StatusRow(props) {
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
 
-  const [isTNPairingOpen, setIsTNPairingOpen] = useState(false);
 
   useEffect(() => {
     let componentUnmount = false;
@@ -148,35 +145,11 @@ function StatusRow(props) {
               ) : (
                 <CircularProgress />
               )}
-              {field_name === "TUMOR_NORMAL" && !noLinkIcon ? (
-                <>
-                  {/* Div added to cover space needed in IconButton as it use absolute  */}
-                  <div style={{ marginRight: "20px" }} />
-                  <IconButton
-                    sx={{ position: "absolute", right: "0" }}
-                    aria-label="expand tumor normal row"
-                    size="small"
-                    onClick={() => setIsTNPairingOpen(!isTNPairingOpen)}
-                  >
-                    <LinkIcon color="disabled" />
-                  </IconButton>
-                </>
-              ) : (
-                <></>
-              )}
             </div>
           </TableCell>
         ))}
       </StyledTableRow>
-      {isTNPairingOpen ? (
-        <StatusPairing
-          library_id={metadata["library_id"]}
-          isOpen={isTNPairingOpen}
-          numSpan={FIELD_TO_DISPLAY.length + workflow_list.length}
-        />
-      ) : (
-        <></>
-      )}
+
     </>
   );
 }
