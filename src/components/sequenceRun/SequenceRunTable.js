@@ -19,6 +19,30 @@ import SequenceRunRow from "./SequenceRunRow";
 import Pagination from "../utils/Pagination";
 import { useDialogContext } from "../utils/DialogComponent";
 
+
+async function isBclConvertRun(instrument_run_id){
+  let isBclConvert = false;
+
+  // Check for BCL_CONVERT
+  let APIConfig = {
+    queryStringParameters: {
+      type_name:"BCL_CONVERT",
+      sequence_run__instrument_run_id:instrument_run_id
+    }
+  };
+  const responseBCLConvertQuery = await API.get(
+    "DataPortalApi",
+    "/workflows/",
+    APIConfig
+  );
+
+  if (responseBCLConvertQuery.pagination.count > 0){
+    isBclConvert = true
+  }
+
+  return isBclConvert
+}
+
 function displaySequenceRow(sequenceList) {
   if (sequenceList.length > 1) {
     return sequenceList.map((row, index) => (
@@ -97,10 +121,14 @@ export default function SequenceRunTable() {
         );
         newSequenceList = sequenceResponse.results;
         paginationResult = sequenceResponse.pagination;
-
+        
+        // Looping for BCL_CONVERT
+        for (const eachSequence of newSequenceList){
+          eachSequence.isBclConvert = await isBclConvertRun(newSequenceList.instrument_run_id)
+        }
+          
         // Do Not update state on unmount
         if (componentUnmount) return;
-
         setSequenceRunList(newSequenceList);
         setPagination(paginationResult);
       } catch (err) {
