@@ -36,10 +36,9 @@ async function getMetadataFromInstrumentRunId(
   queryParameter
 ) {
   let display_field_list = [];
-  let isBclConvert = false;
 
   // Api Calls to LibraryRun to get list of Metadata
-  const APIConfig = {
+  let APIConfig = {
     queryStringParameters: {
       ...queryParameter,
       instrument_run_id: instrument_run_id,
@@ -55,10 +54,6 @@ async function getMetadataFromInstrumentRunId(
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
-    // BCL Convert
-    if (libraryRun.workflows.length > 0) {
-      isBclConvert = true;
-    }
 
     const APIConfig = {
       queryStringParameters: {
@@ -92,8 +87,7 @@ async function getMetadataFromInstrumentRunId(
   }
   return {
     pagination: paginationResult,
-    results: display_field_list,
-    isBclConvert: isBclConvert,
+    results: display_field_list
   };
 }
 
@@ -106,7 +100,7 @@ function SequenceRunRow(props) {
   const [dataToDisplay, setDataToDisplay] = useState([]);
   const { toolbarState } = useStatusToolbarContext();
   const statusArray = toolbarState.status;
-  const [isBclConvert, setIsBclConvert] = useState(false);
+
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
     rowsPerPage: 50,
@@ -137,7 +131,6 @@ function SequenceRunRow(props) {
         if (componentUnmount) return;
         setPagination(apiResponse.pagination);
         setDataToDisplay(apiResponse.results);
-        setIsBclConvert(apiResponse.isBclConvert);
         setIsLoading(false);
       } catch (err) {
         setDialogInfo({
@@ -218,8 +211,12 @@ function SequenceRunRow(props) {
                     }
                   )}
                 </Grid>
-                <Grid item>
+                <Grid item spacing={1}>
                   <SequenceRunChip label="Sequencing" status={data.status} />
+                  <SequenceRunChip
+                      label="BCL Convert"
+                      status={data.isBclConvert ? "succeeded" : ""}
+                    />
                 </Grid>
               </Grid>
 
@@ -253,16 +250,7 @@ function SequenceRunRow(props) {
                         }
                       )}
                 </Grid>
-                {isOpen ? (
-                  <Grid item>
-                    <SequenceRunChip
-                      label="BCL Convert"
-                      status={isBclConvert ? "succeeded" : ""}
-                    />
-                  </Grid>
-                ) : (
-                  <></>
-                )}
+
               </Grid>
             </Grid>
           </Grid>
