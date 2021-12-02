@@ -16,11 +16,18 @@ import {
 import { useDialogContext } from "../utils/DialogComponent";
 import StatusTable from "./StatusTable";
 
-async function getWorkflowIdFromLibraryId(library_id){
+function getInstrumentRunIdFromRGID(rgid){
+  const rgid_split = rgid.split('.')
+
+  return rgid_split[rgid_split.length - 2]
+}
+
+async function getWorkflowIdFromLibraryIdAndIntrumentRunId(library_id, instrument_run_id){
 
   const APIConfig = {
     queryStringParameters: {
       library_id: library_id,
+      instrument_run_id: instrument_run_id
     },
   };
 
@@ -41,20 +48,24 @@ async function createMetadataObjectFromTNPairing(TNPairingResponse) {
 
   // Taking from fastq_list_rows
   for (const eachSubject of TNPairingResponse.fastq_list_rows) {
+    const instrument_run_id = getInstrumentRunIdFromRGID(eachSubject.rgid) 
+
     objectArray.push({
       subject_id: subject_id,
       library_id: eachSubject.rglb,
       sample_id: eachSubject.rgsm,
-      workflow_id: await getWorkflowIdFromLibraryId(eachSubject.rglb)
+      workflow_id: await getWorkflowIdFromLibraryIdAndIntrumentRunId(eachSubject.rglb, instrument_run_id)
     });
   }
 
   for (const eachSubject of TNPairingResponse.tumor_fastq_list_rows) {
+    const instrument_run_id = getInstrumentRunIdFromRGID(eachSubject.rgid) 
+
     objectArray.push({
       subject_id: subject_id,
       library_id: eachSubject.rglb,
       sample_id: eachSubject.rgsm,
-      workflow_id: await getWorkflowIdFromLibraryId(eachSubject.rglb)
+      workflow_id: await getWorkflowIdFromLibraryIdAndIntrumentRunId(eachSubject.rglb, instrument_run_id)
     });
   }
   return objectArray;
