@@ -21,7 +21,7 @@ function StatusTable(props) {
   // The Status table is the table for each individual library run grouped by metadata type.
   // For example one status Table is the table of Tumor Normal type runs
 
-  const { pipelineType, metadataGrouped, noTitle, title, noLinkIcon } = props;
+  const { pipelineType, metadataGrouped, noTitle, title } = props;
   // 
   return (
     <TableContainer sx={{ textAlign: "left", margin: "1em 0 2em" }}>
@@ -75,7 +75,6 @@ function StatusTable(props) {
           <TableBody>
             {metadataGrouped[pipelineType].map((metadata, index) => (
               <StatusRow
-                noLinkIcon={noLinkIcon}
                 key={index}
                 metadata={metadata}
                 workflow_list={getWorkflowPipeline(pipelineType)}

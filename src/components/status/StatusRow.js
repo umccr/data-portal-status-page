@@ -10,7 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
 
 // Custom Component
-import { FIELD_TO_DISPLAY } from "../utils/Constants";
+import { FIELD_TO_DISPLAY, WorkflowTypeEquivalence } from "../utils/Constants";
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
 
@@ -29,23 +29,36 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
 function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
-  const groupedWorkflow = {};
+  const groupedWorkflowStatus = {};
   
-  // Set Not Found by default
-  for (const workflow of workflow_list) {
-    groupedWorkflow[workflow] = "-";
+  for (const workflow_display of workflow_list) {
+
+    let workflowStatusResult = '-'; // '-' by default
+
+    // Find from array
+    for (const workflowObject of metadataCompletedWorkflow){
+
+      const workflow_type_name = workflowObject["type_name"]
+
+      if (workflow_type_name === workflow_display ||
+         workflow_type_name === WorkflowTypeEquivalence[workflow_display]){
+
+        // Find status
+        workflowStatusResult = workflowObject["end_status"]
+
+      }
+    }
+
+    groupedWorkflowStatus[workflow_display] = workflowStatusResult;
   }
 
-  for (const workflow of metadataCompletedWorkflow) {
-    groupedWorkflow[workflow.type_name] = workflow.end_status;
-  }
-
-  return groupedWorkflow;
+  return groupedWorkflowStatus;
 }
 
 function StatusRow(props) {
-  const { metadata, workflow_list, noLinkIcon } = props;
+  const { metadata, workflow_list } = props;
   const { setDialogInfo } = useDialogContext();
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});

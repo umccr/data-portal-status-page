@@ -4,10 +4,18 @@ export const WORKFLOW_STATUS = ["Succeeded", "Running", "Aborted", "Failed"];
 // Workflow filter length for comparison
 export const WORKFLOW_STATUS_LENGTH = WORKFLOW_STATUS.length;
 
+export const WorkflowTypeEquivalence = {
+  BCL_CONVERT: "bcl_convert",
+  DRAGEN_WGS_QC: "wgs_alignment_qc",
+  TUMOR_NORMAL: "wgs_tumor_normal",
+  DRAGEN_TSO_CTDNA: "tso_ctdna_tumor_only",
+  DRAGEN_WTS: "wts_tumor_only"
+}
+
 // Workflow order
 export const WORKFLOW_PIPELINE = {
   WGS: ["DRAGEN_WGS_QC", "TUMOR_NORMAL"],
-  WTS: ["WTS"],
+  WTS: ["DRAGEN_WTS"],
   ctTSO: ["DRAGEN_TSO_CTDNA"],
 };
 
