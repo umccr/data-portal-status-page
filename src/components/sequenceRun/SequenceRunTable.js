@@ -35,7 +35,7 @@ async function isBclConvertRun(instrument_run_id){
     "/workflows/",
     APIConfig
   );
-
+  
   if (responseBCLConvertQuery.pagination.count > 0){
     isBclConvert = true
   }
@@ -124,7 +124,7 @@ export default function SequenceRunTable() {
         
         // Looping for BCL_CONVERT
         for (const eachSequence of newSequenceList){
-          eachSequence.isBclConvert = await isBclConvertRun(newSequenceList.instrument_run_id)
+          eachSequence.isBclConvert = await isBclConvertRun(eachSequence.instrument_run_id)
         }
           
         // Do Not update state on unmount

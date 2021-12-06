@@ -211,7 +211,7 @@ function SequenceRunRow(props) {
                     }
                   )}
                 </Grid>
-                <Grid item spacing={1}>
+                <Grid item>
                   <SequenceRunChip label="Sequencing" status={data.status} />
                   <SequenceRunChip
                       label="BCL Convert"
