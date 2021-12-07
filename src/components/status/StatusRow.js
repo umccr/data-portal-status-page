@@ -29,25 +29,22 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-
 function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   const groupedWorkflowStatus = {};
-  
-  for (const workflow_display of workflow_list) {
 
-    let workflowStatusResult = '-'; // '-' by default
+  for (const workflow_display of workflow_list) {
+    let workflowStatusResult = "-"; // '-' by default
 
     // Find from array
-    for (const workflowObject of metadataCompletedWorkflow){
+    for (const workflowObject of metadataCompletedWorkflow) {
+      const workflow_type_name = workflowObject["type_name"];
 
-      const workflow_type_name = workflowObject["type_name"]
-
-      if (workflow_type_name === workflow_display ||
-         workflow_type_name === WorkflowTypeEquivalence[workflow_display]){
-
+      if (
+        workflow_type_name === workflow_display ||
+        workflow_type_name === WorkflowTypeEquivalence[workflow_display]
+      ) {
         // Find status
-        workflowStatusResult = workflowObject["end_status"]
-
+        workflowStatusResult = workflowObject["end_status"];
       }
     }
 
@@ -63,30 +60,30 @@ function StatusRow(props) {
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
 
-
   useEffect(() => {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
         if (!metadata.completed_workflows) {
+          
+          if (metadata.workflow_id.length > 0) {
+            // Construct workflow query param string
+            let queryPath = "/workflows?";
 
-          // Construct workflow query param string
-          let queryPath = "/workflows?id="
-          
-          for (const workflow_id of metadata.workflow_id){
-            queryPath = queryPath.concat( workflow_id, "&id=")
-          }
-          
-          if (queryPath.slice(-1) === '&' ){
-            queryPath = queryPath.slice(0,-1)
-          }
-          
-          const responseWorkflow = await API.get(
-            "DataPortalApi",
-            queryPath
-          );
+            for (const workflow_id of metadata.workflow_id) {
+              queryPath = queryPath.concat("id=", workflow_id, "&");
+            }
 
-          metadata["completed_workflows"] = responseWorkflow.results;
+            if (queryPath.slice(-1) === "&") {
+              queryPath = queryPath.slice(0, -1);
+            }
+
+            const responseWorkflow = await API.get("DataPortalApi", queryPath);
+
+            metadata["completed_workflows"] = responseWorkflow.results;
+          } else {
+            metadata["completed_workflows"] = [];
+          }
         }
 
         const groupedWorkflow = groupWorkflow(
@@ -100,11 +97,11 @@ function StatusRow(props) {
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",
-          dialogContent:
-            ''.concat(
+          dialogContent: "".concat(
             "Sorry, An error has occured when fetching metadata. Please try again!\n",
-            "\nError:", err
-            )
+            "\nError:",
+            err
+          ),
         });
       }
     };
@@ -162,7 +159,6 @@ function StatusRow(props) {
           </TableCell>
         ))}
       </StyledTableRow>
-
     </>
   );
 }
