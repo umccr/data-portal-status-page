@@ -71,10 +71,10 @@ function StatusRow(props) {
         if (!metadata.completed_workflows) {
 
           // Construct workflow query param string
-          let queryPath = "/workflows?"
+          let queryPath = "/workflows?id="
           
           for (const workflow_id of metadata.workflow_id){
-            queryPath = queryPath.concat("id=", workflow_id, "&")
+            queryPath = queryPath.concat( workflow_id, "&id=")
           }
           
           if (queryPath.slice(-1) === '&' ){
