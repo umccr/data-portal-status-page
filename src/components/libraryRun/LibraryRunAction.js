@@ -16,7 +16,7 @@ function useQuery() {
 }
 
 async function getQueryMetadata(queryParameter) {
-  let metadataList = [];
+  let display_field_list = [];
 
   // Api Calls to LibraryRun to get list of Metadata
   const APIConfig = queryParameter;
@@ -42,10 +42,24 @@ async function getQueryMetadata(queryParameter) {
       APIConfig
     );
     const metadata_result = responseMetadata.results[0];
+    
+    // Expected data to extract from metadata and libraryRun
+    // {
+    //   library_id: 
+    //   sample_id:
+    //   subject_id:
+    //   workflow_id:
+    // }
 
-    metadataList = [...metadataList, metadata_result];
+    const extract_data = {
+      ...metadata_result,
+      library_id: libraryRun.library_id,
+      workflow_id: libraryRun.workflows
+    }
+
+    display_field_list = [...display_field_list, extract_data];
   }
-  return { pagination: paginationResult, results: metadataList };
+  return { pagination: paginationResult, results: display_field_list };
 }
 
 function LibraryRunAction() {
