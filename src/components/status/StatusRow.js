@@ -10,7 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
 
 // Custom Component
-import { FIELD_TO_DISPLAY, WorkflowTypeEquivalence } from "../utils/Constants";
+import { FIELD_TO_DISPLAY, WorkflowTypeEquivalence, createQueryParameterFromArray } from "../utils/Constants";
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
 
@@ -68,15 +68,11 @@ function StatusRow(props) {
           
           if (metadata.workflow_id.length > 0) {
             // Construct workflow query param string
-            let queryPath = "/workflows?";
+            let queryPath = "/workflows/";
 
-            for (const workflow_id of metadata.workflow_id) {
-              queryPath = queryPath.concat("id=", workflow_id, "&");
-            }
-
-            if (queryPath.slice(-1) === "&") {
-              queryPath = queryPath.slice(0, -1);
-            }
+            // Add query to status toolbar to the query
+            const parameterString = createQueryParameterFromArray("id", metadata.workflow_id)
+            queryPath = queryPath.concat('?', parameterString)
 
             const responseWorkflow = await API.get("DataPortalApi", queryPath);
 

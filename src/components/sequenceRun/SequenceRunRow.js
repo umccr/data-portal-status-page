@@ -20,7 +20,7 @@ import SequenceRunChip from "./SequenceRunChip";
 import StatusIndex from "../status/StatusIndex";
 import Pagination from "../utils/Pagination";
 import { useStatusToolbarContext } from "../status/StatusToolbar";
-import { convertToDisplayName, getDateTimeString } from "../utils/Constants";
+import { convertToDisplayName, getDateTimeString, createQueryParameterFromArray } from "../utils/Constants";
 
 function displayWithTypography(key, data, typograhyStyle) {
   "Display object with field in typography";
@@ -33,7 +33,8 @@ function displayWithTypography(key, data, typograhyStyle) {
 
 async function getMetadataFromInstrumentRunId(
   instrument_run_id,
-  queryParameter
+  queryParameter,
+  statusArray
 ) {
   let display_field_list = [];
 
@@ -44,9 +45,18 @@ async function getMetadataFromInstrumentRunId(
       instrument_run_id: instrument_run_id,
     },
   };
+
+  let queryPath = "/libraryrun/"
+
+  // Add query to status toolbar to the query
+  if (statusArray.length > 0) {
+    const parameterString = createQueryParameterFromArray("workflows__end_status", statusArray)
+    queryPath = queryPath.concat('?', parameterString)
+  } 
+
   const responseLibraryRun = await API.get(
     "DataPortalApi",
-    "/libraryrun/",
+    queryPath,
     APIConfig
   );
   const libraryRunList = responseLibraryRun.results;
@@ -119,13 +129,12 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        if (statusArray.length > 0) {
-          queryParameter["end_status"] = statusArray[0];
-        }
+
         setIsLoading(true);
         const apiResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,
-          queryParameter
+          queryParameter,
+          statusArray
         );
 
         if (componentUnmount) return;

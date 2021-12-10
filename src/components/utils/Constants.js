@@ -34,6 +34,22 @@ export function getWorkflowPipeline(pipelineType) {
 // Raw field name
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
+// Construct a string
+export function createQueryParameterFromArray(key_string, value_array){
+
+  let queryString = ''
+
+  for (const value of value_array){
+    queryString = queryString.concat(key_string, '=', value, '&')
+  }
+
+  if (queryString.slice(-1) === "&") {
+    queryString = queryString.slice(0, -1);
+  }
+
+  return queryString
+}
+
 // Grouped data based on object key
 export function groupListBasedOnKey(objectList, key) {
   const groupedObject = {};

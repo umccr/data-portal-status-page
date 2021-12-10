@@ -9,20 +9,30 @@ import Pagination from "../utils/Pagination";
 import StatusIndex from "../status/StatusIndex";
 import { useDialogContext } from "../utils/DialogComponent";
 import { useStatusToolbarContext } from "../status/StatusToolbar";
+import {createQueryParameterFromArray} from "../utils/Constants"
 // A custom hook that builds on useLocation to parse
 // the query string
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-async function getQueryMetadata(queryParameter) {
+async function getQueryMetadata(queryParameter, toolbarStatusArray) {
   let display_field_list = [];
+
+  let queryPath = "/libraryrun/"
+
+  // Add query to status toolbar to the query
+  if (toolbarStatusArray.length > 0) {
+    const parameterString = createQueryParameterFromArray("workflows__end_status", toolbarStatusArray)
+    queryPath = queryPath.concat('?', parameterString)
+  } 
+
 
   // Api Calls to LibraryRun to get list of Metadata
   const APIConfig = queryParameter;
   const responseLibraryRun = await API.get(
     "DataPortalApi",
-    "/libraryrun/",
+    queryPath,
     APIConfig
   );
 
@@ -105,13 +115,8 @@ function LibraryRunAction() {
             },
           };
         }
-        if (toolbarState.status.length > 0) {
-          APIConfig = {
-            ...queryParameter,
-            end_status: toolbarState.status[0],
-          };
-        }
-        const responseMetadata = await getQueryMetadata(APIConfig);
+
+        const responseMetadata = await getQueryMetadata(APIConfig, toolbarState.status);
         metadataListResult = responseMetadata.results;
         paginationResult = responseMetadata.pagination;
 
