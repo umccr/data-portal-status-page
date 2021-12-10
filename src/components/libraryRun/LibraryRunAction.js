@@ -97,11 +97,10 @@ function LibraryRunAction() {
             ...queryParameter,
           },
         };
-
         if (searchValue) {
           APIConfig = {
             queryStringParameters: {
-              ...APIConfig,
+              ...APIConfig.queryStringParameters,
               search: searchValue,
             },
           };

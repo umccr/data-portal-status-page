@@ -11,10 +11,13 @@ import { styled } from "@mui/material/styles";
 import { AppBar, Toolbar, Button, Typography, InputBase, Link } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { grey } from "@mui/material/colors";
+import IconButton from '@mui/material/IconButton';
+import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
 
 // Custom Components
 import { useUserContext } from "../utils/UserContextProvider";
 import { useSearchContext } from "../utils/SearchContextProvider";
+import { useDialogContext } from "../utils/DialogComponent";
 
 const DATA_PORTAL_CLIENT_DOMAIN = "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
 
@@ -66,6 +69,7 @@ function NavigationBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const { user, setUser } = useUserContext();
   const { searchHandler } = useSearchContext();
+  const { setDialogInfo } = useDialogContext();
 
   useEffect(() => {
     Hub.listen("auth", ({ payload: { event, data } }) => {
@@ -194,6 +198,20 @@ function NavigationBar(props) {
             value={searchInput}
             onKeyPress={(e) => e.key === "Enter" && onSearchClick()}
           />
+        <IconButton 
+          aria-label="HelpIconButton" 
+          onClick={ () =>
+            setDialogInfo({
+              isOpen: true,
+              dialogTitle: "Search Bar Information",
+              dialogContent:
+                "Search anything inside the libraryrun information!\n" +
+                "Search field available: id, library_id, instrument_run_id, run_id, lane, override_cycles, coverage_yield, qc_pass, qc_status, valid_for_analysis, workflows."
+            })
+          }
+        >
+          <HelpOutlineRoundedIcon />
+        </IconButton>
         </Search>
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>
