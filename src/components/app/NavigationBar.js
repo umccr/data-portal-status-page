@@ -262,7 +262,6 @@ function NavigationBar(props) {
 
         <Search
           sx={{
-            minWidth: "300px",
             display: "flex",
             flexGrow: { xs: 1, md: 0 },
           }}
