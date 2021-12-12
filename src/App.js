@@ -16,7 +16,7 @@ function App() {
   return (
     <Box
       aria-label="Base Box"
-      sx={{ flexGrow: 1, backgroundColor: grey[50], height: "100vh" }}
+      sx={{ flexGrow: 1, backgroundColor: grey[50], height: "100vh", minWidth:"500px" }}
     >
       <DialogComponent>
         <UserContextProvider>

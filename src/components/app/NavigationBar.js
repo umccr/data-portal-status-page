@@ -8,15 +8,50 @@ import { Link as RouterLink } from "react-router-dom";
 
 // Material UI Components
 import { styled } from "@mui/material/styles";
-import { AppBar, Toolbar, Button, Typography, InputBase, Link } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  InputBase,
+  Link,
+  Box,
+  MenuItem,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { grey } from "@mui/material/colors";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 
 // Custom Components
 import { useUserContext } from "../utils/UserContextProvider";
 import { useSearchContext } from "../utils/SearchContextProvider";
+import { useDialogContext } from "../utils/DialogComponent";
 
-const DATA_PORTAL_CLIENT_DOMAIN = "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
+const DATA_PORTAL_CLIENT_DOMAIN =
+  "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
+
+const ROUTER_LINK_BUTTON = [
+  {
+    name: "UMCCR",
+    routerLink: "/",
+    typographyVariant: "h6",
+  },
+  {
+    name: "Sequence",
+    routerLink: "/sequence",
+  },
+  {
+    name: "Library Run",
+    routerLink: "/libraryrun",
+  },
+  {
+    name: "Data Portal",
+    link: "https://" + DATA_PORTAL_CLIENT_DOMAIN,
+  },
+];
 
 // Styling Componentss
 const Search = styled("div")(({ theme }) => ({
@@ -62,10 +97,63 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+function navbarLinkButton(linkInformation) {
+  return (
+    <>
+      {linkInformation.routerLink ? (
+        <Button
+          color="primary"
+          LinkComponent={RouterLink}
+          to={linkInformation.routerLink}
+          sx={{
+            margin: "0 10px 0 10px",
+            color: "black",
+            textTransform: "none",
+          }}
+        >
+          <Typography
+            variant={
+              linkInformation.typographyVariant
+                ? linkInformation.typographyVariant
+                : "subtitle1"
+            }
+            component="div"
+          >
+            {linkInformation.name}
+          </Typography>
+        </Button>
+      ) : (
+        <Button
+          color="primary"
+          LinkComponent={Link}
+          href={linkInformation.link}
+          sx={{
+            color: "black",
+            margin: "0 10px 0 10px",
+            textTransform: "none",
+          }}
+        >
+          <Typography
+            variant={
+              linkInformation.typographyVariant
+                ? linkInformation.typographyVariant
+                : "subtitle1"
+            }
+            component="div"
+          >
+            {linkInformation.name}
+          </Typography>
+        </Button>
+      )}
+    </>
+  );
+}
+
 function NavigationBar(props) {
   const [searchInput, setSearchInput] = useState("");
   const { user, setUser } = useUserContext();
   const { searchHandler } = useSearchContext();
+  const { setDialogInfo } = useDialogContext();
 
   useEffect(() => {
     Hub.listen("auth", ({ payload: { event, data } }) => {
@@ -115,75 +203,69 @@ function NavigationBar(props) {
     searchHandler(searchInput);
   };
 
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
   return (
     <AppBar position="static" color="transparent">
       <Toolbar>
-        <div
-          style={{
-            flex: 1,
+        {/* Smaller Screen (Hamburger menu item will appear) */}
+        <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenNavMenu}
+            color="inherit"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElNav}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
+            sx={{
+              display: { xs: "block", md: "none" },
+            }}
+          >
+            {ROUTER_LINK_BUTTON.map((buttonLink, index) => (
+              <MenuItem key={index} onClick={handleCloseNavMenu}>
+                {navbarLinkButton(buttonLink)}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
+
+        {/* Links for larger screen */}
+        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, alignItems:"center" }}>
+          {ROUTER_LINK_BUTTON.map((buttonLink, index) => (
+            <div key={index}>{navbarLinkButton(buttonLink)}</div>
+          ))}
+        </Box>
+
+        <Search
+          sx={{
+            display: "flex",
+            flexGrow: { xs: 1, md: 0 },
           }}
         >
-          <Button
-            color="primary"
-            LinkComponent={RouterLink}
-            to="/"
-            sx={{
-              color: "black",
-              margin: "0 50px 0 0",
-            }}
-          >
-            <Typography variant="h6" component="div">
-              UMCCR
-            </Typography>
-          </Button>
-          <Button
-            color="primary"
-            LinkComponent={RouterLink}
-            to="/sequence"
-            sx={{
-              margin: "0 10px 0 10px",
-              color: "black",
-              textTransform: "none",
-            }}
-          >
-            <Typography variant="subtitle1" component="div">
-              Sequence
-            </Typography>
-          </Button>
-          <Button
-            color="primary"
-            LinkComponent={RouterLink}
-            to="/libraryrun"
-            sx={{
-              color: "black",
-              margin: "0 10px 0 10px",
-              textTransform: "none",
-            }}
-          >
-            <Typography variant="subtitle1" component="div">
-              Library Run
-            </Typography>
-          </Button>
-          {/* Quick link to UMCCR Data Portal */}
-          <Button
-            color="primary"
-            LinkComponent={Link}
-            href={
-              "https://" +
-              DATA_PORTAL_CLIENT_DOMAIN
-            }
-            sx={{
-              color: "black",
-              margin: "0 10px 0 10px",
-              textTransform: "none",
-            }}
-          >
-            <Typography variant="subtitle1" component="div">
-              Data Portal
-            </Typography>
-          </Button>
-        </div>
-        <Search>
           <SearchIconWrapper>
             <SearchIcon />
           </SearchIconWrapper>
@@ -193,8 +275,25 @@ function NavigationBar(props) {
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
             onKeyPress={(e) => e.key === "Enter" && onSearchClick()}
+            sx={{ flexGrow: 1 }}
           />
+          <IconButton
+            aria-label="HelpIconButton"
+            onClick={() =>
+              setDialogInfo({
+                isOpen: true,
+                dialogTitle: "Search Bar Information",
+                dialogContent:
+                  "Search anything inside the libraryrun information!\n" +
+                  "Search field available: id, library_id, instrument_run_id, run_id, lane, override_cycles, coverage_yield, qc_pass, qc_status, valid_for_analysis, workflows.",
+              })
+            }
+            sx={{ right: "1rem" }}
+          >
+            <HelpOutlineRoundedIcon />
+          </IconButton>
         </Search>
+
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>
         ) : (

@@ -38,31 +38,20 @@ function StatusToolbar(props) {
   });
 
   function handleOnClick(status) {
+
     if (toolbarState["status"].includes(status)) {
       setToolbarState((prevState) => ({
         ...prevState,
-        status: [],
+        status: prevState["status"].filter(
+          (currentFilter) => currentFilter !== status
+        ),
       }));
     } else {
       setToolbarState((prevState) => ({
         ...prevState,
-        status: [status],
+        status: [...prevState["status"], status],
       }));
     }
-
-    // if (toolbarState["status"].includes(status)) {
-    //   setToolbarState((prevState) => ({
-    //     ...prevState,
-    //     status: prevState["status"].filter(
-    //       (currentFilter) => currentFilter !== status
-    //     ),
-    //   }));
-    // } else {
-    //   setToolbarState((prevState) => ({
-    //     ...prevState,
-    //     status: [...prevState["status"], status],
-    //   }));
-    // }
   }
 
   function handleViewToggleChange(event, newValue) {
