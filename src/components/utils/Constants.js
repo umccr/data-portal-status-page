@@ -9,14 +9,16 @@ export const WorkflowTypeEquivalence = {
   DRAGEN_WGS_QC: "wgs_alignment_qc",
   TUMOR_NORMAL: "wgs_tumor_normal",
   DRAGEN_TSO_CTDNA: "tso_ctdna_tumor_only",
-  DRAGEN_WTS: "wts_tumor_only"
-}
+  DRAGEN_WTS: "wts_tumor_only",
+};
 
 // Workflow order
+// The key is extracted from metadata type
 export const WORKFLOW_PIPELINE = {
   WGS: ["DRAGEN_WGS_QC", "TUMOR_NORMAL"],
   WTS: ["DRAGEN_WTS"],
   ctTSO: ["DRAGEN_TSO_CTDNA"],
+  ctDNA: ["DRAGEN_TSO_CTDNA"],
 };
 
 // Workflow Types Available
@@ -35,19 +37,18 @@ export function getWorkflowPipeline(pipelineType) {
 export const FIELD_TO_DISPLAY = ["library_id", "subject_id", "sample_id"];
 
 // Construct a string
-export function createQueryParameterFromArray(key_string, value_array){
+export function createQueryParameterFromArray(key_string, value_array) {
+  let queryString = "";
 
-  let queryString = ''
-
-  for (const value of value_array){
-    queryString = queryString.concat(key_string, '=', value, '&')
+  for (const value of value_array) {
+    queryString = queryString.concat(key_string, "=", value, "&");
   }
 
   if (queryString.slice(-1) === "&") {
     queryString = queryString.slice(0, -1);
   }
 
-  return queryString
+  return queryString;
 }
 
 // Grouped data based on object key
