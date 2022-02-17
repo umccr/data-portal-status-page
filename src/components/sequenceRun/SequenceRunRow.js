@@ -136,7 +136,6 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-        console.log('loading data')
         setIsLoading(true);
         const apiResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,
