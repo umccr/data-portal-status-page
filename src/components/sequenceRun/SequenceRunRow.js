@@ -111,6 +111,13 @@ function SequenceRunRow(props) {
   const { toolbarState } = useStatusToolbarContext();
   const statusArray = toolbarState.status;
 
+  // Prevent re-loading data by having state to check if data has loaded
+  const [allowDataLoad, setAllowDataLoad] = useState(false)
+  function handleExpandRowButton(){
+    setIsOpen(!isOpen)
+    setAllowDataLoad(true)
+  }
+
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
     rowsPerPage: 50,
@@ -129,7 +136,7 @@ function SequenceRunRow(props) {
     let componentUnmount = false;
     const fetchData = async () => {
       try {
-
+        console.log('loading data')
         setIsLoading(true);
         const apiResponse = await getMetadataFromInstrumentRunId(
           data.instrument_run_id,
@@ -150,14 +157,18 @@ function SequenceRunRow(props) {
         });
       }
     };
-    if (isOpen) {
+
+    // A guard to only execute when is needed
+    if (allowDataLoad){
       fetchData();
     }
+
     return () => {
       componentUnmount = true;
     };
+
   }, [
-    isOpen,
+    allowDataLoad,
     data.instrument_run_id,
     queryParameter,
     setDialogInfo,
@@ -187,7 +198,7 @@ function SequenceRunRow(props) {
               <IconButton
                 aria-label="expand row"
                 size="small"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={handleExpandRowButton}
               >
                 {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
