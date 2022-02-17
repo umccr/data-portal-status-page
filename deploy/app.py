@@ -19,13 +19,12 @@ if account_id == "472057503814":  # Account number used for production environme
 else:
     app_stage = "dev"
 
-
 props = {
     "pipeline_name": {
         "dev": "data-portal-status-page",
         "prod": "data-portal-status-page"
     },
-    "pipeline_artifact_bucket_name" :{
+    "pipeline_artifact_bucket_name": {
         "dev": "data-portal-status-page-artifact-dev",
         "prod": "data-portal-status-page-artifact-prod"
     },
@@ -38,7 +37,7 @@ props = {
         "dev": "dev",
         "prod": "main"
     },
-    "alias_domain_name":{
+    "alias_domain_name": {
         "dev": ["status.data.dev.umccr.org"],
         "prod": ["status.data.umccr.org", "status.data.prod.umccr.org"]
     }
