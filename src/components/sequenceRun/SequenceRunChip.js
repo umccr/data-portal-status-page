@@ -1,22 +1,29 @@
 import React from "react";
 import Chip from "@mui/material/Chip";
 
-import { green, orange, red } from "@mui/material/colors";
+import { green, orange, red, brown } from "@mui/material/colors";
 
 function getStyleForStatus(status, isSelected) {
   const baseStyle = { fontWeight: "Medium", fontSize: "11px", margin: "0 0.25rem 0 0.25rem" };
-
+  console.log(status)
   switch (status.toLowerCase()) {
     case "succeeded":
-      return { ...baseStyle, backgroundColor: green[100]};
-
+      // Green color
+      return { ...baseStyle, backgroundColor: green[100], color: green[900] };
     case "started":
-      return { ...baseStyle, backgroundColor: orange[100] };
-
+      // Orange color
+      return { ...baseStyle, backgroundColor: orange[100], color: orange[800] };
+    case "running":
+      // Orange color
+      return { ...baseStyle, backgroundColor: orange[100], color: orange[800] };
     case "failed":
-      return { ...baseStyle, backgroundColor: red[100] };
-
+      // Pink color
+      return { ...baseStyle, backgroundColor: red[100], color: red[400] };
+    case "aborted":
+      // Brown color
+      return { ...baseStyle, backgroundColor: brown[100], color: brown[500] };
     default:
+      // Default style for unknown type
       return {...baseStyle};
   }
 }

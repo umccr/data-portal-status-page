@@ -19,28 +19,31 @@ import SequenceRunRow from "./SequenceRunRow";
 import Pagination from "../utils/Pagination";
 import { useDialogContext } from "../utils/DialogComponent";
 
-
-async function isBclConvertRun(instrument_run_id){
-  let isBclConvert = false;
+async function findBclConvertStatus(instrument_run_id) {
+  let bclConvertStatus = '';
 
   // Check for BCL_CONVERT
   let APIConfig = {
     queryStringParameters: {
-      type_name:"BCL_CONVERT",
-      sequence_run__instrument_run_id:instrument_run_id
-    }
+      type_name: "BCL_CONVERT",
+      sequence_run__instrument_run_id: instrument_run_id,
+    },
   };
   const responseBCLConvertQuery = await API.get(
     "DataPortalApi",
     "/workflows/",
     APIConfig
   );
-  
-  if (responseBCLConvertQuery.pagination.count > 0){
-    isBclConvert = true
+
+  if (responseBCLConvertQuery.pagination.count > 0) {
+    // Grabing the latest object in the results array
+    const workflowObject = responseBCLConvertQuery.results[0];
+
+    // Assign the bcl_convert status to the end_status
+    bclConvertStatus = workflowObject.end_status;
   }
 
-  return isBclConvert
+  return bclConvertStatus;
 }
 
 function displaySequenceRow(sequenceList) {
@@ -121,12 +124,14 @@ export default function SequenceRunTable() {
         );
         newSequenceList = sequenceResponse.results;
         paginationResult = sequenceResponse.pagination;
-        
+
         // Looping for BCL_CONVERT
-        for (const eachSequence of newSequenceList){
-          eachSequence.isBclConvert = await isBclConvertRun(eachSequence.instrument_run_id)
+        for (const eachSequence of newSequenceList) {
+          eachSequence.bclConvertStatus = await findBclConvertStatus(
+            eachSequence.instrument_run_id
+          );
         }
-          
+
         // Do Not update state on unmount
         if (componentUnmount) return;
         setSequenceRunList(newSequenceList);
