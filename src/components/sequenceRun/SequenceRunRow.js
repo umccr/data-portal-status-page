@@ -224,7 +224,7 @@ function SequenceRunRow(props) {
                   <SequenceRunChip label="Sequencing" status={data.status} />
                   <SequenceRunChip
                       label="BCL Convert"
-                      status={data.isBclConvert ? "succeeded" : ""}
+                      status={data.bclConvertStatus}
                     />
                 </Grid>
               </Grid>
