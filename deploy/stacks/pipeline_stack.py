@@ -51,12 +51,12 @@ class CdkPipelineStack(cdk.Stack):
 
         # Create S3 bucket for artifacts
         pipeline_artifact_bucket = s3.Bucket(
-            self, 
-            "data-portal-status-page-artifact-bucket", 
-            bucket_name = props["pipeline_artifact_bucket_name"][app_stage],
-            auto_delete_objects = True,
-            removal_policy = cdk.RemovalPolicy.DESTROY,
-            block_public_access= s3.BlockPublicAccess.BLOCK_ALL
+            self,
+            "data-portal-status-page-artifact-bucket",
+            bucket_name=props["pipeline_artifact_bucket_name"][app_stage],
+            auto_delete_objects=True,
+            removal_policy=cdk.RemovalPolicy.DESTROY,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL
         )
 
         # Create a pipeline for status page
@@ -77,13 +77,11 @@ class CdkPipelineStack(cdk.Stack):
             trigger_on_push=True
         )
 
-
         # Grab code_pipeline_source artifact
-        ArtifactMap = pipelines.ArtifactMap()
-        source_artifact = ArtifactMap.to_code_pipeline(
+        artifactMap = pipelines.ArtifactMap()
+        source_artifact = artifactMap.to_code_pipeline(
             x=code_pipeline_source.primary_output
         )
-
 
         # Create A pipeline for cdk stack and react build
         self_mutate_pipeline = pipelines.CodePipeline(
@@ -220,7 +218,6 @@ class CdkPipelineStack(cdk.Stack):
                 react_build_actions
             ]
         )
-
 
         # SSM parameter for AWS SNS ARN
         data_portal_notification_sns_arn = ssm.StringParameter.from_string_parameter_attributes(
