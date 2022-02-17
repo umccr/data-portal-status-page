@@ -5,7 +5,6 @@ import { green, orange, red, brown } from "@mui/material/colors";
 
 function getStyleForStatus(status, isSelected) {
   const baseStyle = { fontWeight: "Medium", fontSize: "11px", margin: "0 0.25rem 0 0.25rem" };
-  console.log(status)
   switch (status.toLowerCase()) {
     case "succeeded":
       // Green color
