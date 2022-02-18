@@ -237,20 +237,16 @@ class CdkPipelineStack(cdk.Stack):
                     "build": {
                         "commands": [
                             # Find distribution ID from stack name
-                            """DISTRIBUTION_ID=$(aws cloudformation describe-stacks """
-                            """--stack-name data-portal-status-page-stack """
-                            """--query 'Stacks[0].Outputs[?OutputKey==`CfnOutputCloudFrontDistributionId`].OutputValue' """
-                            """--output text)""",
+                            f"""DISTRIBUTION_ID=$(aws cloudformation describe-stacks """
+                            f"""--stack-name {props['app_stack_name']} """
+                            f"""--query 'Stacks[0].Outputs[?OutputKey==`CfnOutputCloudFrontDistributionId`].OutputValue' """
+                            f"""--output text)""",
 
                             """aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/*" """
                         ]
                     }
                 }
             }),
-            environment_variables={
-                "APP_STACK_NAME": codebuild.BuildEnvironmentVariable(
-                    value=props['app_stack_name'])
-            },
             timeout=cdk.Duration.minutes(5),
             queued_timeout=cdk.Duration.minutes(5)
         )
