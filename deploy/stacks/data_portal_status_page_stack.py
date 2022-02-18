@@ -1,4 +1,3 @@
-import os
 from aws_cdk import (
     core as cdk,
     aws_s3 as s3,
@@ -122,44 +121,11 @@ class DataPortalStatusPageStack(cdk.Stack):
             record_name="status.data"
         )
 
-        # Adding codebuild for invalidate CDN cache for every s3 deployment
-        codebuild_build_image = codebuild.Project(
-            self,
-            "CodebuildProjectInvalidateStatsPageCDNCache",
-            source=codebuild.Source.git_hub(
-                owner="umccr",
-                repo="data-portal-status-page",
-                webhook=True,
-                webhook_filters=[
-                    codebuild.FilterGroup.in_event_of(codebuild.EventAction.PUSH).and_branch_is(
-                        props["branch_source"][app_stage]).and_file_path_is("src")
-                ]
-            ),
-            project_name="InvalidateDataPortalStatusPageCDNCache",
-            environment=codebuild.BuildEnvironment(
-                build_image=codebuild.LinuxBuildImage.STANDARD_5_0
-            ),
-            build_spec=codebuild.BuildSpec.from_object({
-                "version": "0.2",
-                "phases": {
-                    "build": {
-                        "commands": [
-                            """aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/*" """
-                        ]
-                    }
-                }
-            }),
-            environment_variables={
-                "DISTRIBUTION_ID": codebuild.BuildEnvironmentVariable(
-                    value=data_portal_status_page_cloudfront.distribution_id)
-            }
-        )
+        # Adding stack variable output
 
-        codebuild_build_image.add_to_role_policy(
-            iam.PolicyStatement(
-                resources=[
-                    f"arn:aws:cloudfront::{os.environ.get('CDK_DEFAULT_ACCOUNT')}:distribution/{data_portal_status_page_cloudfront.distribution_id}"
-                ],
-                actions=["cloudfront:CreateInvalidation"]
-            )
+        # Cloudformation Distribution_id
+        cdk.CfnOutput(
+            self,
+            'CfnOutputCloudFrontDistributionId',
+            value=data_portal_status_page_cloudfront.distribution_id
         )

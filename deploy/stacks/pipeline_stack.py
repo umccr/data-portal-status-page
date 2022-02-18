@@ -1,4 +1,5 @@
 # importing modules
+import os
 from aws_cdk import (
     aws_ssm as ssm,
     pipelines,
@@ -19,15 +20,18 @@ class DataPortalStatusPageStage(cdk.Stage):
         super().__init__(scope, construct_id, **kwargs)
 
         app_stage = self.node.try_get_context("app_stage")
+        props = self.node.try_get_context("props")
+
+        stack_name = props['app_stack_name']
 
         # Create stack defined on stacks folder
         DataPortalStatusPageStack(
             self,
             "StatusPage",
-            stack_name="data-portal-status-page-stack",
+            stack_name=f"{stack_name}",
             tags={
                 "stage": app_stage,
-                "stack": "pipeline-data-portal-status-page"
+                "stack": f"pipeline-{stack_name}"
             }
         )
 
@@ -216,6 +220,74 @@ class CdkPipelineStack(cdk.Stack):
             stage_name="ReactBuild",
             actions=[
                 react_build_actions
+            ]
+        )
+
+        codebuild_build_invalidate_project = codebuild.PipelineProject(
+            self,
+            "CodebuildProjectInvalidateStatsPageCDNCache",
+            project_name="InvalidateDataPortalStatusPageCDNCache",
+            check_secrets_in_plain_text_env_variables=False,
+            environment=codebuild.BuildEnvironment(
+                build_image=codebuild.LinuxBuildImage.STANDARD_5_0
+            ),
+            build_spec=codebuild.BuildSpec.from_object({
+                "version": "0.2",
+                "phases": {
+                    "build": {
+                        "commands": [
+                            # Find distribution ID from stack name
+                            """DISTRIBUTION_ID=$(aws cloudformation describe-stacks """
+                            """--stack-name data-portal-status-page-stack """
+                            """--query 'Stacks[0].Outputs[?OutputKey==`CfnOutputCloudFrontDistributionId`].OutputValue' """
+                            """--output text)""",
+
+                            """aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/*" """
+                        ]
+                    }
+                }
+            }),
+            environment_variables={
+                "APP_STACK_NAME": codebuild.BuildEnvironmentVariable(
+                    value=props['app_stack_name'])
+            },
+            timeout=cdk.Duration.minutes(5),
+            queued_timeout=cdk.Duration.minutes(5)
+        )
+
+        # Add invalidate CDN role
+        codebuild_build_invalidate_project.add_to_role_policy(
+            iam.PolicyStatement(
+                resources=[
+                    f"arn:aws:cloudfront::{os.environ.get('CDK_DEFAULT_ACCOUNT')}:distribution/*"
+                ],
+                actions=["cloudfront:CreateInvalidation"]
+            )
+        )
+        # Add describe stack role
+        codebuild_build_invalidate_project.add_to_role_policy(
+            iam.PolicyStatement(
+                resources=[
+                    f"arn:aws:cloudformation:ap-southeast-2:{os.environ.get('CDK_DEFAULT_ACCOUNT')}:"
+                    f"stack/{props['app_stack_name']}/*"
+                ],
+                actions=["cloudformation:DescribeStacks"]
+            )
+        )
+
+        # Reset Cache
+        codebuild_action_clear_cache = codepipeline_actions.CodeBuildAction(
+            action_name="InvalidateCloudFrontCache",
+            project=codebuild_build_invalidate_project,
+            check_secrets_in_plain_text_env_variables=False,
+            input=source_artifact
+        )
+
+        # Invalidate CDN cache
+        self_mutate_pipeline.pipeline.add_stage(
+            stage_name="CleanUpStage",
+            actions=[
+                codebuild_action_clear_cache
             ]
         )
 

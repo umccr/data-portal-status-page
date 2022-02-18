@@ -20,6 +20,7 @@ else:
     app_stage = "dev"
 
 props = {
+    "app_stack_name": "data-portal-status-page-stack",
     "pipeline_name": {
         "dev": "data-portal-status-page",
         "prod": "data-portal-status-page"
