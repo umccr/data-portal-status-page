@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import SequencePage from "./pages/SequencePage";
 import LibraryRunPage from "./pages/LibraryRunPage";
+import WorkflowsPage from "./pages/WorkflowsPage"
 import AuthenticatedRoute from "./components/utils/AuthenticatedRoute";
 
 // Declaring Routes
@@ -20,6 +21,9 @@ export default function Routes() {
       </AuthenticatedRoute>
       <AuthenticatedRoute exact path="/libraryrun">
         <LibraryRunPage />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute exact path="/workflows">
+        <WorkflowsPage />
       </AuthenticatedRoute>
       <Route>
         <NotFound />
