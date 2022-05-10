@@ -10,7 +10,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
 
 // Custom Component
-import { FIELD_TO_DISPLAY, WorkflowTypeEquivalence, createQueryParameterFromArray } from "../utils/Constants";
+import {
+  WorkflowTypeEquivalence,
+  createQueryParameterFromArray,
+} from "../utils/Constants";
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
 
@@ -55,7 +58,7 @@ function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
 }
 
 function StatusRow(props) {
-  const { metadata, workflow_list } = props;
+  const { metadata, workflow_list, columnSelectedArray } = props;
   const { setDialogInfo } = useDialogContext();
   // Set an empty placeholder for workflow status
   const [workflowStatus, setWorkflowStatus] = useState({});
@@ -65,14 +68,16 @@ function StatusRow(props) {
     const fetchData = async () => {
       try {
         if (!metadata.completed_workflows) {
-          
-          if (metadata.workflow_id.length > 0) {
+          if (metadata.workflows.length > 0) {
             // Construct workflow query param string
             let queryPath = "/workflows/";
 
             // Add query to status toolbar to the query
-            const parameterString = createQueryParameterFromArray("id", metadata.workflow_id)
-            queryPath = queryPath.concat('?', parameterString)
+            const parameterString = createQueryParameterFromArray(
+              "id",
+              metadata.workflows
+            );
+            queryPath = queryPath.concat("?", parameterString);
 
             const responseWorkflow = await API.get("DataPortalApi", queryPath);
 
@@ -109,11 +114,11 @@ function StatusRow(props) {
       componentUnmount = true;
     };
   }, [metadata, workflow_list, setDialogInfo]);
-
+  console.log("columnSelectedArrayRow", columnSelectedArray);
   return (
     <>
       <StyledTableRow>
-        {FIELD_TO_DISPLAY.map((field_name, index) => (
+        {columnSelectedArray.map((field_name, index) => (
           <TableCell key={index} sx={{ textAlign: "center" }}>
             {field_name === "subject_id" ? (
               <Link

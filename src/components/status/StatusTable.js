@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,19 +10,56 @@ import TableContainer from "@mui/material/TableContainer";
 
 // Custom Component
 import StatusRow from "./StatusRow";
+import TableColumnSelector from "../utils/TableColumnSelector";
 
-import {
-  FIELD_TO_DISPLAY,
-  convertToDisplayName,
-  getWorkflowPipeline,
-} from "../utils/Constants";
+import { convertToDisplayName, getWorkflowPipeline } from "../utils/Constants";
+
+const COLUMN_DISPLAY = {
+  library_id: true,
+  subject_id: true,
+  sample_id: true,
+  assay: false,
+  coverage: false,
+  coverage_yield: false,
+  experiment_id: false,
+  external_sample_id: false,
+  external_subject_id: false,
+  instrument_run_id: false,
+  lane: false,
+  override_cycles: false,
+  phenotype: true,
+  project_name: false,
+  project_owner: false,
+  qc_pass: false,
+  qc_status: false,
+  quality: false,
+  run_id: false,
+  sample_name: false,
+  source: false,
+  truseqindex: false,
+  type: false,
+  valid_for_analysis: false,
+  workflow: false,
+};
 
 function StatusTable(props) {
   // The Status table is the table for each individual library run grouped by metadata type.
   // For example one status Table is the table of Tumor Normal type runs
 
   const { pipelineType, metadataGrouped, noTitle, title } = props;
-  // 
+
+  // Column Selector
+  const [columnSelectedObj, setColumnSelectedObj] = useState(COLUMN_DISPLAY);
+  const columnOptions = Object.keys(COLUMN_DISPLAY);
+  const columnSelectedArray = columnOptions.filter(
+    (key) => columnSelectedObj[key]
+  );
+
+  console.log("columnSelectedArray", columnSelectedArray);
+  const handleColumnOptionsChange = (item) => {
+    setColumnSelectedObj(item);
+  };
+
   return (
     <TableContainer sx={{ textAlign: "left", margin: "1em 0 2em" }}>
       {noTitle ? (
@@ -41,12 +78,21 @@ function StatusTable(props) {
       <TableContainer
         sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}
       >
-        <Table sx={{ tableLayout: "fixed" }} size="small" aria-label="MetaData">
+        <Table
+          sx={{ tableLayout: "fixed", position: "relative" }}
+          size="small"
+          aria-label="MetaData"
+        >
+          <TableColumnSelector
+            columnOptions={columnOptions}
+            columnSelectedObj={columnSelectedObj}
+            handleColumnSelector={handleColumnOptionsChange}
+          />
           {/* Display Table Headers */}
           <TableHead>
             <TableRow sx={{ backgroundColor: "#CFD8DC" }}>
               {/* Display metadata Headers */}
-              {FIELD_TO_DISPLAY.map((field_name, index) => (
+              {columnSelectedArray.map((field_name, index) => (
                 <TableCell
                   key={index}
                   sx={{ textAlign: "center", width: "100px" }}
@@ -78,6 +124,7 @@ function StatusTable(props) {
                 key={index}
                 metadata={metadata}
                 workflow_list={getWorkflowPipeline(pipelineType)}
+                columnSelectedArray={columnSelectedArray}
               />
             ))}
           </TableBody>

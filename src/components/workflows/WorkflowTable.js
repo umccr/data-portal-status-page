@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 
 import StatusChip from "../status/StatusChip";
 import JSONTable from "../utils/JSONTable";
-import TableColumSelector from "../utils/TableColumnSelector";
+import TableColumnSelector from "../utils/TableColumnSelector";
 import { toTitle } from "../utils/Utils";
 
 const COLUMN_DISPLAY = {
@@ -70,7 +70,7 @@ export default function CustomTable(props) {
       sx={{ width: "100%", overflow: "hidden", marginBottom: "2rem" }}
     >
       <TableContainer component={Paper} sx={{ position: "relative" }}>
-        <TableColumSelector
+        <TableColumnSelector
           columnOptions={columnOptions}
           columnSelectedObj={columnSelectedObj}
           handleColumnSelector={handleColumnOptionsChange}
