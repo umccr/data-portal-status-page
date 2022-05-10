@@ -28,9 +28,9 @@ export default function JSONTable(props) {
           <Table>
             <TableBody>
               {jsonKeys.map((key) => (
-                <TableRow>
+                <TableRow key={key}>
                   <TableCell>{key}</TableCell>
-                  <TableCell>{jsonData[key]}</TableCell>
+                  <TableCell>{JSON.stringify(jsonData[key])}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
