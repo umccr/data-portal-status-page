@@ -12,21 +12,32 @@ import TablePagination from "@mui/material/TablePagination";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Typography from "@mui/material/Typography";
 
 import StatusChip from "../status/StatusChip";
 import JSONTable from "../utils/JSONTable";
+import TableColumSelector from "../utils/TableColumnSelector";
+import { toTitle } from "../utils/Utils";
 
-const COLUMN_MAPPPING = [
-  { displayName: "RunID", jsonKey: "wfr_name" },
-  // { displayName: "Workflow ID", jsonKey: ["wfl_id"] },
-  // { displayName: "Workflow Version", jsonKey: ["version"] },
-  // { displayName: "Workflow Version Id", jsonKey: ["wfv_id"] },
-  { displayName: "WorkflowType", jsonKey: "type_name" },
-  { displayName: "Status", jsonKey: "end_status" },
-  { displayName: "Start Time", jsonKey: "start" },
-  { displayName: "End Time", jsonKey: "end" },
-];
+const COLUMN_DISPLAY = {
+  id: false,
+  wfr_name: true,
+  sample_name: false,
+  type_name: true,
+  wfr_id: false,
+  portal_run_id: false,
+  wfl_id: false,
+  wfv_id: false,
+  version: false,
+  input: false,
+  start: true,
+  output: false,
+  end: true,
+  end_status: true,
+  notified: false,
+  sequence_run: false,
+  batch_run: false,
+};
 
 /**
  * Custom Main Table
@@ -43,28 +54,41 @@ export default function CustomTable(props) {
     setOrderBy(property);
   };
 
+  // Column Selector
+  const [columnSelectedObj, setColumnSelectedObj] = useState(COLUMN_DISPLAY);
+  const columnOptions = Object.keys(COLUMN_DISPLAY);
+  const columnSelectedArray = columnOptions.filter(
+    (key) => columnSelectedObj[key]
+  );
+  const handleColumnOptionsChange = (item) => {
+    setColumnSelectedObj(item);
+  };
+
   return (
     <Paper
       elevation={5}
       sx={{ width: "100%", overflow: "hidden", marginBottom: "2rem" }}
     >
       <TableContainer component={Paper} sx={{ position: "relative" }}>
-
-
+        <TableColumSelector
+          columnOptions={columnOptions}
+          columnSelectedObj={columnSelectedObj}
+          handleColumnSelector={handleColumnOptionsChange}
+        />
         <Table
           sx={{ minWidth: 700 }}
           size="small"
           aria-label="customized table"
         >
           <CustomTableHead
-            columnMapping={COLUMN_MAPPPING}
+            columnKey={columnSelectedArray}
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
           />
           <CustomTableBody
             listItem={items}
-            columnMapping={COLUMN_MAPPPING}
+            columnSelectedObj={columnSelectedArray}
             order={order}
             orderBy={orderBy}
           />
@@ -84,7 +108,7 @@ export default function CustomTable(props) {
  */
 
 function CustomTableHead(props) {
-  const { columnMapping, order, orderBy, onRequestSort } = props;
+  const { columnKey, order, orderBy, onRequestSort } = props;
 
   function updateSortItem(displayName) {
     onRequestSort(displayName);
@@ -93,16 +117,20 @@ function CustomTableHead(props) {
     <TableHead sx={{ height: "60px" }}>
       <TableRow>
         {/* DETAILS information */}
-        <TableCell>Details</TableCell>
+        <TableCell>
+          <Typography sx={{ fontWeight: 500 }}>Details</Typography>
+        </TableCell>
 
-        {columnMapping.map((columnObject, index) => (
+        {columnKey.map((columnObject, index) => (
           <TableCell key={index}>
             <TableSortLabel
-              active={orderBy === columnObject.jsonKey}
-              direction={orderBy === columnObject.jsonKey ? order : "asc"}
-              onClick={() => updateSortItem(columnObject.jsonKey)}
+              active={orderBy === columnObject}
+              direction={orderBy === columnObject ? order : "asc"}
+              onClick={() => updateSortItem(columnObject)}
             >
-              {columnObject.displayName}
+              <Typography sx={{ fontWeight: 500 }}>
+                {toTitle(columnObject)}
+              </Typography>
             </TableSortLabel>
           </TableCell>
         ))}
@@ -137,7 +165,7 @@ function DetailButton(props) {
 }
 
 function CustomTableBody(props) {
-  const { listItem, columnMapping, order, orderBy } = props;
+  const { listItem, columnSelectedObj, order, orderBy } = props;
 
   return (
     <TableBody>
@@ -148,12 +176,12 @@ function CustomTableBody(props) {
             <DetailButton jsonData={item} />
           </TableCell>
 
-          {columnMapping.map((displayObj, objIndex) => (
+          {columnSelectedObj.map((key, objIndex) => (
             <TableCell align="left" key={objIndex}>
-              {displayObj.jsonKey !== "end_status" ? (
-                item[displayObj.jsonKey]
+              {key !== "end_status" ? (
+                item[key]
               ) : (
-                <StatusChip status={item[displayObj.jsonKey]} />
+                <StatusChip status={item[key]} />
               )}
             </TableCell>
           ))}
