@@ -22,7 +22,7 @@ function App() {
         <UserContextProvider>
           <SearchContextProvider>
             <NavigationBar />
-            <Container maxWidth="lg" sx={{ paddingTop: "2rem" }}>
+            <Container maxWidth="false" sx={{ paddingTop: "2rem" }}>
               <Routes />
             </Container>
           </SearchContextProvider>

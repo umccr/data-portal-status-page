@@ -65,7 +65,7 @@ function StatusIndex(props) {
       {isLoading ? (
         <LinearProgress />
       ) : (
-        <Container sx={{ padding: "20px 20px" }}>
+        <Container maxWidth={false} sx={{ padding: "20px 20px" }}>
           {Object.keys(metadataGrouped).length === 0 ? (
             <Typography
               variant="h5"

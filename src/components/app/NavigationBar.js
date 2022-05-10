@@ -40,6 +40,10 @@ const ROUTER_LINK_BUTTON = [
     typographyVariant: "h6",
   },
   {
+    name: "Workflows",
+    link: "/workflows",
+  },
+  {
     name: "Sequence",
     routerLink: "/sequence",
   },
@@ -254,7 +258,13 @@ function NavigationBar(props) {
         </Box>
 
         {/* Links for larger screen */}
-        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, alignItems:"center" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", md: "flex" },
+            alignItems: "center",
+          }}
+        >
           {ROUTER_LINK_BUTTON.map((buttonLink, index) => (
             <div key={index}>{navbarLinkButton(buttonLink)}</div>
           ))}
