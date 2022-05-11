@@ -7,7 +7,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import { grey } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
 
 // Custom Component
 import StatusRow from "./StatusRow";
@@ -57,12 +59,21 @@ function StatusTable(props) {
     (key) => columnSelectedObj[key]
   );
 
+  // Sorting Table
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState();
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
   const handleColumnOptionsChange = (item) => {
     setColumnSelectedObj(item);
   };
 
   return (
-    <TableContainer sx={{ textAlign: "left", margin: "1em 0 2em" }}>
+    <TableContainer sx={{ textAlign: "center", margin: "1em 0 2em" }}>
       {noTitle ? (
         <></>
       ) : (
@@ -109,7 +120,23 @@ function StatusTable(props) {
                   key={index}
                   sx={{ textAlign: "center", width: "100px" }}
                 >
-                  {convertToDisplayName(field_name)}
+                  <TableSortLabel
+                    active={orderBy === field_name}
+                    direction={orderBy === field_name ? order : "asc"}
+                    onClick={() => handleRequestSort(field_name)}
+                    sx={{
+                      span: {
+                        backgroundColor: "black",
+                        position: "relative",
+                      },
+                      svg: {
+                        right: "-1.5rem",
+                        position: "absolute",
+                      },
+                    }}
+                  >
+                    {convertToDisplayName(field_name)}
+                  </TableSortLabel>
                 </TableCell>
               ))}
 
@@ -131,14 +158,16 @@ function StatusTable(props) {
 
           {/* Display Body content */}
           <TableBody>
-            {metadataGrouped[pipelineType].map((metadata, index) => (
-              <StatusRow
-                key={index}
-                metadata={metadata}
-                workflow_list={getWorkflowPipeline(pipelineType)}
-                columnSelectedArray={columnSelectedArray}
-              />
-            ))}
+            {sortTableValues(metadataGrouped[pipelineType], order, orderBy).map(
+              (metadata, index) => (
+                <StatusRow
+                  key={index}
+                  metadata={metadata}
+                  workflow_list={getWorkflowPipeline(pipelineType)}
+                  columnSelectedArray={columnSelectedArray}
+                />
+              )
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -147,3 +176,20 @@ function StatusTable(props) {
 }
 
 export default StatusTable;
+
+function sortTableValues(dataList, order, orderBy) {
+  if (!orderBy) {
+    return dataList;
+  } else {
+    return dataList.sort((a, b) => {
+      let result = 0;
+      if (b[orderBy] < a[orderBy]) result = 1;
+      if (b[orderBy] > a[orderBy]) result = -1;
+
+      if (order === "desc") {
+        result = result * -1;
+      }
+      return result;
+    });
+  }
+}

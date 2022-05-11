@@ -5,7 +5,7 @@ import { API } from "aws-amplify";
 
 // mui components
 import { styled } from "@mui/material/styles";
-import { TableRow, TableCell, Link } from "@mui/material";
+import { TableRow, TableCell, Link, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Custom Component
@@ -26,6 +26,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 1,
   },
 }));
+
+
 
 function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   const groupedWorkflowStatus = {};
@@ -126,10 +128,10 @@ function StatusRow(props) {
                   metadata[field_name]
                 }
               >
-                {metadata[field_name]}
+                <Typography>{metadata[field_name]}</Typography>
               </Link>
             ) : (
-              metadata[field_name]
+              <Typography>{metadata[field_name]}</Typography>
             )}
           </TableCell>
         ))}
