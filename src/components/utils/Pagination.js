@@ -36,6 +36,7 @@ function Pagination(props) {
         showFirstButton={true}
         showLastButton={true}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[50, 100, 200, 300]}
       />
       <Typography
         variant="caption"

@@ -3,13 +3,14 @@ import { API } from "aws-amplify";
 import { useLocation } from "react-router-dom";
 
 import { TableContainer, Paper, LinearProgress } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 // Custom Components
 import Pagination from "../utils/Pagination";
 import StatusIndex from "../status/StatusIndex";
 import { useDialogContext } from "../utils/DialogComponent";
 import { useStatusToolbarContext } from "../status/StatusToolbar";
-import {createQueryParameterFromArray} from "../utils/Constants"
+import { createQueryParameterFromArray } from "../utils/Constants";
 // A custom hook that builds on useLocation to parse
 // the query string
 function useQuery() {
@@ -19,14 +20,16 @@ function useQuery() {
 async function getQueryMetadata(queryParameter, toolbarStatusArray) {
   let display_field_list = [];
 
-  let queryPath = "/libraryrun/"
+  let queryPath = "/libraryrun/";
 
   // Add query to status toolbar to the query
   if (toolbarStatusArray.length > 0) {
-    const parameterString = createQueryParameterFromArray("workflows__end_status", toolbarStatusArray)
-    queryPath = queryPath.concat('?', parameterString)
-  } 
-
+    const parameterString = createQueryParameterFromArray(
+      "workflows__end_status",
+      toolbarStatusArray
+    );
+    queryPath = queryPath.concat("?", parameterString);
+  }
 
   // Api Calls to LibraryRun to get list of Metadata
   const APIConfig = queryParameter;
@@ -52,20 +55,19 @@ async function getQueryMetadata(queryParameter, toolbarStatusArray) {
       APIConfig
     );
     const metadata_result = responseMetadata.results[0];
-    
+
     // Expected data to extract from metadata and libraryRun
     // {
-    //   library_id: 
+    //   library_id:
     //   sample_id:
     //   subject_id:
-    //   workflow_id:
+    //   workflows: [{workflowId}]
     // }
 
     const extract_data = {
       ...metadata_result,
-      library_id: libraryRun.library_id,
-      workflow_id: libraryRun.workflows
-    }
+      ...libraryRun,
+    };
 
     display_field_list = [...display_field_list, extract_data];
   }
@@ -116,7 +118,10 @@ function LibraryRunAction() {
           };
         }
 
-        const responseMetadata = await getQueryMetadata(APIConfig, toolbarState.status);
+        const responseMetadata = await getQueryMetadata(
+          APIConfig,
+          toolbarState.status
+        );
         metadataListResult = responseMetadata.results;
         paginationResult = responseMetadata.pagination;
 
@@ -150,7 +155,11 @@ function LibraryRunAction() {
         <TableContainer
           component={Paper}
           elevation={2}
-          sx={{ borderRadius: "10px", marginBottom: "20px" }}
+          sx={{
+            borderRadius: "10px",
+            marginBottom: "20px",
+            backgroundColor: grey[50],
+          }}
         >
           <StatusIndex metadataList={metadataList} />
           <Pagination

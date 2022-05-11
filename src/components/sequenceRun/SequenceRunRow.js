@@ -20,7 +20,11 @@ import SequenceRunChip from "./SequenceRunChip";
 import StatusIndex from "../status/StatusIndex";
 import Pagination from "../utils/Pagination";
 import { useStatusToolbarContext } from "../status/StatusToolbar";
-import { convertToDisplayName, getDateTimeString, createQueryParameterFromArray } from "../utils/Constants";
+import {
+  convertToDisplayName,
+  getDateTimeString,
+  createQueryParameterFromArray,
+} from "../utils/Constants";
 
 function displayWithTypography(key, data, typograhyStyle) {
   "Display object with field in typography";
@@ -46,13 +50,16 @@ async function getMetadataFromInstrumentRunId(
     },
   };
 
-  let queryPath = "/libraryrun/"
+  let queryPath = "/libraryrun/";
 
   // Add query to status toolbar to the query
   if (statusArray.length > 0) {
-    const parameterString = createQueryParameterFromArray("workflows__end_status", statusArray)
-    queryPath = queryPath.concat('?', parameterString)
-  } 
+    const parameterString = createQueryParameterFromArray(
+      "workflows__end_status",
+      statusArray
+    );
+    queryPath = queryPath.concat("?", parameterString);
+  }
 
   const responseLibraryRun = await API.get(
     "DataPortalApi",
@@ -64,7 +71,6 @@ async function getMetadataFromInstrumentRunId(
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
-
     const APIConfig = {
       queryStringParameters: {
         library_id: libraryRun.library_id,
@@ -75,29 +81,27 @@ async function getMetadataFromInstrumentRunId(
       "/metadata",
       APIConfig
     );
-    
+
     const metadata_result = responseMetadata.results[0];
-    
-    // Expected data to extract from metadata and libraryRun
+
+    // Compulsory data to extract from metadata and libraryRun
     // {
-    //   library_id: 
+    //   library_id:
     //   sample_id:
     //   subject_id:
-    //   workflow_id:
+    //   workflows:
     // }
 
     const extract_data = {
       ...metadata_result,
-      library_id: libraryRun.library_id,
-      workflow_id: libraryRun.workflows
-    }
-    
+      ...libraryRun,
+    };
 
     display_field_list = [...display_field_list, extract_data];
   }
   return {
     pagination: paginationResult,
-    results: display_field_list
+    results: display_field_list,
   };
 }
 
@@ -112,19 +116,19 @@ function SequenceRunRow(props) {
   const statusArray = toolbarState.status;
 
   // Prevent re-loading data by having state to check if data has loaded
-  const [allowDataLoad, setAllowDataLoad] = useState(false)
-  function handleExpandRowButton(){
-    setIsOpen(!isOpen)
-    setAllowDataLoad(true)
+  const [allowDataLoad, setAllowDataLoad] = useState(false);
+  function handleExpandRowButton() {
+    setIsOpen(!isOpen);
+    setAllowDataLoad(true);
   }
 
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
-    rowsPerPage: 50,
+    rowsPerPage: 300,
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    rowsPerPage: 10,
+    rowsPerPage: 300,
     count: 0,
   });
   function handleChangeQuery(value) {
@@ -158,14 +162,13 @@ function SequenceRunRow(props) {
     };
 
     // A guard to only execute when is needed
-    if (allowDataLoad){
+    if (allowDataLoad) {
       fetchData();
     }
 
     return () => {
       componentUnmount = true;
     };
-
   }, [
     allowDataLoad,
     data.instrument_run_id,
@@ -233,9 +236,9 @@ function SequenceRunRow(props) {
                 <Grid item>
                   <SequenceRunChip label="Sequencing" status={data.status} />
                   <SequenceRunChip
-                      label="BCL Convert"
-                      status={data.bclConvertStatus}
-                    />
+                    label="BCL Convert"
+                    status={data.bclConvertStatus}
+                  />
                 </Grid>
               </Grid>
 
@@ -269,7 +272,6 @@ function SequenceRunRow(props) {
                         }
                       )}
                 </Grid>
-
               </Grid>
             </Grid>
           </Grid>
@@ -290,9 +292,7 @@ function SequenceRunRow(props) {
               </div>
             ) : (
               <>
-                <StatusIndex
-                  metadataList={dataToDisplay}
-                />
+                <StatusIndex metadataList={dataToDisplay} />
                 <Pagination
                   pagination={pagination}
                   handleChangeQuery={handleChangeQuery}
