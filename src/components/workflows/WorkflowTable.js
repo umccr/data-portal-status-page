@@ -67,9 +67,14 @@ export default function CustomTable(props) {
   return (
     <Paper
       elevation={5}
-      sx={{ width: "100%", overflow: "hidden", marginBottom: "2rem" }}
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        marginBottom: "2rem",
+        position: "relative",
+      }}
     >
-      <TableContainer component={Paper} sx={{ position: "relative" }}>
+      <TableContainer component={Paper}>
         <TableColumnSelector
           columnOptions={columnOptions}
           columnSelectedObj={columnSelectedObj}
