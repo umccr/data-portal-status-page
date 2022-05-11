@@ -9,7 +9,6 @@ import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { grey } from "@mui/material/colors";
-import { styled } from "@mui/material/styles";
 
 // Custom Component
 import StatusRow from "./StatusRow";
