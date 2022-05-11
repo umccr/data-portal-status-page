@@ -124,11 +124,11 @@ function SequenceRunRow(props) {
 
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
-    rowsPerPage: 50,
+    rowsPerPage: 300,
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    rowsPerPage: 10,
+    rowsPerPage: 300,
     count: 0,
   });
   function handleChangeQuery(value) {

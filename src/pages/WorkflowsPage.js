@@ -30,11 +30,11 @@ export default function WorkflowTable() {
 
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
-    rowsPerPage: 100,
+    rowsPerPage: 300,
   });
   const [pagination, setPagination] = useState({
     page: 0,
-    rowsPerPage: 0,
+    rowsPerPage: 300,
     count: 0,
   });
 

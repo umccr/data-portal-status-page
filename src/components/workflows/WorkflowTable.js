@@ -218,7 +218,7 @@ function CustomPaginationTable(props, handlePaginationPropsChange) {
   return (
     <TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 50, 100, 300]}
+        rowsPerPageOptions={[50, 100, 200, 300]}
         component="div"
         count={props.count}
         rowsPerPage={props.rowsPerPage}
