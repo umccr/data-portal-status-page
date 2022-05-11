@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import StatusChip from "../status/StatusChip";
 import JSONTable from "../utils/JSONTable";
 import TableColumnSelector from "../utils/TableColumnSelector";
-import { toTitle } from "../utils/Utils";
+import { toTitle } from "../utils/Util";
 
 const COLUMN_DISPLAY = {
   id: false,

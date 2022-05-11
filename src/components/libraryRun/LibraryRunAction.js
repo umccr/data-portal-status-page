@@ -3,6 +3,7 @@ import { API } from "aws-amplify";
 import { useLocation } from "react-router-dom";
 
 import { TableContainer, Paper, LinearProgress } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 // Custom Components
 import Pagination from "../utils/Pagination";
@@ -154,7 +155,11 @@ function LibraryRunAction() {
         <TableContainer
           component={Paper}
           elevation={2}
-          sx={{ borderRadius: "10px", marginBottom: "20px" }}
+          sx={{
+            borderRadius: "10px",
+            marginBottom: "20px",
+            backgroundColor: grey[50],
+          }}
         >
           <StatusIndex metadataList={metadataList} />
           <Pagination

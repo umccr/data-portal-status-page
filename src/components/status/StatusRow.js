@@ -21,14 +21,10 @@ const DATA_PORTAL_CLIENT_DOMAIN =
   "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  height: "60px",
   backgroundColor: "white",
-  "&:nth-of-type(odd)": {
-    backgroundColor: grey[100],
-  },
   // hide last border
   "&:last-child td, &:last-child th": {
-    border: 0,
+    border: 1,
   },
 }));
 
@@ -114,7 +110,7 @@ function StatusRow(props) {
       componentUnmount = true;
     };
   }, [metadata, workflow_list, setDialogInfo]);
-  console.log("columnSelectedArrayRow", columnSelectedArray);
+
   return (
     <>
       <StyledTableRow>

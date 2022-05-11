@@ -7,12 +7,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
+import { grey } from "@mui/material/colors";
 
 // Custom Component
 import StatusRow from "./StatusRow";
 import TableColumnSelector from "../utils/TableColumnSelector";
 
 import { convertToDisplayName, getWorkflowPipeline } from "../utils/Constants";
+import { Paper } from "@mui/material";
 
 const COLUMN_DISPLAY = {
   library_id: true,
@@ -55,7 +57,6 @@ function StatusTable(props) {
     (key) => columnSelectedObj[key]
   );
 
-  console.log("columnSelectedArray", columnSelectedArray);
   const handleColumnOptionsChange = (item) => {
     setColumnSelectedObj(item);
   };
@@ -76,21 +77,32 @@ function StatusTable(props) {
       )}
 
       <TableContainer
-        sx={{ width: "100%", overflowX: "auto", borderRadius: 2 }}
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+          position: "relative",
+        }}
+        component={Paper}
+        elevation={3}
       >
+        <TableColumnSelector
+          columnOptions={columnOptions}
+          columnSelectedObj={columnSelectedObj}
+          handleColumnSelector={handleColumnOptionsChange}
+        />
         <Table
-          sx={{ tableLayout: "fixed", position: "relative" }}
+          sx={{
+            tableLayout: "fixed",
+            border: 1,
+            borderColor: grey[300],
+            borderRadius: "5px",
+          }}
           size="small"
           aria-label="MetaData"
         >
-          <TableColumnSelector
-            columnOptions={columnOptions}
-            columnSelectedObj={columnSelectedObj}
-            handleColumnSelector={handleColumnOptionsChange}
-          />
           {/* Display Table Headers */}
           <TableHead>
-            <TableRow sx={{ backgroundColor: "#CFD8DC" }}>
+            <TableRow sx={{ backgroundColor: grey[200], height: "3.5rem" }}>
               {/* Display metadata Headers */}
               {columnSelectedArray.map((field_name, index) => (
                 <TableCell
