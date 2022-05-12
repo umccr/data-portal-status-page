@@ -178,7 +178,7 @@ function TableCellData(props) {
   // Converting time to be more readable
   if ((curr_key === "start") | (curr_key === "end")) {
     const date_utc = new Date(obj_item[curr_key]);
-    return date_utc.toLocaleString("en-GB", { timeZone: "UTC" });
+    return date_utc.toLocaleString("en-GB");
   }
 
   return obj_item[curr_key];
@@ -265,12 +265,4 @@ function sortTableValues(dataList, order, orderBy) {
       return result;
     });
   }
-}
-
-export function getTotalItemCountFromRes(dataRes) {
-  const totalRecord = dataRes.totalItemCount
-    ? dataRes.totalItemCount
-    : dataRes.items.length;
-
-  return totalRecord;
 }
