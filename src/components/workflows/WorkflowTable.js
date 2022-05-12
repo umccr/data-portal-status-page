@@ -21,13 +21,13 @@ import { toTitle } from "../utils/Util";
 
 const COLUMN_DISPLAY = {
   wfr_name: true,
+  wfr_id: true,
   type_name: true,
   end_status: true,
-  start: true,
+  start: false,
   end: true,
   id: false,
   sample_name: false,
-  wfr_id: false,
   portal_run_id: false,
   wfl_id: false,
   wfv_id: false,
