@@ -169,6 +169,21 @@ function DetailButton(props) {
   );
 }
 
+function TableCellData(props) {
+  const { obj_item, curr_key } = props;
+  if (curr_key === "end_status") {
+    return <StatusChip status={obj_item[curr_key]} />;
+  }
+
+  // Converting time to be more readable
+  if ((curr_key === "start") | (curr_key === "end")) {
+    const date_utc = new Date(obj_item[curr_key]);
+    return date_utc.toLocaleString("en-GB", { timeZone: "UTC" });
+  }
+
+  return obj_item[curr_key];
+}
+
 function CustomTableBody(props) {
   const { listItem, columnSelectedObj, order, orderBy } = props;
 
@@ -183,11 +198,7 @@ function CustomTableBody(props) {
 
           {columnSelectedObj.map((key, objIndex) => (
             <TableCell align="left" key={objIndex}>
-              {key !== "end_status" ? (
-                item[key]
-              ) : (
-                <StatusChip status={item[key]} />
-              )}
+              <TableCellData obj_item={item} curr_key={key} />
             </TableCell>
           ))}
         </TableRow>
