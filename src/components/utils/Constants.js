@@ -17,9 +17,9 @@ export const WorkflowTypeEquivalence = {
 // The key is extracted from metadata type
 export const WORKFLOW_PIPELINE = {
   WGS: ["DRAGEN_WGS_QC", "TUMOR_NORMAL", "UMCCRISE"],
-  WTS: ["DRAGEN_WTS"],
-  ctTSO: ["DRAGEN_TSO_CTDNA"],
-  ctDNA: ["DRAGEN_TSO_CTDNA"],
+  WTS: ["DRAGEN_WTS", "UMCCRISE"],
+  ctTSO: ["DRAGEN_TSO_CTDNA", "UMCCRISE"],
+  ctDNA: ["DRAGEN_TSO_CTDNA", "UMCCRISE"],
 };
 
 // Workflow Types Available
