@@ -16,8 +16,12 @@ import {
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
 
-const DATA_PORTAL_CLIENT_DOMAIN =
-  "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
+// Remove `prod` from Domain Name
+const domain_name = process.env.REACT_APP_UMCCR_DOMAIN_NAME.replace(
+  "prod.",
+  ""
+);
+const DATA_PORTAL_CLIENT_DOMAIN = "data." + domain_name;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   backgroundColor: "white",
