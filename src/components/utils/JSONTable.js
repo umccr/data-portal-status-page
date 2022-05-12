@@ -10,31 +10,41 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
-// Context to store logged in user information
+function JSONTable(props) {
+  const { JSONData } = props;
 
-export default function JSONTable(props) {
+  return (
+    <Table>
+      <TableBody>
+        {Object.keys(JSONData).map((key) => (
+          <TableRow key={key}>
+            <TableCell>{key}</TableCell>
+            <TableCell>
+              {(key === "input") | (key === "output") ? (
+                <JSONTable JSONData={JSON.parse(JSONData[key])} />
+              ) : (
+                JSON.stringify(JSONData[key])
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
+export default function JSONTableDialog(props) {
   const { jsonData, isOpen, handleSetIsOpen } = props;
 
   // Reset Dialog when Close
   const handleClose = () => handleSetIsOpen(false);
-
-  const jsonKeys = Object.keys(jsonData);
 
   return (
     <>
       <Dialog open={isOpen} onClose={handleClose}>
         {/* <DialogTitle>{dialogInfo.dialogTitle}</DialogTitle> */}
         <DialogContent>
-          <Table>
-            <TableBody>
-              {jsonKeys.map((key) => (
-                <TableRow key={key}>
-                  <TableCell>{key}</TableCell>
-                  <TableCell>{JSON.stringify(jsonData[key])}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <JSONTable JSONData={jsonData} />
         </DialogContent>
         <DialogActions>
           <Button variant="secondary" onClick={handleClose}>
