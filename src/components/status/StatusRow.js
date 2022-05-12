@@ -21,6 +21,7 @@ const DATA_PORTAL_CLIENT_DOMAIN =
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   backgroundColor: "white",
+  height: "3rem",
   // hide last border
   "&:last-child td, &:last-child th": {
     border: 1,
@@ -150,7 +151,7 @@ function StatusRow(props) {
                 <StatusChip status={workflowStatus[field_name]} />
               ) : (
                 <Box>
-                  <CircularProgress />
+                  <CircularProgress size="1.75rem" />
                 </Box>
               )}
             </div>
