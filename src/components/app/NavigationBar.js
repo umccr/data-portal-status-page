@@ -43,10 +43,7 @@ const ROUTER_LINK_BUTTON = [
     routerLink: "/",
     typographyVariant: "h6",
   },
-  {
-    name: "Workflows",
-    link: "/workflows",
-  },
+
   {
     name: "Sequence",
     routerLink: "/sequence",
@@ -54,6 +51,10 @@ const ROUTER_LINK_BUTTON = [
   {
     name: "Library Run",
     routerLink: "/libraryrun",
+  },
+  {
+    name: "Workflows",
+    link: "/workflows",
   },
   {
     name: "Data Portal",
