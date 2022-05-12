@@ -10,7 +10,7 @@ function SequencePage() {
     <>
       <Grid item container justifyContent="center">
         <Typography variant="h4" gutterBottom>
-          Sequence Page
+          Recent Sequences
         </Typography>
       </Grid>
       <Grid item>

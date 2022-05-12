@@ -10,7 +10,7 @@ function LibraryRunPage() {
     <>
       <Grid item container justifyContent="center">
         <Typography variant="h4" gutterBottom>
-          Library Run Page
+          Recent Library Runs
         </Typography>
       </Grid>
       <Grid item xs={12}>

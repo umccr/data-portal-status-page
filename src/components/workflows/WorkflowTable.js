@@ -21,13 +21,13 @@ import { toTitle } from "../utils/Util";
 
 const COLUMN_DISPLAY = {
   wfr_name: true,
+  wfr_id: true,
   type_name: true,
   end_status: true,
-  start: true,
+  start: false,
   end: true,
   id: false,
   sample_name: false,
-  wfr_id: false,
   portal_run_id: false,
   wfl_id: false,
   wfv_id: false,
@@ -67,9 +67,14 @@ export default function CustomTable(props) {
   return (
     <Paper
       elevation={5}
-      sx={{ width: "100%", overflow: "hidden", marginBottom: "2rem" }}
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        marginBottom: "2rem",
+        position: "relative",
+      }}
     >
-      <TableContainer component={Paper} sx={{ position: "relative" }}>
+      <TableContainer component={Paper}>
         <TableColumnSelector
           columnOptions={columnOptions}
           columnSelectedObj={columnSelectedObj}
@@ -164,6 +169,21 @@ function DetailButton(props) {
   );
 }
 
+function TableCellData(props) {
+  const { obj_item, curr_key } = props;
+  if (curr_key === "end_status") {
+    return <StatusChip status={obj_item[curr_key]} />;
+  }
+
+  // Converting time to be more readable
+  if ((curr_key === "start") | (curr_key === "end")) {
+    const date_utc = new Date(obj_item[curr_key]);
+    return date_utc.toLocaleString("en-GB", { timeZone: "UTC" });
+  }
+
+  return obj_item[curr_key];
+}
+
 function CustomTableBody(props) {
   const { listItem, columnSelectedObj, order, orderBy } = props;
 
@@ -178,11 +198,7 @@ function CustomTableBody(props) {
 
           {columnSelectedObj.map((key, objIndex) => (
             <TableCell align="left" key={objIndex}>
-              {key !== "end_status" ? (
-                item[key]
-              ) : (
-                <StatusChip status={item[key]} />
-              )}
+              <TableCellData obj_item={item} curr_key={key} />
             </TableCell>
           ))}
         </TableRow>

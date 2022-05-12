@@ -5,7 +5,7 @@ import { API } from "aws-amplify";
 
 // mui components
 import { styled } from "@mui/material/styles";
-import { TableRow, TableCell, Link, Typography } from "@mui/material";
+import { TableRow, TableCell, Link, Typography, Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // Custom Component
@@ -16,18 +16,21 @@ import {
 import StatusChip from "./StatusChip";
 import { useDialogContext } from "../utils/DialogComponent";
 
-const DATA_PORTAL_CLIENT_DOMAIN =
-  "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
+// Remove `prod` from Domain Name
+const domain_name = process.env.REACT_APP_UMCCR_DOMAIN_NAME.replace(
+  "prod.",
+  ""
+);
+const DATA_PORTAL_CLIENT_DOMAIN = "data." + domain_name;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   backgroundColor: "white",
+  height: "3rem",
   // hide last border
   "&:last-child td, &:last-child th": {
     border: 1,
   },
 }));
-
-
 
 function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   const groupedWorkflowStatus = {};
@@ -151,7 +154,9 @@ function StatusRow(props) {
               {workflowStatus[field_name] ? (
                 <StatusChip status={workflowStatus[field_name]} />
               ) : (
-                <CircularProgress />
+                <Box>
+                  <CircularProgress size="1.75rem" />
+                </Box>
               )}
             </div>
           </TableCell>

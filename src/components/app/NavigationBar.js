@@ -30,8 +30,12 @@ import { useUserContext } from "../utils/UserContextProvider";
 import { useSearchContext } from "../utils/SearchContextProvider";
 import { useDialogContext } from "../utils/DialogComponent";
 
-const DATA_PORTAL_CLIENT_DOMAIN =
-  "data." + process.env.REACT_APP_UMCCR_DOMAIN_NAME;
+// Remove `prod` from Domain Name
+const domain_name = process.env.REACT_APP_UMCCR_DOMAIN_NAME.replace(
+  "prod.",
+  ""
+);
+const DATA_PORTAL_CLIENT_DOMAIN = "data." + domain_name;
 
 const ROUTER_LINK_BUTTON = [
   {
@@ -39,10 +43,7 @@ const ROUTER_LINK_BUTTON = [
     routerLink: "/",
     typographyVariant: "h6",
   },
-  {
-    name: "Workflows",
-    link: "/workflows",
-  },
+
   {
     name: "Sequence",
     routerLink: "/sequence",
@@ -50,6 +51,10 @@ const ROUTER_LINK_BUTTON = [
   {
     name: "Library Run",
     routerLink: "/libraryrun",
+  },
+  {
+    name: "Workflows",
+    link: "/workflows",
   },
   {
     name: "Data Portal",

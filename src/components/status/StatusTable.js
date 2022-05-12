@@ -72,7 +72,9 @@ function StatusTable(props) {
   };
 
   return (
-    <TableContainer sx={{ textAlign: "center", margin: "1em 0 2em" }}>
+    <TableContainer
+      sx={{ textAlign: "center", margin: "1em 0 2em", position: "relative" }}
+    >
       {noTitle ? (
         <></>
       ) : (
@@ -90,7 +92,6 @@ function StatusTable(props) {
         sx={{
           width: "100%",
           overflowX: "auto",
-          position: "relative",
         }}
         component={Paper}
         elevation={3}
