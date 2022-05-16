@@ -10,6 +10,7 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 
 import IconButton from "@mui/material/IconButton";
@@ -59,6 +60,7 @@ export default function TableSelector(props) {
                   />
                 ))}
               </FormGroup>
+              <FormHelperText>Default sort is by descending Id</FormHelperText>
             </FormControl>
           </Box>
         </DialogContent>
