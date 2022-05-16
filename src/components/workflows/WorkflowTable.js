@@ -179,6 +179,9 @@ function TableCellData(props) {
 
   // Converting time to be more readable
   if ((curr_key === "start") | (curr_key === "end")) {
+    // Return Empty when it is null
+    if (obj_item[curr_key] == null) return "";
+
     const date_utc = new Date(obj_item[curr_key]);
     return date_utc.toLocaleString("en-GB");
   }
