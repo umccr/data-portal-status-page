@@ -43,15 +43,17 @@ const COLUMN_DISPLAY = {
  * Custom Main Table
  */
 export default function CustomTable(props) {
-  const { items, paginationProps, handlePaginationPropsChange } = props;
+  const { items, paginationProps, handleChangeQuery, ordering } = props;
 
   // Table Ordering
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState();
+  const order = ordering.startsWith("-") ? "desc" : "asc";
+  const orderBy = ordering.replace("-", "");
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
+    handleChangeQuery((prev) => ({
+      ...prev,
+      ...{ ordering: `${isAsc ? "-" : ""}${property}` },
+    }));
   };
 
   // Column Selector
@@ -99,8 +101,8 @@ export default function CustomTable(props) {
           />
         </Table>
       </TableContainer>
-      {paginationProps && handlePaginationPropsChange ? (
-        CustomPaginationTable(paginationProps, handlePaginationPropsChange)
+      {paginationProps && handleChangeQuery ? (
+        CustomPaginationTable(paginationProps, handleChangeQuery)
       ) : (
         <></>
       )}

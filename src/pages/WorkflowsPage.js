@@ -31,6 +31,7 @@ export default function WorkflowTable() {
   // PAGINATION
   const [queryParameter, setQueryParameter] = useState({
     rowsPerPage: 300,
+    ordering: "-id",
   });
   const [pagination, setPagination] = useState({
     page: 0,
@@ -117,9 +118,10 @@ export default function WorkflowTable() {
         <Grid item container spacing={3}>
           <Grid item xs={12}>
             <CustomTable
+              ordering={queryParameter.ordering}
               items={workflowList}
               paginationProps={pagination}
-              handlePaginationPropsChange={handleChangeQuery}
+              handleChangeQuery={handleChangeQuery}
             />
           </Grid>
         </Grid>
