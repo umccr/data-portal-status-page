@@ -19,3 +19,19 @@ function toKebab(string) {
     .join("-")
     .trim();
 }
+
+export function isJSONObject(val) {
+  if (Array.isArray(val)) {
+    return false;
+  }
+
+  if (val == null) {
+    return false;
+  }
+
+  if (typeof val == "object") {
+    return true;
+  }
+
+  return false;
+}

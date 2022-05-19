@@ -10,24 +10,39 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
+// Custom component
+import { isJSONObject } from "./Util";
+
 function JSONTable(props) {
   const { JSONData } = props;
-
   return (
     <Table>
       <TableBody>
-        {Object.keys(JSONData).map((key) => (
-          <TableRow key={key}>
-            <TableCell>{key}</TableCell>
-            <TableCell>
-              {(key === "input") | (key === "output") ? (
-                <JSONTable JSONData={JSON.parse(JSONData[key])} />
-              ) : (
-                JSON.stringify(JSONData[key])
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
+        {Object.keys(JSONData).map((key) => {
+          const value = JSONData[key];
+
+          // Check if value is a JSON object and can displayed as a table instead of a string
+          let isJSONValue = false;
+          try {
+            const parsedJSON = JSON.parse(value);
+            if (isJSONObject(parsedJSON)) {
+              isJSONValue = true;
+            }
+          } catch (err) {}
+
+          return (
+            <TableRow key={key}>
+              <TableCell>{key}</TableCell>
+              <TableCell>
+                {isJSONValue ? (
+                  <JSONTable JSONData={JSON.parse(value)} />
+                ) : (
+                  JSON.stringify(value)
+                )}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
