@@ -16,18 +16,21 @@ function JSONTable(props) {
   return (
     <Table>
       <TableBody>
-        {Object.keys(JSONData).map((key) => (
-          <TableRow key={key}>
-            <TableCell>{key}</TableCell>
-            <TableCell>
-              {(key === "input") | (key === "output") ? (
-                <JSONTable JSONData={JSON.parse(JSONData[key])} />
-              ) : (
-                JSON.stringify(JSONData[key])
-              )}
-            </TableCell>
-          </TableRow>
-        ))}
+        {Object.keys(JSONData).map((key) => {
+          const value = JSONData[key];
+          return (
+            <TableRow key={key}>
+              <TableCell>{key}</TableCell>
+              <TableCell>
+                {((key === "input") | (key === "output")) & (value != null) ? (
+                  <JSONTable JSONData={JSON.parse(value)} />
+                ) : (
+                  JSON.stringify(value)
+                )}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
