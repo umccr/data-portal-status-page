@@ -84,10 +84,10 @@ function LibraryRunAction() {
   const searchValue = query.get("search");
 
   // PAGINATION
-  const [queryParameter, setQueryParameter] = useState({ rowsPerPage: 300 });
+  const [queryParameter, setQueryParameter] = useState({ rowsPerPage: 50 });
   const [pagination, setPagination] = useState({
     page: 1,
-    rowsPerPage: 300,
+    rowsPerPage: 50,
     count: 0,
   });
 
@@ -99,6 +99,7 @@ function LibraryRunAction() {
     let componentUnmount = false;
 
     const fetchData = async () => {
+
       setIsLoading(true);
       try {
         let metadataListResult = [];
@@ -146,7 +147,8 @@ function LibraryRunAction() {
     return () => {
       componentUnmount = true;
     };
-  }, [searchValue, queryParameter, setDialogInfo, toolbarState]);
+  }, [searchValue, queryParameter, setDialogInfo, toolbarState.status]);
+
   return (
     <div>
       {isLoading ? (
