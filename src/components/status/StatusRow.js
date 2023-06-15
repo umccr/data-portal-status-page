@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { groupBy, sortBy } from "lodash";
+
 // Aws amplify components
 import { API } from "aws-amplify";
 
@@ -38,16 +40,30 @@ function groupWorkflow(metadataCompletedWorkflow, workflow_list) {
   for (const workflow_display of workflow_list) {
     let workflowStatusResult = "-"; // '-' by default
 
-    // Find from array
-    for (const workflowObject of metadataCompletedWorkflow) {
-      const workflow_type_name = workflowObject["type_name"];
+    // Group all workflows result to a dict
+    const groupWorkflowType = groupBy(
+      metadataCompletedWorkflow,
+      (workflowObject) => {
+        return workflowObject["type_name"];
+      }
+    );
 
+    for (const key in groupWorkflowType) {
+      // Find matching workflow for the display
       if (
-        workflow_type_name === workflow_display ||
-        workflow_type_name === WorkflowTypeEquivalence[workflow_display]
+        key === workflow_display ||
+        key === WorkflowTypeEquivalence[workflow_display]
       ) {
-        // Find status
-        workflowStatusResult = workflowObject["end_status"];
+        // Sort in case of multiple workflow runs to pick
+        // the latest end (timestsamp)
+        const workflowData = sortBy(
+          groupWorkflowType[key],
+          (o) => o.end
+        ).reverse();
+
+        // Since the sort is reverse
+        // The latest one must be the first index
+        workflowStatusResult = workflowData[0]["end_status"];
       }
     }
 
