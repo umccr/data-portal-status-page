@@ -14,36 +14,11 @@ import { grey } from "@mui/material/colors";
 import StatusRow from "./StatusRow";
 import TableColumnSelector from "../utils/TableColumnSelector";
 
-import { convertToDisplayName, getWorkflowPipeline } from "../utils/Constants";
+import { convertToDisplayName, getWorkflowPipeline, STATUS_COLUMN_DISPLAY } from "../utils/Constants";
 import { Paper } from "@mui/material";
 
-const COLUMN_DISPLAY = {
-  library_id: true,
-  subject_id: true,
-  sample_id: true,
-  assay: false,
-  coverage: false,
-  coverage_yield: false,
-  experiment_id: false,
-  external_sample_id: false,
-  external_subject_id: false,
-  instrument_run_id: false,
-  lane: false,
-  override_cycles: false,
-  phenotype: true,
-  project_name: false,
-  project_owner: false,
-  qc_pass: false,
-  qc_status: false,
-  quality: false,
-  run_id: false,
-  sample_name: false,
-  source: false,
-  truseqindex: false,
-  type: false,
-  valid_for_analysis: false,
-  workflow: false,
-};
+// Custom hooks for local storage
+import { useLocalStorage } from "../utils/LocalStorage";
 
 function StatusTable(props) {
   // The Status table is the table for each individual library run grouped by metadata type.
@@ -52,8 +27,8 @@ function StatusTable(props) {
   const { pipelineType, metadataGrouped, noTitle, title } = props;
 
   // Column Selector
-  const [columnSelectedObj, setColumnSelectedObj] = useState(COLUMN_DISPLAY);
-  const columnOptions = Object.keys(COLUMN_DISPLAY);
+  const [columnSelectedObj, setColumnSelectedObj] = useLocalStorage('StatusColumnDisplay', STATUS_COLUMN_DISPLAY);
+  const columnOptions = Object.keys(STATUS_COLUMN_DISPLAY);
   const columnSelectedArray = columnOptions.filter(
     (key) => columnSelectedObj[key]
   );

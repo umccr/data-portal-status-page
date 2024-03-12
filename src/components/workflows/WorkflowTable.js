@@ -18,26 +18,8 @@ import StatusChip from "../status/StatusChip";
 import JSONTable from "../utils/JSONTable";
 import TableColumnSelector from "../utils/TableColumnSelector";
 import { toTitle } from "../utils/Util";
-
-const COLUMN_DISPLAY = {
-  wfr_name: true,
-  wfr_id: true,
-  type_name: true,
-  end_status: true,
-  start: false,
-  end: true,
-  id: false,
-  sample_name: false,
-  portal_run_id: false,
-  wfl_id: false,
-  wfv_id: false,
-  version: false,
-  input: false,
-  output: false,
-  notified: false,
-  sequence_run: false,
-  batch_run: false,
-};
+import { WORKFLOW_COLUMN_DISPLAY } from "../utils/Constants";
+import { useLocalStorage } from "../utils/LocalStorage";
 
 /**
  * Custom Main Table
@@ -57,8 +39,9 @@ export default function CustomTable(props) {
   };
 
   // Column Selector
-  const [columnSelectedObj, setColumnSelectedObj] = useState(COLUMN_DISPLAY);
-  const columnOptions = Object.keys(COLUMN_DISPLAY);
+  // repeat code in the status table
+  const [columnSelectedObj, setColumnSelectedObj] = useLocalStorage('WorkflowColumnDisplay', WORKFLOW_COLUMN_DISPLAY);
+  const columnOptions = Object.keys(WORKFLOW_COLUMN_DISPLAY);
   const columnSelectedArray = columnOptions.filter(
     (key) => columnSelectedObj[key]
   );

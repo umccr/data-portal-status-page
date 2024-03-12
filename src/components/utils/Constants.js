@@ -25,6 +25,58 @@ export const WORKFLOW_PIPELINE = {
 // Workflow Types Available
 export const SUPPORTED_PIPELINE = Object.keys(WORKFLOW_PIPELINE);
 
+// Column Display for the Status Table
+// Default displayed columns: library_id, subject_id, sample_id, phenotype
+export const STATUS_COLUMN_DISPLAY = {
+  library_id: true,
+  subject_id: true,
+  sample_id: true,
+  assay: false,
+  coverage: false,
+  coverage_yield: false,
+  experiment_id: false,
+  external_sample_id: false,
+  external_subject_id: false,
+  instrument_run_id: false,
+  lane: false,
+  override_cycles: false,
+  phenotype: true,
+  project_name: false,
+  project_owner: false,
+  qc_pass: false,
+  qc_status: false,
+  quality: false,
+  run_id: false,
+  sample_name: false,
+  source: false,
+  truseqindex: false,
+  type: false,
+  valid_for_analysis: false,
+  workflow: false,
+};
+
+// Column Display for the Workflow Table
+// Default displayed columns: wfr_name, wfr_id, type_name, end_status, end
+export const WORKFLOW_COLUMN_DISPLAY = {
+  wfr_name: true,
+  wfr_id: true,
+  type_name: true,
+  end_status: true,
+  start: false,
+  end: true,
+  id: false,
+  sample_name: false,
+  portal_run_id: false,
+  wfl_id: false,
+  wfv_id: false,
+  version: false,
+  input: false,
+  output: false,
+  notified: false,
+  sequence_run: false,
+  batch_run: false,
+};
+
 // Get workflow pipeline
 export function getWorkflowPipeline(pipelineType) {
   const pipeline = WORKFLOW_PIPELINE[pipelineType];

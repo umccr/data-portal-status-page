@@ -16,7 +16,7 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-export default function TableSelector(props) {
+export default function TableColumnSelector(props) {
   const { handleColumnSelector, columnSelectedObj, columnOptions } = props;
 
   const [isColumSelectorOpen, setIsColumSelectorOpen] = useState(false);
