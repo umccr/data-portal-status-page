@@ -29,8 +29,6 @@ function StatusTable(props) {
   // Column Selector
   const [columnSelectedObj, setColumnSelectedObj] = useLocalStorage('StatusColumnDisplay', STATUS_COLUMN_DISPLAY);
   const columnOptions = Object.keys(STATUS_COLUMN_DISPLAY);
-  // read from local storage first
-  // need code here to read from local storage
   const columnSelectedArray = columnOptions.filter(
     (key) => columnSelectedObj[key]
   );
