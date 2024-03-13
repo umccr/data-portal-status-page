@@ -147,10 +147,10 @@ function StatusRow(props) {
                   metadata[field_name]
                 }
               >
-                <Typography>{metadata[field_name]}</Typography>
+                <Typography>{`${metadata[field_name]}`}</Typography>
               </Link>
             ) : (
-              <Typography>{metadata[field_name]}</Typography>
+              <Typography>{`${metadata[field_name]}`}</Typography>
             )}
           </TableCell>
         ))}
