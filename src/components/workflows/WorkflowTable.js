@@ -27,6 +27,7 @@ import { useLocalStorage } from "../utils/LocalStorage";
 export default function CustomTable(props) {
   const { items, paginationProps, handleChangeQuery, ordering } = props;
 
+  console.log("items", items);
   // Table Ordering
   const order = ordering.startsWith("-") ? "desc" : "asc";
   const orderBy = ordering.replace("-", "");
@@ -170,7 +171,7 @@ function TableCellData(props) {
     return date_utc.toLocaleString("en-GB");
   }
 
-  return obj_item[curr_key];
+  return `${obj_item[curr_key]}` === "null" ? '-' : `${obj_item[curr_key]}`;
 }
 
 function CustomTableBody(props) {
