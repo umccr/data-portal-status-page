@@ -23,7 +23,8 @@ const domain_name = process.env.REACT_APP_UMCCR_DOMAIN_NAME.replace(
   "prod.",
   ""
 );
-const DATA_PORTAL_CLIENT_DOMAIN = "data." + domain_name;
+// use the new portal at portal.xxx.umccr.org replace old "data.xxx.umccr.org"
+const DATA_PORTAL_CLIENT_DOMAIN = "portal." + domain_name;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   backgroundColor: "white",
