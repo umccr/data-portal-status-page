@@ -192,8 +192,17 @@ function NavigationBar(props) {
   }
 
   async function handleLogout() {
-    await Auth.signOut({ global: true });
-    setUser(false);
+    try {
+      // Remove custome values in local storage
+      // Warning: clear all local storage will disable Auth.signOut function.
+      localStorage.removeItem("StatusColumnDisplay")
+      localStorage.removeItem("workflowColumnDisplay")
+
+      await Auth.signOut({ global: true })
+      setUser(null);
+    } catch (e) {
+      console.error("Error signing out: ", e);
+    }
   }
 
   useEffect(() => {

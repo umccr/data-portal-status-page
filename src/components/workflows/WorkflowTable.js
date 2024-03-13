@@ -63,6 +63,7 @@ export default function CustomTable(props) {
         <TableColumnSelector
           columnOptions={columnOptions}
           columnSelectedObj={columnSelectedObj}
+          defaultColumnSelectedObj={WORKFLOW_COLUMN_DISPLAY}
           handleColumnSelector={handleColumnOptionsChange}
         />
         <Table
