@@ -4,7 +4,7 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - npm i react-scripts
+      - npm i --dev
   build:
     commands:
       - set -eu
