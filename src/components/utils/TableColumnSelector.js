@@ -17,7 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function TableColumnSelector(props) {
-  const { handleColumnSelector, columnSelectedObj, columnOptions } = props;
+  const { handleColumnSelector, defaultColumnSelectedObj, columnSelectedObj, columnOptions } = props;
 
   const [isColumSelectorOpen, setIsColumSelectorOpen] = useState(false);
 
@@ -26,6 +26,11 @@ export default function TableColumnSelector(props) {
       ...columnSelectedObj,
       [event.target.name]: event.target.checked,
     });
+  };
+  const handleReset = () => {
+    handleColumnSelector({
+      ...defaultColumnSelectedObj
+    })
   };
 
   return (
@@ -65,12 +70,18 @@ export default function TableColumnSelector(props) {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
+            <Button
+            variant="secondary"
+            onClick={() => handleReset()}
+            >
+              Reset
+            </Button>
+            <Button
             variant="secondary"
             onClick={() => setIsColumSelectorOpen(false)}
-          >
-            Close
-          </Button>
+            >
+              Close
+            </Button>
         </DialogActions>
       </Dialog>
     </>

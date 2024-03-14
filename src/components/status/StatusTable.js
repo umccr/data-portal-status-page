@@ -74,6 +74,7 @@ function StatusTable(props) {
         <TableColumnSelector
           columnOptions={columnOptions}
           columnSelectedObj={columnSelectedObj}
+          defaultColumnSelectedObj={STATUS_COLUMN_DISPLAY}
           handleColumnSelector={handleColumnOptionsChange}
         />
         <Table
