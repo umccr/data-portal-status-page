@@ -135,7 +135,7 @@ class CdkPipelineStack(cdk.Stack):
             description="The project from codebuild to build react project.",
             project_name="DataPortalStatusPageReactBuild",
             environment=codebuild.BuildEnvironment(
-                build_image=codebuild.LinuxBuildImage.STANDARD_7_0
+                build_image=codebuild.LinuxBuildImage.from_code_build_image_id("aws/codebuild/standard:7.0"),
             )
         )
 
