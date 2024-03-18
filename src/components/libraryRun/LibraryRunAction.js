@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { amplifyGet } from "../utils/AmplifyApiCall";
+import { AmplifyApiCall } from "../utils/AmplifyApiCall";
 import { useLocation } from "react-router-dom";
 
 import { TableContainer, Paper, LinearProgress } from "@mui/material";
@@ -32,7 +32,7 @@ async function getQueryMetadata(queryParameter, toolbarStatusArray) {
   }
 
   // Api Calls to LibraryRun to get list of Metadata
-  const responseLibraryRun = await amplifyGet("DataPortalApi", queryPath, queryParameter);
+  const responseLibraryRun = await AmplifyApiCall.get("DataPortalApi", queryPath, queryParameter);
 
 
   const libraryRunList = responseLibraryRun.results;
@@ -43,7 +43,7 @@ async function getQueryMetadata(queryParameter, toolbarStatusArray) {
     const queryParams = {
         library_id: libraryRun.library_id,
     };
-    const responseMetadata = await amplifyGet("DataPortalApi", "/metadata", queryParams);
+    const responseMetadata = await AmplifyApiCall.get("DataPortalApi", "/metadata", queryParams);
     const metadata_result = responseMetadata.results[0];
 
     // Expected data to extract from metadata and libraryRun

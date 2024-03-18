@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { amplifyGet } from "../utils/AmplifyApiCall";
+import { AmplifyApiCall } from "../utils/AmplifyApiCall";
 
 // Material-UI component
 import Collapse from "@mui/material/Collapse";
@@ -59,7 +59,7 @@ async function getMetadataFromInstrumentRunId(
     queryPath = queryPath.concat("?", parameterString);
   }
 
-  const responseLibraryRun = await amplifyGet("DataPortalApi", queryPath, queryParams);
+  const responseLibraryRun = await AmplifyApiCall.get("DataPortalApi", queryPath, queryParams);
   const libraryRunList = responseLibraryRun.results;
   const paginationResult = responseLibraryRun.pagination;
 
@@ -69,7 +69,7 @@ async function getMetadataFromInstrumentRunId(
         library_id: libraryRun.library_id,
     };
 
-    const responseMetadata = await amplifyGet("DataPortalApi", "/metadata", queryParams);
+    const responseMetadata = await AmplifyApiCall.get("DataPortalApi", "/metadata", queryParams);
 
     const metadata_result = responseMetadata.results[0];
 

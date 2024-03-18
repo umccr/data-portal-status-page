@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { amplifyGet } from "../utils/AmplifyApiCall";
+import { AmplifyApiCall } from "../utils/AmplifyApiCall";
 import { useLocation } from "react-router-dom";
 
 // Material UI Components
@@ -24,12 +24,11 @@ async function findBclConvertStatus(instrument_run_id) {
 
   // Check for BCL_CONVERT
   let queryParams = {
-    
       type_name: "BCL_CONVERT",
       sequence_run__instrument_run_id: instrument_run_id,
   };
 
-  const responseBCLConvertQuery = await amplifyGet("DataPortalApi", "/workflows/", queryParams);
+  const responseBCLConvertQuery = await AmplifyApiCall.get("DataPortalApi", "/workflows/", queryParams);
 
 
   if (responseBCLConvertQuery.pagination.count > 0) {
@@ -110,7 +109,7 @@ export default function SequenceRunTable() {
           };
         }
 
-        const sequenceResponse = await amplifyGet("DataPortalApi", "/sequence", queryParams);
+        const sequenceResponse = await AmplifyApiCall.get("DataPortalApi", "/sequence", queryParams);
     
         newSequenceList = sequenceResponse.results;
         paginationResult = sequenceResponse.pagination;

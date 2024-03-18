@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { amplifyGet } from "../components/utils/AmplifyApiCall";
+import { AmplifyApiCall } from "../components/utils/AmplifyApiCall";
 import { useLocation } from "react-router-dom";
 
 // Material UI Components
@@ -64,7 +64,7 @@ export default function WorkflowTable() {
           };
         }
 
-        const workflowResponse = await amplifyGet("DataPortalApi", "/workflows", queryParams);
+        const workflowResponse = await AmplifyApiCall.get("DataPortalApi", "/workflows", queryParams);
         newWorkflowList = workflowResponse.results;
         paginationResult = workflowResponse.pagination;
 
