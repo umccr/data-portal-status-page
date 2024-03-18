@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 // AWS-amplify
-import { Auth, Hub } from "aws-amplify";
-
+import { Hub } from "aws-amplify/utils";
+import { getCurrentUser, signOut, signInWithRedirect } from "aws-amplify/auth"
 // React Router Dom
 import { Link as RouterLink } from "react-router-dom";
 
@@ -185,8 +185,8 @@ function NavigationBar(props) {
     });
   }, [setUser]);
 
-  function getUser() {
-    return Auth.currentAuthenticatedUser()
+  async function getUser() {
+    return await getCurrentUser()
       .then((userData) => userData)
       .catch(() => console.log("Not signed in"));
   }
@@ -198,7 +198,7 @@ function NavigationBar(props) {
       localStorage.removeItem("StatusColumnDisplay")
       localStorage.removeItem("workflowColumnDisplay")
 
-      await Auth.signOut({ global: true })
+      await signOut({ global: true })
       setUser(null);
     } catch (e) {
       console.error("Error signing out: ", e);
@@ -208,7 +208,6 @@ function NavigationBar(props) {
   useEffect(() => {
     async function onLoad() {
       try {
-        await Auth.currentSession();
         getUser().then((userData) => setUser(userData));
       } catch (e) {
         if (e !== "No current user") {
@@ -322,7 +321,7 @@ function NavigationBar(props) {
         {user ? (
           <Button onClick={handleLogout}>Logout</Button>
         ) : (
-          <Button onClick={() => Auth.federatedSignIn({ provider: "Google" })}>
+          <Button onClick={() => signInWithRedirect({ provider: "Google" })}>
             Login
           </Button>
         )}

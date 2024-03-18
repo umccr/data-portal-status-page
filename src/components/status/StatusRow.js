@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { groupBy, sortBy } from "lodash";
 
 // Aws amplify components
-import { API } from "aws-amplify";
+import { AmplifyApiCall } from "../utils/AmplifyApiCall";
 
 // mui components
 import { styled } from "@mui/material/styles";
@@ -96,7 +96,7 @@ function StatusRow(props) {
             );
             queryPath = queryPath.concat("?", parameterString);
 
-            const responseWorkflow = await API.get("DataPortalApi", queryPath);
+            const responseWorkflow = await AmplifyApiCall.get("DataPortalApi", queryPath);
 
             metadata["completed_workflows"] = responseWorkflow.results;
           } else {
@@ -112,6 +112,7 @@ function StatusRow(props) {
         if (componentUnmount) return;
         setWorkflowStatus(groupedWorkflow);
       } catch (err) {
+        console.error(err);
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",

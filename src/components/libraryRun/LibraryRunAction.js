@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API } from "aws-amplify";
+import { AmplifyApiCall } from "../utils/AmplifyApiCall";
 import { useLocation } from "react-router-dom";
 
 import { TableContainer, Paper, LinearProgress } from "@mui/material";
@@ -32,28 +32,18 @@ async function getQueryMetadata(queryParameter, toolbarStatusArray) {
   }
 
   // Api Calls to LibraryRun to get list of Metadata
-  const APIConfig = queryParameter;
-  const responseLibraryRun = await API.get(
-    "DataPortalApi",
-    queryPath,
-    APIConfig
-  );
+  const responseLibraryRun = await AmplifyApiCall.get("DataPortalApi", queryPath, queryParameter);
+
 
   const libraryRunList = responseLibraryRun.results;
   const paginationResult = responseLibraryRun.pagination;
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
-    const APIConfig = {
-      queryStringParameters: {
+    const queryParams = {
         library_id: libraryRun.library_id,
-      },
     };
-    const responseMetadata = await API.get(
-      "DataPortalApi",
-      "/metadata",
-      APIConfig
-    );
+    const responseMetadata = await AmplifyApiCall.get("DataPortalApi", "/metadata", queryParams);
     const metadata_result = responseMetadata.results[0];
 
     // Expected data to extract from metadata and libraryRun
@@ -105,22 +95,19 @@ function LibraryRunAction() {
         let metadataListResult = [];
         let paginationResult;
 
-        let APIConfig = {
-          queryStringParameters: {
+        let queryParams = {
             ...queryParameter,
-          },
         };
         if (searchValue) {
-          APIConfig = {
-            queryStringParameters: {
-              ...APIConfig.queryStringParameters,
+          queryParams = {
+            
+              ...queryParams,
               search: searchValue,
-            },
           };
         }
 
         const responseMetadata = await getQueryMetadata(
-          APIConfig,
+          queryParams,
           toolbarState.status
         );
         metadataListResult = responseMetadata.results;
@@ -131,7 +118,7 @@ function LibraryRunAction() {
         setMetadataList(metadataListResult);
         setPagination(paginationResult);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { API } from "aws-amplify";
+import { AmplifyApiCall } from "../utils/AmplifyApiCall";
 
 // Material-UI component
 import Collapse from "@mui/material/Collapse";
@@ -43,11 +43,9 @@ async function getMetadataFromInstrumentRunId(
   let display_field_list = [];
 
   // Api Calls to LibraryRun to get list of Metadata
-  let APIConfig = {
-    queryStringParameters: {
+  let queryParams = {
       ...queryParameter,
       instrument_run_id: instrument_run_id,
-    },
   };
 
   let queryPath = "/libraryrun/";
@@ -61,26 +59,17 @@ async function getMetadataFromInstrumentRunId(
     queryPath = queryPath.concat("?", parameterString);
   }
 
-  const responseLibraryRun = await API.get(
-    "DataPortalApi",
-    queryPath,
-    APIConfig
-  );
+  const responseLibraryRun = await AmplifyApiCall.get("DataPortalApi", queryPath, queryParams);
   const libraryRunList = responseLibraryRun.results;
   const paginationResult = responseLibraryRun.pagination;
 
   // For each libraryRun list, fetch metadata
   for (const libraryRun of libraryRunList) {
-    const APIConfig = {
-      queryStringParameters: {
+    const queryParams = {
         library_id: libraryRun.library_id,
-      },
     };
-    const responseMetadata = await API.get(
-      "DataPortalApi",
-      "/metadata",
-      APIConfig
-    );
+
+    const responseMetadata = await AmplifyApiCall.get("DataPortalApi", "/metadata", queryParams);
 
     const metadata_result = responseMetadata.results[0];
 
@@ -152,6 +141,7 @@ function SequenceRunRow(props) {
         setDataToDisplay(apiResponse.results);
         setIsLoading(false);
       } catch (err) {
+        console.error(err);
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",
