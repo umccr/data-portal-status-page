@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Route } from "react-router-dom";
-import { Auth } from "aws-amplify";
+import { signInWithRedirect } from "aws-amplify/auth";
 import { Grid, Typography } from "@mui/material";
 import Link from "@mui/material/Link";
 
@@ -32,7 +32,7 @@ function AuthenticatedRoute(props) {
                   variant="h1"
                   sx={{ fontSize: "16px" }}
                   gutterBottom
-                  onClick={() => Auth.federatedSignIn({ provider: "Google" })}
+                  onClick={() => signInWithRedirect({ provider: "Google" })}
                 >
                   Please login
                 </Link>

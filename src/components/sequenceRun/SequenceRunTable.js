@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { API } from "aws-amplify";
+import { amplifyGet } from "../utils/AmplifyApiCall";
 import { useLocation } from "react-router-dom";
 
 // Material UI Components
@@ -23,17 +23,14 @@ async function findBclConvertStatus(instrument_run_id) {
   let bclConvertStatus = '';
 
   // Check for BCL_CONVERT
-  let APIConfig = {
-    queryStringParameters: {
+  let queryParams = {
+    
       type_name: "BCL_CONVERT",
       sequence_run__instrument_run_id: instrument_run_id,
-    },
   };
-  const responseBCLConvertQuery = await API.get(
-    "DataPortalApi",
-    "/workflows/",
-    APIConfig
-  );
+
+  const responseBCLConvertQuery = await amplifyGet("DataPortalApi", "/workflows/", queryParams);
+
 
   if (responseBCLConvertQuery.pagination.count > 0) {
     // Grabing the latest object in the results array
@@ -103,25 +100,18 @@ export default function SequenceRunTable() {
         let newSequenceList = [];
         let paginationResult;
 
-        let APIConfig = {
-          queryStringParameters: {
+        let queryParams = {
             ...queryParameter,
-          },
         };
         if (searchValue) {
-          APIConfig = {
-            queryStringParameters: {
-              ...APIConfig,
-              search: searchValue,
-            },
+          queryParams = {
+            ...queryParams,
+            search: searchValue,
           };
         }
 
-        const sequenceResponse = await API.get(
-          "DataPortalApi",
-          "/sequence",
-          APIConfig
-        );
+        const sequenceResponse = await amplifyGet("DataPortalApi", "/sequence", queryParams);
+    
         newSequenceList = sequenceResponse.results;
         paginationResult = sequenceResponse.pagination;
 
@@ -137,6 +127,7 @@ export default function SequenceRunTable() {
         setSequenceRunList(newSequenceList);
         setPagination(paginationResult);
       } catch (err) {
+        console.error(err);
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",

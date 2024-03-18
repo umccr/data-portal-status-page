@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { API } from "aws-amplify";
+import { amplifyGet } from "../components/utils/AmplifyApiCall";
 import { useLocation } from "react-router-dom";
 
 // Material UI Components
@@ -53,25 +53,18 @@ export default function WorkflowTable() {
         let newWorkflowList = [];
         let paginationResult;
 
-        let APIConfig = {
-          queryStringParameters: {
+        let queryParams = {
             ...queryParameter,
-          },
         };
         if (searchValue) {
-          APIConfig = {
-            queryStringParameters: {
-              ...APIConfig,
+          queryParams = {
+            
+              ...queryParams,
               search: searchValue,
-            },
           };
         }
 
-        const workflowResponse = await API.get(
-          "DataPortalApi",
-          "/workflows",
-          APIConfig
-        );
+        const workflowResponse = await amplifyGet("DataPortalApi", "/workflows", queryParams);
         newWorkflowList = workflowResponse.results;
         paginationResult = workflowResponse.pagination;
 
@@ -80,6 +73,7 @@ export default function WorkflowTable() {
         setWorkflowList(newWorkflowList);
         setPagination(paginationResult);
       } catch (err) {
+        console.error(err);
         setDialogInfo({
           isOpen: true,
           dialogTitle: "Error",
