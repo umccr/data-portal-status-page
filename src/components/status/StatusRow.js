@@ -137,7 +137,7 @@ function StatusRow(props) {
     <>
       <StyledTableRow>
         {columnSelectedArray.map((field_name, index) => (
-          <TableCell key={index} sx={{ textAlign: "center" }}>
+          <TableCell key={index} sx={{ textAlign: "center", overflowWrap: "anywhere", }}>
             {field_name === "subject_id" ? (
               <Link
                 underline="hover"
@@ -160,7 +160,7 @@ function StatusRow(props) {
         {workflow_list.map((field_name, index) => (
           <TableCell
             key={index}
-            sx={{ textAlign: "center", position: "relative" }}
+            sx={{ textAlign: "center", position: "relative", width: "105px"}}
           >
             <div
               style={{

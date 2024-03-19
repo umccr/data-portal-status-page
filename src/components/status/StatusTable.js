@@ -94,7 +94,7 @@ function StatusTable(props) {
               {columnSelectedArray.map((field_name, index) => (
                 <TableCell
                   key={index}
-                  sx={{ textAlign: "center", width: "100px" }}
+                  sx={{ textAlign: "center", width: "100px", overflowWrap: "anywhere"}}
                 >
                   <TableSortLabel
                     active={orderBy === field_name}
@@ -123,7 +123,8 @@ function StatusTable(props) {
                   key={index}
                   sx={{
                     textAlign: "center",
-                    width: "100px",
+                    width: "105px",
+                    overflowWrap: "anywhere",
                   }}
                 >
                   {field_name}
