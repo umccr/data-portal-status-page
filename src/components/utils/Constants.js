@@ -11,13 +11,20 @@ export const WorkflowTypeEquivalence = {
   DRAGEN_TSO_CTDNA: "tso_ctdna_tumor_only",
   DRAGEN_WTS: "wts_tumor_only",
   UMCCRISE: "umccrise",
+  ONCOANALYSER_WGS:"oncoanalyser_wgs",
+  SASH: "sash",
+  ONCOANALYSER_WGTS_BOTH:"oncoanalyser_wgts_existing_both",
+  DRAGEN_WTS_QC: "wts_alignment_qc",
+  RNASUM: "rnasum",
+  STAR_ALIGNMENT: "star_alignment",
+  ONCOANALYSER_WTS:"oncoanalyser_wts",
 };
 
 // Workflow order
 // The key is extracted from metadata type
 export const WORKFLOW_PIPELINE = {
-  WGS: ["DRAGEN_WGS_QC", "TUMOR_NORMAL", "UMCCRISE"],
-  WTS: ["DRAGEN_WTS", "UMCCRISE"],
+  WGS: ["DRAGEN_WGS_QC", "TUMOR_NORMAL", "UMCCRISE", "ONCOANALYSER_WGS", "SASH", "ONCOANALYSER_WGTS_BOTH"],
+  WTS: ["DRAGEN_WTS_QC", "DRAGEN_WTS", "RNASUM", "STAR_ALIGNMENT", "ONCOANALYSER_WTS", "ONCOANALYSER_WGTS_BOTH"],
   ctTSO: ["DRAGEN_TSO_CTDNA", "UMCCRISE"],
   ctDNA: ["DRAGEN_TSO_CTDNA", "UMCCRISE"],
 };
