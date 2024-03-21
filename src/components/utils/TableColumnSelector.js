@@ -37,7 +37,7 @@ export default function TableColumnSelector(props) {
     <>
       <IconButton
         onClick={() => setIsColumSelectorOpen(true)}
-        sx={{ position: "absolute", right: "-0.3rem", top: "0.5rem" }}
+        sx={{ position: "absolute", right: "-0.3rem", top: "0.5rem", zIndex: 999 }}
       >
         <MoreVertIcon />
       </IconButton>
