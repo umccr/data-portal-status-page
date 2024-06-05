@@ -1,15 +1,14 @@
 import * as cdk from "aws-cdk-lib";
+import { Construct } from "constructs";
 import * as ssm from "aws-cdk-lib/aws-ssm";
-import * as s3 from "aws-cdk-lib/aws-s3";
+import * as pipelines from "aws-cdk-lib/pipelines";
 import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as codebuild from "aws-cdk-lib/aws-codebuild";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as codestarnotifications from "aws-cdk-lib/aws-codestarnotifications";
-import * as pipelines from "aws-cdk-lib/pipelines";
-
-import { Construct } from "constructs";
 import { DataPortalStatusPageStack } from "./data-portal-status-page-stack";
 
 class DataPortalStatusPageStage extends cdk.Stage {
@@ -22,7 +21,7 @@ class DataPortalStatusPageStage extends cdk.Stage {
     const stackName = appProps["appStackName"];
 
     new DataPortalStatusPageStack(this, "StatusPage", {
-      stackName: stackName,
+      stackName: `${stackName}`,
       tags: {
         stage: appStage,
         stack: `pipeline-${stackName}`,
@@ -32,7 +31,7 @@ class DataPortalStatusPageStage extends cdk.Stage {
 }
 
 export class CdkPipelineStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const appStage = this.node.tryGetContext("app_stage");
@@ -79,27 +78,29 @@ export class CdkPipelineStack extends cdk.Stack {
       codePipelineSource.primaryOutput!
     );
 
+    const synthStep = new pipelines.ShellStep("CDKShellScript", {
+      input: codePipelineSource,
+      commands: [
+        "cdk synth",
+        "mkdir ./cfnnag_output",
+        'for template in $(find ./cdk.out -type f -maxdepth 2 -name "*.template.json"); do cp $template ./cfnnag_output; done',
+        "cfn_nag_scan --input-path ./cfnnag_output",
+      ],
+      installCommands: [
+        "cd deploy",
+        "npm install -g aws-cdk",
+        "gem install cfn-nag",
+        "npm install",
+      ],
+      primaryOutputDirectory: "deploy/cdk.out",
+    });
+
     const selfMutatePipeline = new pipelines.CodePipeline(
       this,
       "CodePipeline",
       {
         codePipeline: statusPagePipeline,
-        synth: new pipelines.ShellStep("CDKShellScript", {
-          input: codePipelineSource,
-          commands: [
-            "cdk synth",
-            "mkdir ./cfnnag_output",
-            'for template in $(find ./cdk.out -type f -maxdepth 2 -name "*.template.json"); do cp $template ./cfnnag_output; done',
-            "cfn_nag_scan --input-path ./cfnnag_output",
-          ],
-          installCommands: [
-            "cd deploy",
-            "npm install -g aws-cdk",
-            "gem install cfn-nag",
-            "npm install",
-          ],
-          primaryOutputDirectory: "deploy/cdk.out",
-        }),
+        synth: synthStep,
       }
     );
 
@@ -194,7 +195,6 @@ export class CdkPipelineStack extends cdk.Stack {
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
       },
-      // type: codepipeline_actions.CodeBuildActionType.BUILD,
     });
 
     selfMutatePipeline.pipeline.addStage({
