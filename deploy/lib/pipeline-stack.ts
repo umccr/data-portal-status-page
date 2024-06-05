@@ -123,7 +123,7 @@ export class CdkPipelineStack extends cdk.Stack {
         description: "The project from codebuild to build react project.",
         projectName: "DataPortalStatusPageReactBuild",
         environment: {
-          buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
+          buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         },
       }
     );
@@ -208,7 +208,7 @@ export class CdkPipelineStack extends cdk.Stack {
       {
         projectName: "InvalidateDataPortalStatusPageCDNCache",
         environment: {
-          buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
+          buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         },
         buildSpec: codebuild.BuildSpec.fromObject({
           version: "0.2",
