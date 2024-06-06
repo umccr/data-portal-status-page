@@ -4,8 +4,8 @@ This is the front end code for UMCCR Status Page.
 
 ## Online Deployment
 
-Production : https://status.data.umccr.org/  
-Development: https://status.data.dev.umccr.org/
+Production : <https://status.umccr.org/>  
+Development: <https://status.dev.umccr.org/>
 
 ## Development
 
@@ -42,4 +42,4 @@ yarn start
 
 ### AWS-CDK Infrastructure
 
-See CDK readme at deploy directory. [CDK readme](deploy/README.md)
+This cdk will build an AWS cloud infrastructure for the UMCCR Data Status Page. See CDK readme at deploy directory. [CDK readme](deploy/README.md)

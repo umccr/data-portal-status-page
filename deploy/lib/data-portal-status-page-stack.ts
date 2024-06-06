@@ -100,7 +100,7 @@ export class DataPortalStatusPageStack extends cdk.Stack {
         new route53targets.CloudFrontTarget(dataPortalStatusPageCloudfront)
       ),
       zone: hostedZone,
-      recordName: 'status.data',
+      recordName: 'status',
     });
 
     // Adding stack variable output
