@@ -104,7 +104,7 @@ function LibraryRunAction() {
       setIsLoading(true);
       try {
         let metadataListResult: any = [];
-        let paginationResult;
+        let paginationResult: any = {};
 
         let queryParams = {
           ...queryParameter,

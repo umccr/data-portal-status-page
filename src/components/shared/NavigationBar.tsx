@@ -47,14 +47,6 @@ const ROUTER_LINK_BUTTON = [
     link: '/workflows',
   },
   {
-    name: 'Diagram',
-    link: '/diagram',
-  },
-  {
-    name: 'Reports',
-    link: '/reports',
-  },
-  {
     name: 'Data Portal',
     link: 'https://' + DATA_PORTAL_CLIENT_DOMAIN,
   },
@@ -148,7 +140,7 @@ function navbarLinkButton(linkInformation: any) {
   );
 }
 
-function NavigationBar(props: any) {
+function NavigationBar() {
   const [searchInput, setSearchInput] = useState('');
   const { user, setUser } = useUserContext() as any;
   const { searchHandler } = useSearchContext() as any;

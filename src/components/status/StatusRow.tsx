@@ -79,7 +79,11 @@ function StatusRow(props: any) {
             const parameterString = createQueryParameterFromArray('id', metadata.workflows);
             queryPath = queryPath.concat('?', parameterString);
 
-            const responseWorkflow = (await AmplifyApiCall.get('DataPortalApi', queryPath)) as any;
+            const responseWorkflow = (await AmplifyApiCall.get(
+              'DataPortalApi',
+              queryPath,
+              {}
+            )) as any;
 
             metadata['completed_workflows'] = responseWorkflow?.results;
           } else {

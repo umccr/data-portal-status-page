@@ -4,8 +4,6 @@ import SequencePage from '../pages/SequencePage';
 import LibraryRunPage from '../pages/LibraryRunPage';
 import WorkflowsPage from '../pages/WorkflowsPage';
 import AuthenticatedRoute from '../utils/AuthenticatedRoute';
-import DiagramPage from '../pages/DiagramPage';
-import Reports from '../pages/Reports';
 
 // Declaring Routes
 // Route: can be access regardless auth/unauth
@@ -25,15 +23,6 @@ export default function Routes() {
       </AuthenticatedRoute>
       <AuthenticatedRoute exact path='/workflows'>
         <WorkflowsPage />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path='/diagram'>
-        <DiagramPage />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path='/reports'>
-        <Reports />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path='/reports'>
-        <Reports />
       </AuthenticatedRoute>
       <Route>
         <NotFound />
