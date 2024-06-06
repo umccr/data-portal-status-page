@@ -91,8 +91,11 @@ export default function SequenceRunTable() {
     count: 0,
   });
 
-  function handleChangeQuery(value: QueryParameterType) {
-    setQueryParameter(value);
+  function handleChangeQuery(value: Partial<QueryParameterType>) {
+    setQueryParameter({
+      rowsPerPage: 10, // Provide a default value for rowsPerPage
+      ...value,
+    });
   }
 
   // Fetch sequence run data from API

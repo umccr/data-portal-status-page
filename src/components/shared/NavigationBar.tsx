@@ -7,10 +7,18 @@ import { getCurrentUser, signOut, signInWithRedirect } from 'aws-amplify/auth';
 import { Link as RouterLink } from 'react-router-dom';
 
 // Material UI Components
-import { styled } from '@mui/material/styles';
-import { AppBar, Toolbar, Button, Typography, InputBase, Link, MenuItem } from '@mui/material';
+// import { styled } from '@mui/material/styles';
+import styled from '@mui/material/styles/styled';
+//import { AppBar, Toolbar, Button, Typography, InputBase, Link, MenuItem } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import InputBase from '@mui/material/InputBase';
+import Link from '@mui/material/Link';
+import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
-import { grey } from '@mui/material/colors';
+import grey from '@mui/material/colors/grey';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -203,12 +211,12 @@ function NavigationBar() {
     searchHandler(searchInput);
   };
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<(EventTarget & Element) | null>(null);
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleOpenNavMenu = (event: any) => {
+  const handleOpenNavMenu = (event: React.SyntheticEvent) => {
     setAnchorElNav(event.currentTarget);
   };
   return (

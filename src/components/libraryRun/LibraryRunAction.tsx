@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { AmplifyApiCall } from '../../utils/AmplifyApiCall';
 import { useLocation } from 'react-router-dom';
 
-import { TableContainer, Paper, LinearProgress } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import grey from '@mui/material/colors/grey';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import LinearProgress from '@mui/material/LinearProgress';
 
 // Custom Components
 import Pagination from '../../utils/Pagination';
@@ -93,8 +95,8 @@ function LibraryRunAction() {
     count: 0,
   });
 
-  function handleChangeQuery(value: QueryParameterType) {
-    setQueryParameter(value);
+  function handleChangeQuery(value: Partial<QueryParameterType> | number) {
+    setQueryParameter(value as QueryParameterType);
   }
 
   useEffect(() => {

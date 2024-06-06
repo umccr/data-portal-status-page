@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { grey } from '@mui/material/colors';
+import grey from '@mui/material/colors/grey';
 import { TableSortLabelOwnProps } from '@mui/material/TableSortLabel';
 
 // Custom Component

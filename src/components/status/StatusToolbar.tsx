@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext } from 'react';
+import { useState, useContext, createContext } from 'react';
 
 // MUI component
 import Grid from '@mui/material/Grid';
@@ -8,7 +8,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import TabIcon from '@mui/icons-material/Tab';
 import ListIcon from '@mui/icons-material/List';
 import Toolbar from '@mui/material/Toolbar';
-import { styled } from '@mui/material/styles';
+import styled from '@mui/material/styles/styled';
 // Custom Component
 import WorkflowChip from './StatusChip';
 import { WORKFLOW_STATUS } from '../../utils/Constants';
@@ -57,7 +57,7 @@ function StatusToolbar(props: any) {
     }
   }
 
-  function handleViewToggleChange(event: any, newValue: any) {
+  function handleViewToggleChange(_event: React.SyntheticEvent, newValue: any) {
     if (newValue !== null) {
       setToolbarState((prevState) => ({
         ...prevState,

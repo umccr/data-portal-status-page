@@ -1,7 +1,9 @@
 import React from 'react';
 import { Route, RouteProps } from 'react-router-dom';
 import { signInWithRedirect } from 'aws-amplify/auth';
-import { Grid, Typography, Link } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 
 import { useUserContext } from './UserContextProvider';
 

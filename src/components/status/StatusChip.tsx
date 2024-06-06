@@ -1,6 +1,8 @@
-import React from 'react';
 import Chip from '@mui/material/Chip';
-import { green, orange, red, brown } from '@mui/material/colors';
+import green from '@mui/material/colors/green';
+import orange from '@mui/material/colors/orange';
+import red from '@mui/material/colors/red';
+import brown from '@mui/material/colors/brown';
 
 // Color selection based on https://materialui.co/colors/ color palette
 // Color name from the color header and numbers are color Id

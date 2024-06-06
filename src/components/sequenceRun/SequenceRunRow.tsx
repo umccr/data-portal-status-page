@@ -131,8 +131,8 @@ function SequenceRunRow(props: any) {
     rowsPerPage: 300,
     count: 0,
   });
-  function handleChangeQuery(value: QueryParameterType) {
-    setQueryParameter(value);
+  function handleChangeQuery(value: Partial<QueryParameterType>) {
+    setQueryParameter(value as QueryParameterType);
   }
 
   // Use Effect is row is expand to fetch metadata List

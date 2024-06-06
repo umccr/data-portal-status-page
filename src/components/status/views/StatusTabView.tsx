@@ -28,7 +28,7 @@ interface StatusTabViewProps {
 const StatusTabView: React.FC<StatusTabViewProps> = ({ pipelineDisplay, metadataGrouped }) => {
   const [tabValue, setTabValue] = React.useState<string>(pipelineDisplay[0]);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
   };
 

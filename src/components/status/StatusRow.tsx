@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { groupBy, sortBy } from 'lodash';
 
@@ -6,8 +6,11 @@ import { groupBy, sortBy } from 'lodash';
 import { AmplifyApiCall } from '../../utils/AmplifyApiCall';
 
 // mui components
-import { styled } from '@mui/material/styles';
-import { TableRow, TableCell, Link, Typography } from '@mui/material';
+import styled from '@mui/material/styles/styled';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 

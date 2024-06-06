@@ -1,5 +1,5 @@
-import { Grid, Typography } from '@mui/material';
-
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import LibraryRunAction from '../../components/libraryRun/LibraryRunAction';
 import StatusToolbar from '../../components/status/StatusToolbar';
 

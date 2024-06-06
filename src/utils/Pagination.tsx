@@ -5,14 +5,16 @@ type QueryParameterType = {
   rowsPerPage: number;
   ordering: string;
   search: string;
+  page: number;
 };
+
 interface PaginationProps {
   pagination: {
     count: number;
     page: number;
     rowsPerPage: number;
   };
-  handleChangeQuery: (value: QueryParameterType) => void; // Consider specifying a more precise type for the state update function
+  handleChangeQuery: (value: Partial<QueryParameterType>) => void;
   paginationName: string;
 }
 
@@ -21,26 +23,19 @@ const Pagination: React.FC<PaginationProps> = ({
   handleChangeQuery,
   paginationName,
 }) => {
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    handleChangeQuery((prevState: any) => {
-      // Consider specifying a more precise type for prevState
-      return {
-        ...prevState,
-        page: newPage + 1,
-      };
-    });
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    handleChangeQuery({ page: newPage + 1 });
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    handleChangeQuery((prevState: any) => {
-      // Consider specifying a more precise type for prevState
-      return {
-        ...prevState,
-        page: 1, // Reset to first page when rows per page changes
-        rowsPerPage: parseInt(event.target.value, 10),
-      };
+    handleChangeQuery({
+      page: 1, // Reset to first page when rows per page changes
+      rowsPerPage: parseInt(event.target.value, 10),
     });
   };
 
