@@ -40,6 +40,28 @@ yarn start
 (CTRL+C to stop the dev server)
 ```
 
+### Lint & prettier
+
+- Run lint: `yarn lint`
+- Run prettier check: `yarn prettier`
+- Run prettier fix: `yarn prettier-fix`
+
+### Audit
+
+- Run `yarn audit` for package security vulnerabilities
+- Recommend fixing/updating any package with _direct_ dependencies
+- If vulnerabilities found in transitive dependency, but it has yet to resolve, then list them in `package.json > resolutions` node as [Selective Dependency Resolutions condition explained here](https://classic.yarnpkg.com/en/docs/selective-version-resolutions/).
+
+### Pre-commit Hook
+
+> NOTE: We use [pre-commit](https://github.com/umccr/wiki/blob/master/computing/dev-environment/git-hooks.md). It will guard and enforce static code analysis such as `lint` and any security `audit` via pre-commit hook. You are encouraged to fix those. If you wish to skip this for good reason, you can by-pass [Git pre-commit hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) by using `git commit --no-verify` flag.
+
+```commandline
+git config --unset core.hooksPath
+pre-commit install
+pre-commit run --all-files
+```
+
 ### AWS-CDK Infrastructure
 
 This cdk will build an AWS cloud infrastructure for the UMCCR Data Status Page. See CDK readme at deploy directory. [CDK readme](deploy/README.md)
