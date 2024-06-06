@@ -105,7 +105,7 @@ export class CdkPipelineStack extends cdk.Stack {
     );
 
     selfMutatePipeline.addStage(
-      new DataPortalStatusPageStage(this, "DataPortalStatusPageStage")
+      new DataPortalStatusPageStage(this, "PortalStatusPageStage")
     );
 
     const frontEndBucketArn = s3.Bucket.fromBucketName(

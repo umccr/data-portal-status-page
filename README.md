@@ -29,4 +29,4 @@ The app will need to fetch data from the [data-portal-api](https://github.com/um
 
 ### AWS-CDK Infrastructure
 
-See CDK readme at deploy directory. [CDK readme](deploy/README.md)
+This cdk will build an AWS cloud infrastructure for the UMCCR Data Status Page. See CDK readme at deploy directory. [CDK readme](deploy/README.md)
