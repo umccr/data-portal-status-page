@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-import * as cdk from "aws-cdk-lib";
-import { CdkPipelineStack } from "../lib/pipeline-stack";
-import * as process from "process";
-import { props } from "./constants";
+import * as cdk from 'aws-cdk-lib';
+import { CdkPipelineStack } from '../lib/pipeline-stack';
+import * as process from 'process';
+import { props } from './constants';
 
 const accountId = process.env.CDK_DEFAULT_ACCOUNT;
 const awsRegion = process.env.CDK_DEFAULT_REGION;
 
 let appStage: string;
-if (accountId === "472057503814") {
-  appStage = "prod";
+if (accountId === '472057503814') {
+  appStage = 'prod';
 } else {
-  appStage = "dev";
+  appStage = 'dev';
 }
 
 const app = new cdk.App({
@@ -21,11 +21,11 @@ const app = new cdk.App({
   },
 });
 
-new CdkPipelineStack(app, "DataPortalStatusPagePipeline", {
-  stackName: "pipeline-data-portal-status-page",
+new CdkPipelineStack(app, 'DataPortalStatusPagePipeline', {
+  stackName: 'pipeline-data-portal-status-page',
   tags: {
     stage: appStage,
-    stack: "pipeline-data-portal-status-page",
+    stack: 'pipeline-data-portal-status-page',
   },
   env: {
     account: accountId,
