@@ -18,7 +18,7 @@ export const props = {
     prod: "main",
   },
   aliasDomainName: {
-    dev: ["status.data.dev.umccr.org"],
-    prod: ["status.data.umccr.org", "status.data.prod.umccr.org"],
+    dev: ["status.dev.umccr.org"],
+    prod: ["status.umccr.org", "status.prod.umccr.org"],
   },
 };
