@@ -1,26 +1,26 @@
-import * as cdk from "aws-cdk-lib";
-import { Construct } from "constructs";
-import * as ssm from "aws-cdk-lib/aws-ssm";
-import * as pipelines from "aws-cdk-lib/pipelines";
-import * as codepipeline from "aws-cdk-lib/aws-codepipeline";
-import * as s3 from "aws-cdk-lib/aws-s3";
-import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
-import * as iam from "aws-cdk-lib/aws-iam";
-import * as codebuild from "aws-cdk-lib/aws-codebuild";
-import * as sns from "aws-cdk-lib/aws-sns";
-import * as codestarnotifications from "aws-cdk-lib/aws-codestarnotifications";
-import { DataPortalStatusPageStack } from "./data-portal-status-page-stack";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
+import * as pipelines from 'aws-cdk-lib/pipelines';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as codestarnotifications from 'aws-cdk-lib/aws-codestarnotifications';
+import { DataPortalStatusPageStack } from './data-portal-status-page-stack';
 
 class DataPortalStatusPageStage extends cdk.Stage {
   constructor(scope: Construct, id: string, props?: cdk.StageProps) {
     super(scope, id, props);
 
-    const appStage = this.node.tryGetContext("app_stage");
-    const appProps = this.node.tryGetContext("props");
+    const appStage = this.node.tryGetContext('app_stage');
+    const appProps = this.node.tryGetContext('props');
 
-    const stackName = appProps["appStackName"];
+    const stackName = appProps['appStackName'];
 
-    new DataPortalStatusPageStack(this, "StatusPage", {
+    new DataPortalStatusPageStack(this, 'StatusPage', {
       stackName: `${stackName}`,
       tags: {
         stage: appStage,
@@ -34,39 +34,28 @@ export class CdkPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const appStage = this.node.tryGetContext("app_stage");
-    const appProps = this.node.tryGetContext("props");
+    const appStage = this.node.tryGetContext('app_stage');
+    const appProps = this.node.tryGetContext('props');
 
-    const codestarArn = ssm.StringParameter.valueForStringParameter(
-      this,
-      "codestar_github_arn"
-    );
+    const codestarArn = ssm.StringParameter.valueForStringParameter(this, 'codestar_github_arn');
 
-    const pipelineArtifactBucket = new s3.Bucket(
-      this,
-      "data-portal-status-page-artifact-bucket",
-      {
-        bucketName: appProps["pipelineArtifactBucketName"][appStage],
-        autoDeleteObjects: true,
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-        blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      }
-    );
+    const pipelineArtifactBucket = new s3.Bucket(this, 'data-portal-status-page-artifact-bucket', {
+      bucketName: appProps['pipelineArtifactBucketName'][appStage],
+      autoDeleteObjects: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+    });
 
-    const statusPagePipeline = new codepipeline.Pipeline(
-      this,
-      "StatusPageCodePipeline",
-      {
-        artifactBucket: pipelineArtifactBucket,
-        restartExecutionOnUpdate: true,
-        crossAccountKeys: false,
-        pipelineName: appProps["pipelineName"][appStage],
-      }
-    );
+    const statusPagePipeline = new codepipeline.Pipeline(this, 'StatusPageCodePipeline', {
+      artifactBucket: pipelineArtifactBucket,
+      restartExecutionOnUpdate: true,
+      crossAccountKeys: false,
+      pipelineName: appProps['pipelineName'][appStage],
+    });
 
     const codePipelineSource = pipelines.CodePipelineSource.connection(
-      appProps["repositorySource"],
-      appProps["branchSource"][appStage],
+      appProps['repositorySource'],
+      appProps['branchSource'][appStage],
       {
         connectionArn: codestarArn,
         triggerOnPush: true,
@@ -74,63 +63,51 @@ export class CdkPipelineStack extends cdk.Stack {
     );
 
     const artifactMap = new pipelines.ArtifactMap();
-    const sourceArtifact = artifactMap.toCodePipeline(
-      codePipelineSource.primaryOutput!
-    );
+    const sourceArtifact = artifactMap.toCodePipeline(codePipelineSource.primaryOutput!);
 
-    const synthStep = new pipelines.ShellStep("CDKShellScript", {
+    const synthStep = new pipelines.ShellStep('CDKShellScript', {
       input: codePipelineSource,
       commands: [
-        "cdk synth",
-        "mkdir ./cfnnag_output",
+        'cdk synth',
+        'mkdir ./cfnnag_output',
         'for template in $(find ./cdk.out -type f -maxdepth 2 -name "*.template.json"); do cp $template ./cfnnag_output; done',
-        "cfn_nag_scan --input-path ./cfnnag_output",
+        'cfn_nag_scan --input-path ./cfnnag_output',
       ],
       installCommands: [
-        "cd deploy",
-        "npm install -g aws-cdk",
-        "gem install cfn-nag",
-        "npm install",
+        'cd deploy',
+        'npm install -g aws-cdk',
+        'gem install cfn-nag',
+        'npm install',
       ],
-      primaryOutputDirectory: "deploy/cdk.out",
+      primaryOutputDirectory: 'deploy/cdk.out',
     });
 
-    const selfMutatePipeline = new pipelines.CodePipeline(
-      this,
-      "CodePipeline",
-      {
-        codePipeline: statusPagePipeline,
-        synth: synthStep,
-      }
-    );
+    const selfMutatePipeline = new pipelines.CodePipeline(this, 'CodePipeline', {
+      codePipeline: statusPagePipeline,
+      synth: synthStep,
+    });
 
-    selfMutatePipeline.addStage(
-      new DataPortalStatusPageStage(this, "PortalStatusPageStage")
-    );
+    selfMutatePipeline.addStage(new DataPortalStatusPageStage(this, 'DataPortalStatusPageStage'));
 
     const frontEndBucketArn = s3.Bucket.fromBucketName(
       this,
-      "FrontEndBucket",
-      appProps["clientBucketName"][appStage]
+      'FrontEndBucket',
+      appProps['clientBucketName'][appStage]
     ).bucketArn;
 
     selfMutatePipeline.buildPipeline();
 
-    const reactCodebuildProject = new codebuild.PipelineProject(
-      this,
-      "ProjectReactBuild",
-      {
-        description: "The project from codebuild to build react project.",
-        projectName: "DataPortalStatusPageReactBuild",
-        environment: {
-          buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
-        },
-      }
-    );
+    const reactCodebuildProject = new codebuild.PipelineProject(this, 'ProjectReactBuild', {
+      description: 'The project from codebuild to build react project.',
+      projectName: 'DataPortalStatusPageReactBuild',
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+      },
+    });
 
     reactCodebuildProject.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ["ssm:GetParameter"],
+        actions: ['ssm:GetParameter'],
         effect: iam.Effect.ALLOW,
         resources: [
           `arn:aws:ssm:${this.region}:${this.account}:parameter/data_portal/status_page/*`,
@@ -141,81 +118,76 @@ export class CdkPipelineStack extends cdk.Stack {
 
     reactCodebuildProject.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: [
-          "s3:DeleteObject",
-          "s3:GetObject",
-          "s3:ListBucket",
-          "s3:PutObject",
-        ],
+        actions: ['s3:DeleteObject', 's3:GetObject', 's3:ListBucket', 's3:PutObject'],
         effect: iam.Effect.ALLOW,
         resources: [frontEndBucketArn, `${frontEndBucketArn}/*`],
       })
     );
 
     const reactBuildActions = new codepipeline_actions.CodeBuildAction({
-      actionName: "ReactBuildAction",
+      actionName: 'ReactBuildAction',
       project: reactCodebuildProject,
       input: sourceArtifact,
       checkSecretsInPlainTextEnvVariables: false,
       environmentVariables: {
-        REACT_APP_REGION: {
-          value: "ap-southeast-2",
+        VITE_REGION: {
+          value: 'ap-southeast-2',
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
         },
-        REACT_APP_BUCKET_NAME: {
-          value: appProps["clientBucketName"][appStage],
+        VITE_BUCKET_NAME: {
+          value: appProps['clientBucketName'][appStage],
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
         },
-        REACT_APP_UMCCR_DOMAIN_NAME: {
-          value: "/hosted_zone/umccr/name",
+        VITE_UMCCR_DOMAIN_NAME: {
+          value: '/hosted_zone/umccr/name',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
-        REACT_APP_DATA_PORTAL_API_DOMAIN: {
-          value: "/data_portal/backend/api_domain_name",
+        VITE_DATA_PORTAL_API_DOMAIN: {
+          value: '/data_portal/backend/api_domain_name',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
-        REACT_APP_COG_USER_POOL_ID: {
-          value: "/data_portal/client/cog_user_pool_id",
+        VITE_COG_USER_POOL_ID: {
+          value: '/data_portal/client/cog_user_pool_id',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
-        REACT_APP_COG_APP_CLIENT_ID: {
-          value: "/data_portal/status_page/cog_app_client_id_stage",
+        VITE_COG_APP_CLIENT_ID: {
+          value: '/data_portal/status_page/cog_app_client_id_stage',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
-        REACT_APP_OAUTH_DOMAIN: {
-          value: "/data_portal/client/oauth_domain",
+        VITE_OAUTH_DOMAIN: {
+          value: '/data_portal/client/oauth_domain',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
-        REACT_APP_OAUTH_REDIRECT_IN: {
-          value: "/data_portal/status_page/oauth_redirect_in_stage",
+        VITE_OAUTH_REDIRECT_IN: {
+          value: '/data_portal/status_page/oauth_redirect_in_stage',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
-        REACT_APP_OAUTH_REDIRECT_OUT: {
-          value: "/data_portal/status_page/oauth_redirect_out_stage",
+        VITE_OAUTH_REDIRECT_OUT: {
+          value: '/data_portal/status_page/oauth_redirect_out_stage',
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
         },
       },
     });
 
     selfMutatePipeline.pipeline.addStage({
-      stageName: "ReactBuild",
+      stageName: 'ReactBuild',
       actions: [reactBuildActions],
     });
 
     const codebuildBuildInvalidateProject = new codebuild.PipelineProject(
       this,
-      "CodebuildProjectInvalidateStatsPageCDNCache",
+      'CodebuildProjectInvalidateStatsPageCDNCache',
       {
-        projectName: "InvalidateDataPortalStatusPageCDNCache",
+        projectName: 'InvalidateDataPortalStatusPageCDNCache',
         environment: {
           buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         },
         buildSpec: codebuild.BuildSpec.fromObject({
-          version: "0.2",
+          version: '0.2',
           phases: {
             build: {
               commands: [
-                `DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name ${appProps["appStackName"]} --query 'Stacks[0].Outputs[?OutputKey==\`CfnOutputCloudFrontDistributionId\`].OutputValue' --output text) && aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"`,
+                `DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name ${appProps['appStackName']} --query 'Stacks[0].Outputs[?OutputKey==\`CfnOutputCloudFrontDistributionId\`].OutputValue' --output text) && aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"`,
               ],
             },
           },
@@ -227,58 +199,51 @@ export class CdkPipelineStack extends cdk.Stack {
 
     codebuildBuildInvalidateProject.addToRolePolicy(
       new iam.PolicyStatement({
-        resources: [
-          `arn:aws:cloudfront::${process.env.CDK_DEFAULT_ACCOUNT}:distribution/*`,
-        ],
-        actions: ["cloudfront:CreateInvalidation"],
+        resources: [`arn:aws:cloudfront::${process.env.CDK_DEFAULT_ACCOUNT}:distribution/*`],
+        actions: ['cloudfront:CreateInvalidation'],
       })
     );
 
     codebuildBuildInvalidateProject.addToRolePolicy(
       new iam.PolicyStatement({
         resources: [
-          `arn:aws:cloudformation:ap-southeast-2:${process.env.CDK_DEFAULT_ACCOUNT}:stack/${appProps["appStackName"]}/*`,
+          `arn:aws:cloudformation:ap-southeast-2:${process.env.CDK_DEFAULT_ACCOUNT}:stack/${appProps['appStackName']}/*`,
         ],
-        actions: ["cloudformation:DescribeStacks"],
+        actions: ['cloudformation:DescribeStacks'],
       })
     );
 
     const codebuildActionClearCache = new codepipeline_actions.CodeBuildAction({
-      actionName: "InvalidateCloudFrontCache",
+      actionName: 'InvalidateCloudFrontCache',
       project: codebuildBuildInvalidateProject,
       input: sourceArtifact,
       checkSecretsInPlainTextEnvVariables: false,
     });
 
     selfMutatePipeline.pipeline.addStage({
-      stageName: "CleanUpStage",
+      stageName: 'CleanUpStage',
       actions: [codebuildActionClearCache],
     });
 
-    const dataPortalNotificationSnsArn =
-      ssm.StringParameter.valueForStringParameter(
-        this,
-        "/data_portal/backend/notification_sns_topic_arn"
-      );
+    const dataPortalNotificationSnsArn = ssm.StringParameter.valueForStringParameter(
+      this,
+      '/data_portal/backend/notification_sns_topic_arn'
+    );
 
     const dataPortalSnsNotification = sns.Topic.fromTopicArn(
       this,
-      "DataPortalSNS",
+      'DataPortalSNS',
       dataPortalNotificationSnsArn
     );
 
-    selfMutatePipeline.pipeline.notifyOn(
-      "SlackNotificationStatusPage",
-      dataPortalSnsNotification,
-      {
-        events: [
-          codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_FAILED,
-          codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_SUCCEEDED,
-        ],
-        detailType: codestarnotifications.DetailType.BASIC,
-        enabled: true,
-        notificationRuleName: "SlackNotificationStatusPagePipeline",
-      }
-    );
+    selfMutatePipeline.pipeline.notifyOn('SlackNotificationStatusPage', dataPortalSnsNotification, {
+      events: [
+        codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_FAILED,
+        codepipeline.PipelineNotificationEvents.PIPELINE_EXECUTION_SUCCEEDED,
+      ],
+      detailType: codestarnotifications.DetailType.BASIC,
+      enabled: true,
+      notificationRuleName: 'SlackNotificationStatusPagePipeline',
+    });
   }
 }
