@@ -82,7 +82,7 @@ export VITE_OAUTH_DOMAIN=$oauth_domain
 export VITE_OAUTH_REDIRECT_IN=$oauth_redirect_in_local
 export VITE_OAUTH_REDIRECT_OUT=$oauth_redirect_out_local
 
-env | grep REACT
+env | grep VITE
 
 # start the app
 yarn run -B vite
